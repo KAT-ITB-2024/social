@@ -2,7 +2,9 @@
 
 ##### DEPENDENCIES
 
-FROM --platform=linux/amd64 node:18-alpine AS deps
+FROM --platform=linux/amd64 node:18-alpine AS base
+
+FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -16,9 +18,16 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+#### DEV
+FROM base AS dev
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
 ##### BUILDER
 
-FROM --platform=linux/amd64 node:18-alpine AS builder
+FROM base AS builder
 ARG DATABASE_URL
 ARG NEXT_PUBLIC_CLIENTVAR
 WORKDIR /app
@@ -36,7 +45,7 @@ RUN \
 
 ##### RUNNER
 
-FROM --platform=linux/amd64 node:18-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
