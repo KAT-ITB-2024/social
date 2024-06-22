@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",
+    "@metamorph/trpc-panel": "^1.0.5",
+    "database": "git+https://github.com/KAT-ITB-2024/database.git#589eef35361e8bab8f3ba22ff151cb3284ec1425",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.39.0",
     "@trpc/client": "next",
@@ -29,6 +31,7 @@
     "react-dom": "^18.3.0",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
+    "trpc-panel": "^1.3.4",
     "zod": "^3.23.3"
   },
   "devDependencies": {
