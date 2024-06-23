@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
@@ -16,7 +15,7 @@
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",
     "@metamorph/trpc-panel": "^1.0.5",
-    "database": "git+https://github.com/KAT-ITB-2024/database.git#589eef35361e8bab8f3ba22ff151cb3284ec1425",
+    "database": "git+https://github.com/KAT-ITB-2024/database.git#389fbbe6eff1703d6e48b78e2006f5f65a7ca5a4",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.39.0",
     "@trpc/client": "next",
