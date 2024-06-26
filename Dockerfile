@@ -5,16 +5,22 @@
 FROM --platform=linux/amd64 node:18-alpine AS base
 
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat git
 WORKDIR /app
+
+# Define ARG for secret and set it as an environment variable
+ENV GIT_ACCESS_TOKEN=masukan_token_disini
+
+# Configure Git to use the GIT_ACCESS_TOKEN
+RUN git config --global url."https://${GIT_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  if [ -f yarn.lock ]; then yarn install --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm install; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
