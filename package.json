@@ -15,7 +15,7 @@
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",
     "@metamorph/trpc-panel": "^1.0.5",
-    "@katitb2024/database": "git+https://github.com/KAT-ITB-2024/database-oskm.git#b60ae44eb678edaacbc0049438574f98b3f9124e",
+    "@katitb2024/database": "git+https://github.com/KAT-ITB-2024/database-oskm.git#testing-database",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.39.0",
     "@trpc/client": "next",
