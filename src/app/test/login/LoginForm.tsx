@@ -1,5 +1,5 @@
 'use client';
-import { signIn } from 'next-auth/react';
+import { getCsrfToken, signIn } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LoginSchema } from '~/types/login/Schema';
@@ -20,21 +20,24 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async (data) => {
     const { nim, password } = data;
-    try {
-      await signIn('credentials', {
-        nim,
-        password,
-        redirect: false,
-      });
-      router.push('/test');
-    } catch (error) {
-      console.error('Sign in error:', error);
 
-      setError('password', {
-        type: 'manual',
-        message: 'Invalid credentials',
-      });
-    }
+    await signIn('credentials', {
+      redirect: false,
+      nim,
+      password,
+      callbackUrl: '/test',
+    }).then((res) => {
+      if (res?.error) {
+        console.error('Sign in error:', res.error);
+
+        setError('password', {
+          type: 'manual',
+          message: 'Invalid credentials',
+        });
+      } else {
+        router.push('/test');
+      }
+    });
   };
 
   return (

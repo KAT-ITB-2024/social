@@ -1,16 +1,15 @@
-import { redirect } from "next/navigation";
-import { getServerAuthSession } from "~/server/auth";
-import LogoutButton from "./logoutButton";
-import { api } from "~/trpc/server";
+import { redirect } from 'next/navigation';
+import { getServerAuthSession } from '~/server/auth';
+import LogoutButton from './logoutButton';
+import { api } from '~/trpc/server';
 
 const testResultPage = async () => {
   const user = await getServerAuthSession();
 
-  const profile = await api.profile.getUserProfile();
-
   if (!user) {
-    redirect("/test/login");
+    redirect('/test/login');
   }
+  const profile = await api.profile.getUserProfile();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">

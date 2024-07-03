@@ -1,9 +1,9 @@
-import { createTRPCRouter, publicProcedure } from "../trpc";
-import { users, roleEnum } from "@katitb2024/database";
-import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-
+import { createTRPCRouter, publicProcedure } from '../trpc';
+import { users, roleEnum } from '@katitb2024/database';
+import { TRPCError } from '@trpc/server';
+import { eq } from 'drizzle-orm';
+import { z } from 'zod';
+import { hash } from 'bcrypt';
 const userInsertPayload = z.object({
   nim: z.string(),
   password: z.string(),
@@ -11,8 +11,8 @@ const userInsertPayload = z.object({
 });
 
 const userUpdatePayload = z.object({
-  id: z.string(),
-  password: z.string().optional(),
+  nim: z.string(),
+  password: z.string(),
 });
 
 const userIdPayload = z.object({
@@ -36,12 +36,12 @@ export const userRouter = createTRPCRouter({
         // Return success with status code 200
         return {
           status: 200,
-          data: "User added successfully",
+          data: 'User added successfully',
         };
       } catch (error) {
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Internal Server Error",
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Internal Server Error',
         });
       }
     }),
@@ -50,24 +50,25 @@ export const userRouter = createTRPCRouter({
     .input(userUpdatePayload)
     .mutation(async ({ ctx, input }) => {
       try {
+        const hashedPassword = await hash(input.password, 10);
         const updatedUser = await ctx.db
           .update(users)
           .set({
-            password: input.password,
+            password: hashedPassword,
           })
-          .where(eq(users.id, input.id))
+          .where(eq(users.nim, input.nim))
           .returning();
         if (!updatedUser) {
           throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "User not found",
+            code: 'NOT_FOUND',
+            message: 'User not found',
           });
         }
         return updatedUser;
       } catch (error) {
         throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Internal Server Error",
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Internal Server Error',
         });
       }
     }),
@@ -88,8 +89,8 @@ export const userRouter = createTRPCRouter({
         .where(eq(users.id, input.id));
       if (!user) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
+          code: 'NOT_FOUND',
+          message: 'User not found',
         });
       }
       return user;
@@ -104,8 +105,8 @@ export const userRouter = createTRPCRouter({
         .returning();
       if (!deletedUser) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
+          code: 'NOT_FOUND',
+          message: 'User not found',
         });
       }
       return deletedUser;
