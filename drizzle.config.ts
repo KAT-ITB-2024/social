@@ -8,6 +8,6 @@ export default {
   dbCredentials: {
     url: "postgresql://postgres:posgtres@localhost:5432/coba",
   },
-  out: './node_modules/@katitb2024/database/drizzle',
+  out: "./node_modules/@katitb2024/database/drizzle",
   tablesFilter: ["t3-template-app_*"],
 } satisfies Config;
