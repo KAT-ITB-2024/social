@@ -1,4 +1,4 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import {
   type DefaultUser,
   getServerSession,
@@ -21,7 +21,7 @@ import { compare } from "bcrypt";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string;

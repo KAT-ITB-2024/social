@@ -1,11 +1,11 @@
-"use client";
-import { signIn } from "next-auth/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { LoginSchema } from "~/types/login/Schema";
-import type { z } from "zod";
-import type { SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/navigation";
+'use client';
+import { signIn } from 'next-auth/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { LoginSchema } from '~/types/login/Schema';
+import type { z } from 'zod';
+import type { SubmitHandler } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 const LoginForm = () => {
   const {
@@ -21,19 +21,18 @@ const LoginForm = () => {
   const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async (data) => {
     const { nim, password } = data;
     try {
-      const result = await signIn("credentials", {
+      await signIn('credentials', {
         nim,
         password,
-        redirect: false, // Ensure the signIn function does not redirect automatically
+        redirect: false,
       });
-      router.push("/test");
-      // Handle successful sign in (redirect, display success message, etc.)
+      router.push('/test');
     } catch (error) {
-      console.error("Sign in error:", error);
-      // Handle sign in errors (display error message, etc.)
-      setError("password", {
-        type: "manual",
-        message: "Invalid credentials",
+      console.error('Sign in error:', error);
+
+      setError('password', {
+        type: 'manual',
+        message: 'Invalid credentials',
       });
     }
   };
@@ -53,9 +52,9 @@ const LoginForm = () => {
             <input
               id="nim"
               type="text"
-              {...register("nim")}
+              {...register('nim')}
               className={`mt-1 block w-full border px-3 py-2 text-black ${
-                errors.nim ? "border-red-500" : "border-gray-300"
+                errors.nim ? 'border-red-500' : 'border-gray-300'
               } rounded-md placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500`}
             />
             {errors.nim && (
@@ -72,9 +71,9 @@ const LoginForm = () => {
             <input
               id="password"
               type="password"
-              {...register("password")}
+              {...register('password')}
               className={`mt-1 block w-full border px-3 py-2 text-black ${
-                errors.password ? "border-red-500" : "border-gray-300"
+                errors.password ? 'border-red-500' : 'border-gray-300'
               } rounded-md placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500`}
             />
             {errors.password && (

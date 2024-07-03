@@ -1,8 +1,7 @@
-import { type Profile } from "~/types/profile";
-import { createTRPCRouter, publicProcedure } from "../trpc";
-import { profiles } from "@katitb2024/database";
-import { eq } from "drizzle-orm";
-import { TRPCError } from "@trpc/server";
+import { createTRPCRouter, publicProcedure } from '../trpc';
+import { profiles } from '@katitb2024/database';
+import { eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 
 export const profileRouter = createTRPCRouter({
   getUserProfile: publicProcedure.query(async ({ ctx }) => {
@@ -10,8 +9,8 @@ export const profileRouter = createTRPCRouter({
 
     if (!userId) {
       throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Unauthorized",
+        code: 'UNAUTHORIZED',
+        message: 'Unauthorized',
       });
     }
 
@@ -21,7 +20,7 @@ export const profileRouter = createTRPCRouter({
       .where(eq(profiles.userId, userId));
 
     if (!profile) {
-      throw new Error("Profile not found");
+      throw new Error('Profile not found');
     }
 
     return profile;
