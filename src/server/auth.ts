@@ -8,7 +8,6 @@ import { type Adapter } from 'next-auth/adapters';
 
 import { env } from '~/env';
 import { db } from '~/server/db';
-import { accounts, users, verificationTokens } from '@katitb2024/database';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -46,11 +45,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   },
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    verificationTokensTable: verificationTokens,
-  }) as Adapter,
+  adapter: DrizzleAdapter(db) as Adapter,
   providers: [
     /**
      * ...add more providers here.
