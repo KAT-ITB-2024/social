@@ -2,12 +2,7 @@ import { createTRPCRouter, publicProcedure } from '../trpc';
 import { profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
-
-const profileUpdatePayload = z.object({
-  userId: z.string(),
-  profileImage: z.string(),
-});
+import { profileUpdatePayload } from '~/types/payloads/profile';
 
 export const profileRouter = createTRPCRouter({
   getUserProfile: publicProcedure.query(async ({ ctx }) => {

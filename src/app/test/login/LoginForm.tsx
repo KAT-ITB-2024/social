@@ -2,10 +2,10 @@
 import { signIn } from 'next-auth/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { LoginSchema } from '~/types/login/Schema';
 import type { z } from 'zod';
 import type { SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { LoginSchema } from '~/types/schema/login';
 
 const LoginForm = () => {
   const {

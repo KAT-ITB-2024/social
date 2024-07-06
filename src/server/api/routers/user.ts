@@ -1,23 +1,13 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
-import { users, roleEnum } from '@katitb2024/database';
+import { users } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
 import { hash } from 'bcrypt';
-const userInsertPayload = z.object({
-  nim: z.string(),
-  password: z.string(),
-  role: z.enum(roleEnum.enumValues),
-});
-
-const userUpdatePayload = z.object({
-  nim: z.string(),
-  password: z.string(),
-});
-
-const userIdPayload = z.object({
-  id: z.string(),
-});
+import {
+  userIdPayload,
+  userInsertPayload,
+  userUpdatePayload,
+} from '~/types/payloads/user';
 
 export const userRouter = createTRPCRouter({
   addUser: publicProcedure
@@ -49,6 +39,13 @@ export const userRouter = createTRPCRouter({
   forgotPassword: publicProcedure
     .input(userUpdatePayload)
     .mutation(async ({ ctx, input }) => {
+      const nim = ctx.session?.user.nim;
+      if (!nim) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'NIM not found in this session!',
+        });
+      }
       try {
         const hashedPassword = await hash(input.password, 10);
         const updatedUser = await ctx.db
@@ -56,7 +53,7 @@ export const userRouter = createTRPCRouter({
           .set({
             password: hashedPassword,
           })
-          .where(eq(users.nim, input.nim))
+          .where(eq(users.nim, nim))
           .returning();
         if (!updatedUser) {
           throw new TRPCError({

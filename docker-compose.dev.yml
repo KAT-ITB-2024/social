@@ -1,13 +1,14 @@
-version: "3.9"
+version: '3.9'
 services:
   app:
-    platform: "linux/amd64"
+    platform: 'linux/amd64'
     build:
       context: .
       dockerfile: Dockerfile
       target: dev
       args:
-        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+        NEXT_PUBLIC_CLIENTVAR: 'clientvar'
+        GIT_ACCESS_TOKEN: ${GIT_ACCESS_TOKEN}
     working_dir: /app
     command: yarn dev
     restart: always
@@ -16,9 +17,7 @@ services:
       - /app/node_modules
       - /app/.next
     ports:
-      - "3000:3000"
+      - '3000:3000'
     image: t3-app
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@localhost:5432/template-app
-      - NEXTAUTH_SECRET=something-secret
-      - NEXTAUTH_URL=http://localhost:3000
+    env_file:
+      - .env

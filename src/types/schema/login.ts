@@ -1,4 +1,5 @@
-import * as z from 'zod';
+import { z } from 'zod';
+
 // Define Zod schema
 export const LoginSchema = z.object({
   nim: z.string().min(8, { message: 'NIM must be 8 characters' }),
