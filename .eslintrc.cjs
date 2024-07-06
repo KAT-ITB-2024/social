@@ -20,9 +20,9 @@ const config = {
         fixStyle: 'inline-type-imports',
       },
     ],
-    '@typescript-eslint/no-unsafe-assignment': 'off', // or "off" if you want to disable it
-    '@typescript-eslint/no-unsafe-call': 'off', // or "off" if you want to disable it
-    '@typescript-eslint/no-unsafe-member-access': 'off', // or "off" if you want to disable it
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
 
     '@typescript-eslint/no-unused-vars': [
       'warn',

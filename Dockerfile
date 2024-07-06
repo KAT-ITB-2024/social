@@ -9,7 +9,8 @@ RUN apk add --no-cache libc6-compat git
 WORKDIR /app
 
 # Define ARG for secret and set it as an environment variable
-ENV GIT_ACCESS_TOKEN=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
+ARG GIT_ACCESS_TOKEN
+ENV GIT_ACCESS_TOKEN=${GIT_ACCESS_TOKEN}
 
 # Configure Git to use the GIT_ACCESS_TOKEN
 RUN git config --global url."https://${GIT_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
