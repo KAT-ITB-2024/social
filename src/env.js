@@ -1,5 +1,5 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-nextjs';
+import { z } from 'zod';
 
 export const env = createEnv({
   /**
@@ -10,12 +10,12 @@ export const env = createEnv({
     DATABASE_URL: z
       .string()
       .url()
-      .default("postgresql://postgres:posgtres@localhost:5432/coba"),
+      .default('postgresql://postgres:posgtres@localhost:5432/coba'),
     NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+      .enum(['development', 'test', 'production'])
+      .default('development'),
     NEXTAUTH_SECRET:
-      process.env.NODE_ENV === "production"
+      process.env.NODE_ENV === 'production'
         ? z.string()
         : z.string().optional(),
     NEXTAUTH_URL: z
@@ -26,7 +26,7 @@ export const env = createEnv({
         // VERCEL_URL doesn't include `https` so it cant be validated as a URL
         process.env.VERCEL ? z.string() : z.string().url(),
       )
-      .default("http://localhost:3000"),
+      .default('http://localhost:3000'),
   },
 
   /**
