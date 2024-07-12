@@ -28,6 +28,10 @@ export const env = createEnv({
       )
       .default('http://localhost:3000'),
     REDIS_URL: z.string().url(),
+    WS_PORT: z.preprocess(
+      (str) => (str ? +str : 3001),
+      z.number().int().positive(),
+    ),
   },
 
   /**
@@ -36,7 +40,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_API_URL: z.string().url(),
   },
 
   /**
@@ -49,6 +53,8 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     REDIS_URL: process.env.REDIS_URL,
+    WS_PORT: process.env.WS_PORT,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

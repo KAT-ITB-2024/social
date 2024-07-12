@@ -1,5 +1,5 @@
 export type UserQueue = {
-  userid: string;
+  userId: string;
 };
 
 export type RoomChat = {

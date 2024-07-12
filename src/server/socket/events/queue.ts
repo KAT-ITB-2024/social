@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
 import { type UserQueue } from '~/types/payloads/message';
+import { findMatch } from '../messaging/queue';
+import { userMatches } from '@katitb2024/database';
 
 export const findMatchEvent = createEvent(
   {
@@ -14,9 +16,38 @@ export const findMatchEvent = createEvent(
     }
     const userSession = ctx.client.data.session;
     const userQueue: UserQueue = {
-      userid: userSession.user.id,
+      userId: userSession.user.id,
     };
 
-    // const matchResult = await findmat
+    const matchResult = await findMatch(userQueue);
+
+    if (!matchResult) {
+      for (const otherSocket of await ctx.io
+        .in(userSession.user.id)
+        .fetchSockets()) {
+        otherSocket.data.matchQueue = userQueue;
+      }
+      return;
+    }
+
+    const match = await ctx.drizzle
+      .insert(userMatches)
+      .values({
+        firstUserId: matchResult.firstPair.userId,
+        secondUserId: matchResult.secondPair.userId,
+      })
+      .returning();
+
+    const result = match[0];
+    if (!result) {
+      return;
+    }
+    for (const otherSocket of await ctx.io
+      .in([matchResult.firstPair.userId, matchResult.secondPair.userId])
+      .fetchSockets()) {
+      otherSocket.data.match = result;
+    }
+
+    ctx.io.to([result.firstUserId, result.secondUserId]).emit('match', result);
   },
 );
