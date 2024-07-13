@@ -1,13 +1,15 @@
 import { loadEnvConfig } from '@next/env';
+import dotenv from 'dotenv';
 import { env } from '~/env';
 import { getAdapter, initializeSocket, type SocketServer } from './socket';
 import { Server } from 'socket.io';
 import parser from 'socket.io-msgpack-parser';
 
-loadEnvConfig(process.cwd());
-
+// loadEnvConfig(process.cwd());
+dotenv.config();
 void (() => {
   const port = env.WS_PORT;
+  console.log('Initializing redis server on port', port);
 
   const io: SocketServer = new Server(port, {
     cors: {

@@ -40,7 +40,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_API_URL: z.string().url(),
+    NEXT_PUBLIC_API_URL: z.string(),
+    NEXT_PUBLIC_WS_URL: z.string(),
   },
 
   /**
@@ -55,6 +56,7 @@ export const env = createEnv({
     REDIS_URL: process.env.REDIS_URL,
     WS_PORT: process.env.WS_PORT,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
@@ -65,5 +67,5 @@ export const env = createEnv({
    * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
    * `SOME_VAR=''` will throw an error.
    */
-  // emptyStringAsUndefined: true,
+  emptyStringAsUndefined: true,
 });
