@@ -4,17 +4,16 @@ import { getSession } from 'next-auth/react';
 import { type Server, type Socket } from 'socket.io';
 import { type RoomChat, type UserQueue } from '~/types/payloads/message';
 import { findMatchEvent } from './events/queue';
-import { type ServerEventResolver } from './helper';
+import { type ServerEventsResolver } from './helper';
 import { Redis } from '../redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 const serverEvents = [findMatchEvent] as const;
 
 export type ServerToClientEvents = {
-  noArg: () => void;
   match: (match: UserMatch) => void;
 };
 
-export type ClientToServerEvents = ServerEventResolver<typeof serverEvents>;
+export type ClientToServerEvents = ServerEventsResolver<typeof serverEvents>;
 
 export type SocketData<AuthRequired = false> = {
   session: AuthRequired extends true ? Session : Session | null;

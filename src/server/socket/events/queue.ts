@@ -7,13 +7,16 @@ import { userMatches } from '@katitb2024/database';
 export const findMatchEvent = createEvent(
   {
     name: 'findMatch',
-    input: z.object({}),
+    input: z.object({
+      isAnonymous: z.boolean(),
+    }),
     authRequired: true,
   },
   async ({ ctx, input }) => {
     if (ctx.client.data.matchQueue) {
       return;
     }
+    console.log('MASUK KE FINDMATCHEVEBT');
     const userSession = ctx.client.data.session;
     const userQueue: UserQueue = {
       userId: userSession.user.id,
