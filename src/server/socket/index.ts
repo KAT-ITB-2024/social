@@ -57,6 +57,7 @@ export const initializeSocket = (io: SocketServer) => {
 
   io.on('connection', (socket) => {
     if (socket.data.session) {
+      console.log('SESSIOn');
       serverEvents.forEach((event) => event(io, socket));
       const userId = socket.data.session.user.id;
 
@@ -65,6 +66,8 @@ export const initializeSocket = (io: SocketServer) => {
       socket.on('disconnect', () => {
         void socket.leave(userId);
       });
+    } else {
+      console.log('NOT SESSION');
     }
   });
 };

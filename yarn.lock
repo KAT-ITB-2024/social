@@ -497,7 +497,7 @@
 
 "@katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#testing-database":
   version "1.0.0"
-  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#bc98bcbb1072a193c955b715c747ada97fe3b87a"
+  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#c36eb5aa2f55f21d8d90abdb59667b69b46efa20"
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     bcrypt "^5.1.1"
@@ -4834,7 +4834,7 @@ tsup@^8.1.0:
     sucrase "^3.20.3"
     tree-kill "^1.2.2"
 
-tsx@^4.15.7:
+tsx@^4.15.7, tsx@^4.16.2:
   version "4.16.2"
   resolved "https://registry.yarnpkg.com/tsx/-/tsx-4.16.2.tgz#8722be119ae226ef0b4c6210d5ee90f3ba823f19"
   integrity sha512-C1uWweJDgdtX2x600HjaFaucXTilT7tgUZHbOE4+ypskZ1OP8CRCSDkCxG6Vya9EwaFIVagWwpaVAn5wzypaqQ==

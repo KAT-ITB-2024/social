@@ -42,7 +42,8 @@
     "**/*.mjs",
     "next.config.mjs",
     ".next/types/**/*.ts",
-    "node_modules/redlock/dist/index.d.ts"
+    "node_modules/redlock/dist/index.d.ts",
+    "src/env.js"
   ],
   "exclude": ["node_modules"]
 }

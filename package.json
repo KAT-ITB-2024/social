@@ -9,7 +9,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:update": "yarn remove @katitb2024/database && yarn add @katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#testing-database && yarn db:migrate",
-    "dev:wss": "cross-env NODE_ENV=development tsx watch src/server/redis-dev-server.ts",
+    "dev:wss": "cross-env NODE_ENV=development tsx watch src/server/redis-dev-server.ts --tsconfig tsconfig.server.json",
     "dev:next": "next dev",
     "dev": "env-cmd run-p dev:*",
     "lint": "next lint",
@@ -81,6 +81,7 @@
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.3",
+    "tsx": "^4.16.2",
     "typescript": "^5.4.2"
   },
   "ct3aMetadata": {

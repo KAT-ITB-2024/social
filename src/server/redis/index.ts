@@ -9,7 +9,8 @@ export class Redis {
 
   private static init() {
     if (!Redis.client) {
-      Redis.client = new RedisClient(env.REDIS_URL);
+      // console.log('redis url: ', process.env.REDIS_URL);
+      Redis.client = new RedisClient(env.REDIS_URL ?? process.env.REDIS_URL);
     }
 
     if (!Redis.redlock) {
