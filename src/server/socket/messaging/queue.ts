@@ -12,7 +12,7 @@ const deserializeUserQueue = (raw: string) => {
 };
 
 const generateKey = (queue: UserQueue): string => {
-  const key = `QUEUE:${queue.userId}`;
+  const key = `QUEUE`;
   return key;
 };
 
@@ -35,7 +35,7 @@ export const findMatch = async (queue: UserQueue) => {
       await redis.del(key);
     }
     const queueLength = await redis.llen(key);
-
+    console.log('ini key', key, queueLength);
     if (queueLength === 0) {
       const queueKey = generateQueueKey(queue.userId);
       const queueExist = await redis.exists(queueKey);
