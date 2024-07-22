@@ -8,7 +8,7 @@
     "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:update": "yarn remove @katitb2024/database && yarn add @katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#94c5bedf98bbde06dd9bc35e9c0513a016064432 && yarn db:migrate",
+    "db:update": "yarn remove @katitb2024/database && yarn add @katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#98f14c17b4ab37cce135591870ae18529bde873e && yarn db:migrate",
     "dev:wss": "cross-env NODE_ENV=development tsx watch src/server/redis-dev-server.ts --tsconfig tsconfig.server.json",
     "dev:next": "next dev",
     "dev": "env-cmd run-p dev:*",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",
     "@hookform/resolvers": "^3.7.0",
-    "@katitb2024/database": "git+https://github.com/KAT-ITB-2024/database-oskm.git#94c5bedf98bbde06dd9bc35e9c0513a016064432",
+    "@katitb2024/database": "git+https://github.com/KAT-ITB-2024/database-oskm.git#98f14c17b4ab37cce135591870ae18529bde873e",
     "@metamorph/trpc-panel": "^1.0.5",
     "@radix-ui/react-slot": "^1.1.0",
     "@shadcn/ui": "^0.0.4",
