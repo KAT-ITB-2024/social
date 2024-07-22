@@ -13,12 +13,13 @@ export const userRouter = createTRPCRouter({
   addUser: publicProcedure
     .input(userInsertPayload)
     .mutation(async ({ ctx, input }) => {
+      const password = await hash(input.password, 10);
       try {
         await ctx.db
           .insert(users)
           .values({
             nim: input.nim,
-            password: input.password,
+            password,
             role: input.role,
           })
           .returning();
@@ -29,6 +30,7 @@ export const userRouter = createTRPCRouter({
           data: 'User added successfully',
         };
       } catch (error) {
+        console.error(error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Internal Server Error',
