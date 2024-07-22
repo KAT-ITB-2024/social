@@ -41,6 +41,7 @@ export const findMatchEvent = createEvent(
       .values({
         firstUserId: matchResult.firstPair.userId,
         secondUserId: matchResult.secondPair.userId,
+        topic: '',
       })
       .returning();
 
