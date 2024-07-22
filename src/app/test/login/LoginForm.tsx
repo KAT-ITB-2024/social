@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
 import type { SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { LoginSchema } from '~/types/schema/login';
+import { loginPayload } from '~/types/payloads/login';
 
 const LoginForm = () => {
   const {
@@ -13,12 +13,14 @@ const LoginForm = () => {
     register,
     formState: { errors },
     setError,
-  } = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<z.infer<typeof loginPayload>>({
+    resolver: zodResolver(loginPayload),
   });
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof loginPayload>> = async (
+    data,
+  ) => {
     const { nim, password } = data;
 
     await signIn('credentials', {

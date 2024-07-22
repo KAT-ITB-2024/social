@@ -83,7 +83,7 @@ export const userRouter = createTRPCRouter({
     .input(userIdPayload)
     .query(async ({ ctx, input }) => {
       const user = await ctx.db
-        .select()
+        .select({ id: users.id, nim: users.nim, role: users.role })
         .from(users)
         .where(eq(users.id, input.id));
       if (!user) {
