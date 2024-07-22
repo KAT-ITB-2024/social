@@ -3,11 +3,11 @@ import { type Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { type Server, type Socket } from 'socket.io';
 import { type RoomChat, type UserQueue } from '~/types/payloads/message';
-import { findMatchEvent } from './events/queue';
+import { checkMatchEvent, findMatchEvent } from './events/queue';
 import { type ServerEventsResolver } from './helper';
 import { Redis } from '../redis';
 import { createAdapter } from '@socket.io/redis-adapter';
-const serverEvents = [findMatchEvent] as const;
+const serverEvents = [findMatchEvent, checkMatchEvent] as const;
 
 export type ServerToClientEvents = {
   match: (match: UserMatch) => void;
@@ -17,7 +17,7 @@ export type ClientToServerEvents = ServerEventsResolver<typeof serverEvents>;
 
 export type SocketData<AuthRequired = false> = {
   session: AuthRequired extends true ? Session : Session | null;
-  match: UserMatch | null;
+  match: UserMatch | undefined;
   matchQueue: UserQueue | null;
   roomChat: Map<string, RoomChat>;
 };
@@ -49,7 +49,7 @@ export const initializeSocket = (io: SocketServer) => {
   });
 
   io.use((socket, next) => {
-    socket.data.match = null;
+    socket.data.match = undefined;
     socket.data.matchQueue = null;
     socket.data.roomChat = new Map<string, RoomChat>();
     next();

@@ -13,7 +13,10 @@ type GetReturn<T extends keyof ClientToServerEvents> =
 function useEmit<
   T extends keyof ClientToServerEvents,
   TData = Parameters<ClientToServerEvents[T]>[0],
->(event: T) {
+>(
+  event: T,
+  options?: UseMutationOptions<GetReturn<T>, unknown, TData, unknown>,
+) {
   return useMutation({
     mutationFn: (data: TData) => {
       console.log('iNi data', data, event);
@@ -29,6 +32,7 @@ function useEmit<
         });
       });
     },
+    ...options,
   });
 }
 
