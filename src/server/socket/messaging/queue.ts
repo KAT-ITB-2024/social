@@ -16,7 +16,7 @@ const generateKey = (queue: UserQueue): string => {
   return key;
 };
 
-const generateQueueKey = (userId: string) => {
+export const generateQueueKey = (userId: string) => {
   return `USERQUEUE:${userId}`;
 };
 
