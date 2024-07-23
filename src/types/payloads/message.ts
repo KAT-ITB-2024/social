@@ -3,7 +3,7 @@ export type UserQueue = {
 };
 
 export type RoomChat = {
-  id: number;
+  id: string;
   firstUserId: string;
   secondUserId: string;
 };

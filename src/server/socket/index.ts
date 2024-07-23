@@ -1,16 +1,30 @@
-import { type UserMatch } from '@katitb2024/database';
+import { Message, type UserMatch } from '@katitb2024/database';
 import { type Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { type Server, type Socket } from 'socket.io';
 import { type RoomChat, type UserQueue } from '~/types/payloads/message';
-import { checkMatchEvent, findMatchEvent } from './events/queue';
+import {
+  cancelMatchEvent,
+  checkMatchEvent,
+  endMatchEvent,
+  findMatchEvent,
+} from './events/queue';
 import { type ServerEventsResolver } from './helper';
 import { Redis } from '../redis';
 import { createAdapter } from '@socket.io/redis-adapter';
-const serverEvents = [findMatchEvent, checkMatchEvent] as const;
+import { messageEvent } from './events/message';
+const serverEvents = [
+  findMatchEvent,
+  checkMatchEvent,
+  messageEvent,
+  cancelMatchEvent,
+  endMatchEvent,
+] as const;
 
 export type ServerToClientEvents = {
   match: (match: UserMatch) => void;
+  add: (message: Message) => void;
+  endMatch: (match: UserMatch) => void;
 };
 
 export type ClientToServerEvents = ServerEventsResolver<typeof serverEvents>;

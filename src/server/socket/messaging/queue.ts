@@ -71,3 +71,18 @@ export const findMatch = async (queue: UserQueue) => {
   }
   return result;
 };
+
+export const cancelQueue = async (queue: UserQueue) => {
+  const key = generateKey(queue);
+  const redis = Redis.getClient();
+  const redlock = Redis.getRedlock();
+
+  const lock = await redlock.acquire([`lock:${key}`], 5000);
+
+  try {
+    await redis.lrem(key, 0, serializeUserQueue(queue));
+    await redis.del(generateQueueKey(queue.userId));
+  } finally {
+    await lock.release();
+  }
+};
