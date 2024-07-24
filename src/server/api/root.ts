@@ -3,6 +3,7 @@ import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 // import { userRouter } from "./routers/user";
 import { profileRouter } from './routers/profile';
 import { userRouter } from './routers/user';
+import { mapDaysRouter } from './routers/mapDays';
 /**
  * This is the primary router for your server.
  *
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   // user: userRouter,
   profile: profileRouter,
   user: userRouter,
+  mapsDays: mapDaysRouter,
 });
 
 // export type definition of API
