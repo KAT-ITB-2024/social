@@ -617,7 +617,7 @@
 
 "@katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#master":
   version "1.0.0"
-  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#98f14c17b4ab37cce135591870ae18529bde873e"
+  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#aeac0505c5f8e821ebc8b2dcf0741863526379a2"
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     bcrypt "^5.1.1"
@@ -1925,9 +1925,9 @@ drizzle-orm@^0.31.2:
   integrity sha512-QnenevbnnAzmbNzQwbhklvIYrDE8YER8K7kSrAWQSV1YvFCdSQPzj+jzqRdTSsV2cDqSpQ0NXGyL1G9I43LDLg==
 
 drizzle-orm@^0.32.0:
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.32.0.tgz#c85b48eec6350631442f5ee3e65604f963e35f62"
-  integrity sha512-99IlfVGPNHzOFEXo9Phyu5At5TALLsY2t6WxFFy68rYd9Ej4cHX/7WjdPOn7JNRW69MNeNtP8XrDQg43SppuAA==
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.32.1.tgz#4e28c22d7f2a60aef3f0837c0a06aa7b3378b082"
+  integrity sha512-Wq1J+lL8PzwR5K3a1FfoWsbs8powjr3pGA4+5+2ueN1VTLDNFYEolUyUWFtqy8DVRvYbL2n7sXZkgVmK9dQkng==
 
 eastasianwidth@^0.2.0:
   version "0.2.0"
@@ -4990,9 +4990,9 @@ tslib@^2.4.0, tslib@^2.6.2:
   integrity sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==
 
 tsup@^8.1.0:
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-8.2.2.tgz#9a15f36bcf1187ea4d12b8d56e36eec0b5cbf9bf"
-  integrity sha512-MufIuzdSt6HYPOeOtjUXLR4rqRJySi6XsRNZdwvjC2XR+xghsu2L3vSmYmX+k4S1mO6j0OlUEyVQ3Fc0H66XcA==
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-8.2.3.tgz#4a1ff2962a4d7c8265fea661b0dd9668de58916d"
+  integrity sha512-6YNT44oUfXRbZuSMNmN36GzwPPIlD2wBccY7looM2fkTcxkf2NEmwr3OZuDZoySklnrIG4hoEtzy8yUXYOqNcg==
   dependencies:
     bundle-require "^5.0.0"
     cac "^6.7.14"
@@ -5083,9 +5083,9 @@ typescript@^5.4.2:
   integrity sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==
 
 typescript@^5.5.2:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.3.tgz#e1b0a3c394190838a0b168e771b0ad56a0af0faa"
-  integrity sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==
+  version "5.5.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.4.tgz#d9852d6c82bad2d2eda4fd74a5762a8f5909e9ba"
+  integrity sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==
 
 uid2@1.0.0:
   version "1.0.0"
