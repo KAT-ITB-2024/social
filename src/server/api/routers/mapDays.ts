@@ -22,6 +22,19 @@ export const mapDaysRouter = createTRPCRouter({
       try {
         const { userId } = input;
 
+        // Ini yg pake session tapi kalau mau testing dari api panel blm bs, jadinya pake yg query db dlu
+        // const sessionUser = ctx.session?.user;
+
+        // if (!sessionUser || sessionUser.id !== userId) {
+        //   throw new TRPCError({
+        //     code: 'NOT_FOUND',
+        //     message: 'User not found',
+        //   });
+        // }
+
+        // const userNim: string = sessionUser.nim;
+
+        //Ini query db
         const user: User | null = await ctx.db
           .select()
           .from(users)
@@ -38,7 +51,7 @@ export const mapDaysRouter = createTRPCRouter({
         const completedAssignments = await ctx.db
           .select()
           .from(assignmentSubmissions)
-          .where(eq(assignmentSubmissions.userNim, user.nim));
+          .where(eq(assignmentSubmissions.userNim, user.nim)); // ini kalo session harus ubah jdi userNim
 
         if (completedAssignments.length === 0) {
           return [];
@@ -49,57 +62,56 @@ export const mapDaysRouter = createTRPCRouter({
           (submission) => submission.assignmentId,
         );
 
-        const allEvents = await ctx.db.select().from(events);
-
-        // Fetch all event assignments
         const allEventAssignments = await ctx.db
-          .select()
+          .select({
+            eventId: eventAssignments.eventId,
+            assignmentId: eventAssignments.assignmentId,
+          })
           .from(eventAssignments);
 
-        if (allEvents.length === 0) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'No events found',
-          });
-        }
+        const allEvents = await ctx.db
+          .select({
+            eventId: events.id,
+            day: events.day,
+            lore: events.lore,
+            characterName: characters.name,
+            characterImage: characters.characterImage,
+            guidebook: events.guideBook,
+            youtubeVideo: events.youtubeVideo,
+          })
+          .from(events)
+          .innerJoin(characters, eq(events.characterName, characters.name));
 
-        if (allEventAssignments.length === 0) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'No event assignments found',
-          });
-        }
+        const eventAssignmentsMap = allEventAssignments.reduce(
+          (acc, curr) => {
+            const eventId = curr.eventId;
+            if (!acc[eventId]) {
+              acc[eventId] = new Set<string>();
+            }
 
-        const allCharacters = await ctx.db.select().from(characters);
+            acc[eventId].add(curr.assignmentId);
+            return acc;
+          },
+          {} as Record<string, Set<string>>,
+        );
 
-        // Determine which days are completed
         const completedDays: CompletedDay[] = allEvents
           .filter((event) => {
-            // Find assignments for this event/day
-            const eventAssignmentIds = allEventAssignments
-              .filter((ea) => ea.eventId === event.id)
-              .map((ea) => ea.assignmentId);
-
-            // Check if all assignments for this day are completed
-            const allAssignmentsCompleted = eventAssignmentIds.every((id) =>
+            const requiredAssignments =
+              eventAssignmentsMap[event.eventId] ?? new Set();
+            return Array.from(requiredAssignments).every((id) =>
               completedAssignmentIds.includes(id),
             );
-
-            return allAssignmentsCompleted;
           })
-          .map((event) => {
-            const character = allCharacters.find(
-              (char) => char.name === event.characterName,
-            );
-
-            return {
-              id: event.id,
-              day: event.day,
-              lore: event.lore,
-              characterImage: character?.characterImage ?? '',
-              guidebook: event.guideBook,
-            };
-          });
+          .map((event) => ({
+            id: event.eventId,
+            day: event.day,
+            lore: event.lore,
+            characterName: event.characterName,
+            characterImage: event.characterImage,
+            guidebook: event.guidebook,
+            youtubeVideo: event.youtubeVideo,
+          }));
 
         return completedDays;
       } catch (error) {

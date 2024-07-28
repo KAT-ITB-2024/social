@@ -9,4 +9,6 @@ export type CompletedDay = {
   lore: string;
   characterImage: string;
   guidebook: string;
+  characterName: string;
+  youtubeVideo: string;
 };
