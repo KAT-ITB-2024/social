@@ -2,7 +2,11 @@ import { Message, type UserMatch } from '@katitb2024/database';
 import { type Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { type Server, type Socket } from 'socket.io';
-import { type RoomChat, type UserQueue } from '~/types/payloads/message';
+import {
+  RevealStatusEvent,
+  type RoomChat,
+  type UserQueue,
+} from '~/types/payloads/message';
 import {
   cancelMatchEvent,
   checkMatchEvent,
@@ -12,18 +16,22 @@ import {
 import { type ServerEventsResolver } from './helper';
 import { Redis } from '../redis';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { messageEvent } from './events/message';
+import { askRevealEvent, isTypingEvent, messageEvent } from './events/message';
 const serverEvents = [
   findMatchEvent,
   checkMatchEvent,
   messageEvent,
   cancelMatchEvent,
   endMatchEvent,
+  askRevealEvent,
+  isTypingEvent,
 ] as const;
 
 export type ServerToClientEvents = {
   match: (match: UserMatch) => void;
+  isTyping: (id: string) => void;
   add: (message: Message) => void;
+  askReveal: (match: UserMatch, type: RevealStatusEvent) => void;
   endMatch: (match: UserMatch) => void;
 };
 

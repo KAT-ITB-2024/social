@@ -7,3 +7,9 @@ export type RoomChat = {
   firstUserId: string;
   secondUserId: string;
 };
+
+export enum RevealStatusEvent {
+  ASK,
+  REJECTED,
+  ACCEPTED,
+}
