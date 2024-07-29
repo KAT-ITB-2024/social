@@ -21,6 +21,7 @@ export const userRouter = createTRPCRouter({
             nim: input.nim,
             password,
             role: input.role,
+            updatedAt: new Date(),
           })
           .returning();
 
