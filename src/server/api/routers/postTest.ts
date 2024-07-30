@@ -25,6 +25,7 @@ export const postTestRouter = createTRPCRouter({
         });
 
         return {
+          status: 200,
           success: true,
           message: 'Post-test submission inserted successfully',
         };
