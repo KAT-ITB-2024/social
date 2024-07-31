@@ -52,7 +52,27 @@ export const isTypingEvent = createEvent(
   },
   ({ ctx, input }) => {
     const user = ctx.client.data.session.user;
+
     ctx.io.to([input.receiverId]).emit('isTyping', user.id);
+  },
+);
+
+export const anonTypingEvent = createEvent(
+  {
+    name: 'anonTyping',
+    authRequired: true,
+  },
+  ({ ctx }) => {
+    const user = ctx.client.data.session.user;
+    const currentMatch = ctx.client.data.match;
+    if (!currentMatch) {
+      return;
+    }
+    const receiverId =
+      currentMatch.firstUserId === user.id
+        ? currentMatch.secondUserId
+        : currentMatch.firstUserId;
+    ctx.io.to([receiverId]).emit('anonIsTyping', user.id);
   },
 );
 

@@ -16,7 +16,12 @@ import {
 import { type ServerEventsResolver } from './helper';
 import { Redis } from '../redis';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { askRevealEvent, isTypingEvent, messageEvent } from './events/message';
+import {
+  anonTypingEvent,
+  askRevealEvent,
+  isTypingEvent,
+  messageEvent,
+} from './events/message';
 const serverEvents = [
   findMatchEvent,
   checkMatchEvent,
@@ -25,11 +30,13 @@ const serverEvents = [
   endMatchEvent,
   askRevealEvent,
   isTypingEvent,
+  anonTypingEvent,
 ] as const;
 
 export type ServerToClientEvents = {
   match: (match: UserMatch) => void;
   isTyping: (id: string) => void;
+  anonIsTyping: (id: string) => void;
   add: (message: Message) => void;
   askReveal: (match: UserMatch, type: RevealStatusEvent) => void;
   endMatch: (match: UserMatch) => void;
