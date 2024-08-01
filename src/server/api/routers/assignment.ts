@@ -1,5 +1,9 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
-import { assignmentTypeEnum, assignments } from '@katitb2024/database';
+import {
+  assignmentSubmissions,
+  assignmentTypeEnum,
+  assignments,
+} from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
@@ -21,7 +25,20 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      return dailyQuests;
+      const res = [];
+      for (const quest of dailyQuests) {
+        const submissions = await ctx.db
+          .select()
+          .from(assignmentSubmissions)
+          .where(eq(assignmentSubmissions.assignmentId, quest.id));
+
+        res.push({
+          quest,
+          submissions,
+        });
+      }
+
+      return res;
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -46,7 +63,20 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      return sideQuests;
+      const res = [];
+      for (const quest of sideQuests) {
+        const submissions = await ctx.db
+          .select()
+          .from(assignmentSubmissions)
+          .where(eq(assignmentSubmissions.assignmentId, quest.id));
+
+        res.push({
+          quest,
+          submissions,
+        });
+      }
+
+      return res;
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -68,7 +98,8 @@ export const assignmentRouter = createTRPCRouter({
         const quest = await ctx.db
           .select()
           .from(assignments)
-          .where(eq(assignments.id, input.id));
+          .where(eq(assignments.id, input.id))
+          .then((result) => result[0]);
 
         if (!quest)
           throw new TRPCError({
@@ -76,7 +107,15 @@ export const assignmentRouter = createTRPCRouter({
             message: 'Quest not found',
           });
 
-        return quest;
+        const submissions = await ctx.db
+          .select()
+          .from(assignmentSubmissions)
+          .where(eq(assignmentSubmissions.assignmentId, quest.id));
+
+        return {
+          quest,
+          submissions,
+        };
       } catch (e) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',

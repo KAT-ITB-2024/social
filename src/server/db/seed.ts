@@ -117,6 +117,7 @@ export async function seedEvent(db: PostgresJsDatabase<typeof schema>) {
     lore: 'https://google.com',
     characterName: characters[0]?.name,
     guideBook: '',
+    youtubeVideo: '',
   });
 
   await db.insert(schema.events).values({
@@ -130,6 +131,7 @@ export async function seedEvent(db: PostgresJsDatabase<typeof schema>) {
     lore: 'https://google.com',
     characterName: characters[0]?.name,
     guideBook: '',
+    youtubeVideo: '',
   });
 }
 
