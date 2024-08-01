@@ -1,8 +1,14 @@
-import { z } from 'zod';
 import { and, eq } from 'drizzle-orm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { assignmentSubmissions, users, profiles } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
+import {
+  getAllSubmissionsByGroupPayload,
+  getSubmissionAssignmentPayload,
+  getSubmissionByGroupAndAssignmentPayload,
+  getSubmissionByNIMandAssignmentPayload,
+  getSubmissionByNIMPayload,
+} from '~/types/payloads/submission';
 
 export const submissionRouter = createTRPCRouter({
   getAllSubmissions: publicProcedure.query(async ({ ctx }) => {
@@ -27,11 +33,7 @@ export const submissionRouter = createTRPCRouter({
   }),
 
   getSubmissionByNIM: publicProcedure
-    .input(
-      z.object({
-        userNim: z.string(),
-      }),
-    )
+    .input(getSubmissionByNIMPayload)
     .query(async ({ ctx, input }) => {
       const submissions = await ctx.db
         .select()
@@ -49,12 +51,7 @@ export const submissionRouter = createTRPCRouter({
     }),
 
   getSubmissionByNIMandAssignment: publicProcedure
-    .input(
-      z.object({
-        userNim: z.string(),
-        assignmentId: z.string(),
-      }),
-    )
+    .input(getSubmissionByNIMandAssignmentPayload)
     .query(async ({ ctx, input }) => {
       const submissions = await ctx.db
         .select()
@@ -77,11 +74,7 @@ export const submissionRouter = createTRPCRouter({
     }),
 
   getAllSubmissionsByGroup: publicProcedure
-    .input(
-      z.object({
-        groupNumber: z.number(),
-      }),
-    )
+    .input(getAllSubmissionsByGroupPayload)
     .query(async ({ ctx, input }) => {
       const userSubmissions = await ctx.db
         .select({
@@ -111,12 +104,7 @@ export const submissionRouter = createTRPCRouter({
     }),
 
   getSubmissionByGroupAndAssignment: publicProcedure
-    .input(
-      z.object({
-        groupNumber: z.number(),
-        assignmentId: z.string(),
-      }),
-    )
+    .input(getSubmissionByGroupAndAssignmentPayload)
     .query(async ({ ctx, input }) => {
       const userSubmissions = await ctx.db
         .select({
@@ -150,11 +138,7 @@ export const submissionRouter = createTRPCRouter({
     }),
 
   getSubmissionAssignment: publicProcedure
-    .input(
-      z.object({
-        assignmentId: z.string(),
-      }),
-    )
+    .input(getSubmissionAssignmentPayload)
     .query(async ({ ctx, input }) => {
       const userSubmissions = await ctx.db
         .select({
