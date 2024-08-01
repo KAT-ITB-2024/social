@@ -3,6 +3,7 @@ import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 // import { userRouter } from "./routers/user";
 import { profileRouter } from './routers/profile';
 import { userRouter } from './routers/user';
+import { submissionRouter } from './routers/submission';
 import { mapDaysRouter } from './routers/mapDays';
 import { postTestRouter } from './routers/postTest';
 /**
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   // user: userRouter,
   profile: profileRouter,
   user: userRouter,
+  submission: submissionRouter,
   mapsDays: mapDaysRouter,
   postTest: postTestRouter,
 });
