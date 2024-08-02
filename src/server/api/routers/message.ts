@@ -1,13 +1,13 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, inArray, isNotNull, or, sql } from 'drizzle-orm';
-import { messages, users, profiles } from '@katitb2024/database';
+import { messages, users, profiles, userMatches } from '@katitb2024/database';
 import { z } from 'zod';
 import { alias } from 'drizzle-orm/pg-core';
 import {
   createMessagePayload,
   sendMessagePayload,
-  type NonAnonChatHeader,
+  type ChatHeader,
 } from '~/types/payloads/message';
 
 export const messageRouter = createTRPCRouter({
@@ -119,12 +119,14 @@ export const messageRouter = createTRPCRouter({
           receiverImage: profiles2.profileImage,
           isRead: messages.isRead,
           content: messages.content,
+          isRevealed: userMatches.isRevealed,
         })
         .from(messages)
         .innerJoin(users1, eq(messages.senderId, users1.id))
         .innerJoin(profiles1, eq(users1.id, profiles1.userId))
         .innerJoin(users2, eq(messages.receiverId, users2.id))
         .innerJoin(profiles2, eq(users2.id, profiles2.userId))
+        .innerJoin(userMatches, eq(messages.userMatchId, userMatches.id))
         .where(
           and(
             isNotNull(messages.userMatchId),
@@ -135,7 +137,7 @@ export const messageRouter = createTRPCRouter({
         .limit(input.limit)
         .offset(input.limit * (input.cursor - 1));
 
-      const data: NonAnonChatHeader[] = chatHeaders.map((chatHeader) => {
+      const data: ChatHeader[] = chatHeaders.map((chatHeader) => {
         const otherUser =
           chatHeader.senderId === userId
             ? {
@@ -157,7 +159,11 @@ export const messageRouter = createTRPCRouter({
 
         return {
           user: {
-            ...otherUser,
+            id: otherUser.id,
+            name: !chatHeader.isRevealed ? 'Anonymous' : otherUser.name,
+            profileImage: !chatHeader.isRevealed
+              ? null
+              : otherUser.profileImage,
           },
           lastMessage: {
             id: chatHeader.id,

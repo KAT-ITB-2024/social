@@ -1,4 +1,4 @@
-import { type Message, type UserMatch } from '@katitb2024/database';
+import { type Message } from '@katitb2024/database';
 import { z } from 'zod';
 
 export type UserQueue = {
@@ -11,16 +11,7 @@ export type RoomChat = {
   secondUserId: string;
 };
 
-export interface AnonChatHeader {
-  user: {
-    id: string;
-    name: string;
-    profileImage: string | null;
-  };
-  userMatch: UserMatch;
-}
-
-export type NonAnonChatHeader = {
+export type ChatHeader = {
   lastMessage: Message;
   user: {
     id: string;
