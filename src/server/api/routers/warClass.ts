@@ -1,58 +1,63 @@
-import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
+import { createTRPCRouter, publicProcedure } from '../trpc';
 import { classes, profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
-import { EnrollClassPayload, userPayload } from '~/types/payloads/warClass';
+import { EnrollClassPayload } from '~/types/payloads/warClass';
 
 export const warClassRouter = createTRPCRouter({
-  getEnrolledClass: publicProcedure
-    .input(userPayload)
-    .query(async ({ input, ctx }) => {
-      const { userId } = input;
+  getEnrolledClass: publicProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
 
-      const userProfile = await ctx.db
-        .select({
-          chosenClassId: profiles.chosenClass,
-        })
-        .from(profiles)
-        .where(eq(profiles.userId, userId))
-        .limit(1)
-        .execute();
+    if (!userId) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Unauthorized',
+      });
+    }
 
-      if (
-        !userProfile ||
-        userProfile.length === 0 ||
-        !userProfile[0]?.chosenClassId
-      ) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'User or enrolled class not found',
-        });
-      }
+    const userProfile = await ctx.db
+      .select({
+        chosenClassId: profiles.chosenClass,
+      })
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .limit(1)
+      .execute();
 
-      const classId = userProfile[0].chosenClassId;
+    if (
+      !userProfile ||
+      userProfile.length === 0 ||
+      !userProfile[0]?.chosenClassId
+    ) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'User or enrolled class not found',
+      });
+    }
 
-      const enrolledClass = await ctx.db
-        .select({
-          id: classes.id,
-          title: classes.title,
-          topic: classes.topic,
-          date: classes.date,
-        })
-        .from(classes)
-        .where(eq(classes.id, classId))
-        .limit(1)
-        .execute();
+    const classId = userProfile[0].chosenClassId;
 
-      if (!enrolledClass || enrolledClass.length === 0) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Class not found',
-        });
-      }
+    const enrolledClass = await ctx.db
+      .select({
+        id: classes.id,
+        title: classes.title,
+        topic: classes.topic,
+        date: classes.date,
+      })
+      .from(classes)
+      .where(eq(classes.id, classId))
+      .limit(1)
+      .execute();
 
-      return enrolledClass[0];
-    }),
+    if (!enrolledClass || enrolledClass.length === 0) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Class not found',
+      });
+    }
+
+    return enrolledClass[0];
+  }),
 
   getAllClasses: publicProcedure.query(async ({ ctx }) => {
     const allClasses = await ctx.db.select().from(classes).execute();
@@ -63,7 +68,15 @@ export const warClassRouter = createTRPCRouter({
   enrollClass: publicProcedure
     .input(EnrollClassPayload)
     .mutation(async ({ input, ctx }) => {
-      const { userId, classId } = input;
+      const userId = ctx.session?.user.id;
+      const { classId } = input;
+
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Unauthorized',
+        });
+      }
 
       const userProfile = await ctx.db
         .select({
