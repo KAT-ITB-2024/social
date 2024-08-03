@@ -2,9 +2,9 @@ import { createTRPCRouter, publicProcedure } from '../trpc';
 import { classes, profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
-import { EnrollClassPayload } from '~/types/payloads/warClass';
+import { EnrollClassPayload } from '~/types/payloads/class';
 
-export const warClassRouter = createTRPCRouter({
+export const classRouter = createTRPCRouter({
   getEnrolledClass: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
 
@@ -145,4 +145,4 @@ export const warClassRouter = createTRPCRouter({
     }),
 });
 
-export default warClassRouter;
+export default classRouter;
