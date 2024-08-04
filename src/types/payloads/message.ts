@@ -11,6 +11,21 @@ export type RoomChat = {
   secondUserId: string;
 };
 
+export type ChatHeaderData = {
+  id: string;
+  createdAt: Date;
+  userMatchId: string;
+  senderId: string;
+  senderName: string;
+  senderImage: string | null;
+  receiverId: string;
+  receiverName: string;
+  receiverImage: string | null;
+  isRead: boolean;
+  content: string;
+  isRevealed: boolean;
+};
+
 export type ChatHeader = {
   lastMessage: Message;
   user: {
@@ -31,6 +46,9 @@ export const createMessagePayload = z.object({
 
 export const sendMessagePayload = z.object({
   userMatchId: z.string(),
-  receiverId: z.string(),
   content: z.string(),
+});
+
+export const updateVisibilityPayload = z.object({
+  userMatchId: z.string(),
 });
