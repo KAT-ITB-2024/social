@@ -7,7 +7,7 @@ import {
   users,
 } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import {
   putSubmissionPayload,
   submissionPayload,
@@ -17,6 +17,13 @@ export const submissionRouter = createTRPCRouter({
   postSubmission: publicProcedure
     .input(submissionPayload)
     .mutation(async ({ ctx, input }) => {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
       const assignment = await ctx.db
         .select()
         .from(assignments)
@@ -27,7 +34,7 @@ export const submissionRouter = createTRPCRouter({
         .where(
           and(
             eq(assignments.id, input.assignmentId),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim ?? ''),
+            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
           ),
         )
         .then((result) => result[0]);
@@ -74,21 +81,6 @@ export const submissionRouter = createTRPCRouter({
             id: assignmentSubmissions.id,
           });
       } else {
-        const groupNumber = await ctx.db
-          .select({
-            group: profiles.groupNumber,
-          })
-          .from(profiles)
-          .where(eq(profiles.userId, ctx.session?.user.id ?? ''))
-          .then((result) => result[0]?.group);
-
-        if (!groupNumber) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'Group number not found',
-          });
-        }
-
         const usersInGroup = await ctx.db
           .select({
             name: profiles.name,
@@ -96,7 +88,7 @@ export const submissionRouter = createTRPCRouter({
             point: profiles.point,
           })
           .from(profiles)
-          .where(eq(profiles.groupNumber, groupNumber));
+          .where(eq(profiles.groupNumber, ctx.session.user.groupNumber));
 
         if (!usersInGroup) {
           throw new TRPCError({
@@ -105,12 +97,20 @@ export const submissionRouter = createTRPCRouter({
           });
         }
 
+        const userIds = usersInGroup.map((element) => element.userid);
+        const userDetails = await ctx.db
+          .select()
+          .from(users)
+          .where(inArray(users.id, userIds));
+
+        const userDetailMap = new Map(
+          userDetails.map((user) => [user.id, user]),
+        );
+
+        const submissions = [];
+
         for (const element of usersInGroup) {
-          const userDetail = await ctx.db
-            .select()
-            .from(users)
-            .where(eq(users.id, element.userid))
-            .then((result) => result[0]);
+          const userDetail = userDetailMap.get(element.userid);
 
           if (!userDetail) {
             throw new TRPCError({
@@ -119,26 +119,28 @@ export const submissionRouter = createTRPCRouter({
             });
           }
 
-          await ctx.db
-            .insert(assignmentSubmissions)
-            .values({
-              assignmentId: input.assignmentId,
-              userNim: userDetail.nim,
-              files: input.files,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            })
-            .returning({
-              id: assignmentSubmissions.id,
-            });
-
-          await ctx.db
-            .update(profiles)
-            .set({
-              point: element.point ?? 0 + (assignment.assignments.point ?? 0),
-            })
-            .where(eq(profiles.userId, element.userid));
+          submissions.push({
+            assignmentId: input.assignmentId,
+            userNim: userDetail.nim,
+            files: input.files,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          });
         }
+
+        await ctx.db
+          .insert(assignmentSubmissions)
+          .values(submissions)
+          .returning({
+            id: assignmentSubmissions.id,
+          });
+
+        await ctx.db
+          .update(profiles)
+          .set({
+            point: sql`${profiles.point} + ${assignment.assignments.point}`,
+          })
+          .where(eq(profiles.groupNumber, ctx.session.user.groupNumber));
       }
 
       return { message: 'Assignment successfully submitted' };
@@ -147,6 +149,13 @@ export const submissionRouter = createTRPCRouter({
   putSubmission: publicProcedure
     .input(putSubmissionPayload)
     .mutation(async ({ ctx, input }) => {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
       const assignment = await ctx.db
         .select()
         .from(assignments)
@@ -156,8 +165,8 @@ export const submissionRouter = createTRPCRouter({
         )
         .where(
           and(
-            eq(assignmentSubmissions.id, input.submissionId ?? ''),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim ?? ''),
+            eq(assignmentSubmissions.id, input.submissionId),
+            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
           ),
         )
         .then((result) => result[0]);
