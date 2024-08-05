@@ -57,7 +57,7 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
         userId: user.id,
         faculty: 'STEI',
         gender: i % 2 === 0 ? 'Male' : 'Female',
-        campus: i % 3 === 0 ? 'Ganesha' : 'Jatinangor',
+        // campus: i % 3 === 0 ? 'Ganesha' : 'Jatinangor',
         profileImage: '',
         point: 0,
         groupNumber: 1,
@@ -78,7 +78,7 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
       description: `Description buat assignment ke ${i}`,
       startTime: new Date(`2023-07-${dayCounter}T00:00:00Z`), // Tanggal 25
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      assignmentType: 'Daily',
+      assignmentType: 'Main',
       point: 10,
       updatedAt: new Date(),
     });
