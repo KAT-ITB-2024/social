@@ -5,17 +5,31 @@ import {
   assignments,
 } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
 
 export const assignmentRouter = createTRPCRouter({
   getDailyQuest: publicProcedure.query(async ({ ctx }) => {
     try {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
       const dailyQuests = await ctx.db
         .select()
         .from(assignments)
+        .leftJoin(
+          assignmentSubmissions,
+          eq(assignments.id, assignmentSubmissions.assignmentId),
+        )
         .where(
-          eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
+          and(
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
+            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+          ),
         );
 
       if (!dailyQuests) {
@@ -25,20 +39,7 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      const res = [];
-      for (const quest of dailyQuests) {
-        const submissions = await ctx.db
-          .select()
-          .from(assignmentSubmissions)
-          .where(eq(assignmentSubmissions.assignmentId, quest.id));
-
-        res.push({
-          quest,
-          submissions,
-        });
-      }
-
-      return res;
+      return dailyQuests;
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -49,11 +50,25 @@ export const assignmentRouter = createTRPCRouter({
 
   getSideQuest: publicProcedure.query(async ({ ctx }) => {
     try {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
       const sideQuests = await ctx.db
         .select()
         .from(assignments)
+        .leftJoin(
+          assignmentSubmissions,
+          eq(assignments.id, assignmentSubmissions.assignmentId),
+        )
         .where(
-          eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]),
+          and(
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
+            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+          ),
         );
 
       if (!sideQuests) {
@@ -63,20 +78,7 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      const res = [];
-      for (const quest of sideQuests) {
-        const submissions = await ctx.db
-          .select()
-          .from(assignmentSubmissions)
-          .where(eq(assignmentSubmissions.assignmentId, quest.id));
-
-        res.push({
-          quest,
-          submissions,
-        });
-      }
-
-      return res;
+      return sideQuests;
     } catch (e) {
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
@@ -89,6 +91,13 @@ export const assignmentRouter = createTRPCRouter({
     .input(getAssignmentByIdPayload)
     .query(async ({ ctx, input }) => {
       try {
+        if (!ctx.session || !ctx.session.user) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'User is not logged in',
+          });
+        }
+
         if (!input.id)
           throw new TRPCError({
             code: 'BAD_REQUEST',
@@ -98,7 +107,16 @@ export const assignmentRouter = createTRPCRouter({
         const quest = await ctx.db
           .select()
           .from(assignments)
-          .where(eq(assignments.id, input.id))
+          .leftJoin(
+            assignmentSubmissions,
+            eq(assignments.id, assignmentSubmissions.assignmentId),
+          )
+          .where(
+            and(
+              eq(assignments.id, input.id),
+              eq(assignmentSubmissions.userNim, ctx.session.user.nim),
+            ),
+          )
           .then((result) => result[0]);
 
         if (!quest)
@@ -107,15 +125,7 @@ export const assignmentRouter = createTRPCRouter({
             message: 'Quest not found',
           });
 
-        const submissions = await ctx.db
-          .select()
-          .from(assignmentSubmissions)
-          .where(eq(assignmentSubmissions.assignmentId, quest.id));
-
-        return {
-          quest,
-          submissions,
-        };
+        return quest;
       } catch (e) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
