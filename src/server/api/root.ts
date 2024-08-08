@@ -8,6 +8,7 @@ import { submissionRouter } from './routers/submission';
 import { mapDaysRouter } from './routers/mapDays';
 import { postTestRouter } from './routers/postTest';
 import { classRouter } from './routers/class';
+import { authRouter } from './routers/auth';
 /**
  * This is the primary router for your server.
  *
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   mapsDays: mapDaysRouter,
   postTest: postTestRouter,
   class: classRouter,
+  auth: authRouter,
 });
 
 // export type definition of API
