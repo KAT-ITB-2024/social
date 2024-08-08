@@ -33,10 +33,7 @@ export const assignmentRouter = createTRPCRouter({
         );
 
       if (!dailyQuests) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'No daily quest found',
-        });
+        return [];
       }
 
       return dailyQuests;
@@ -72,10 +69,7 @@ export const assignmentRouter = createTRPCRouter({
         );
 
       if (!sideQuests) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'No side quest found',
-        });
+        return [];
       }
 
       return sideQuests;
@@ -101,7 +95,7 @@ export const assignmentRouter = createTRPCRouter({
         if (!input.id)
           throw new TRPCError({
             code: 'BAD_REQUEST',
-            message: 'Assignment ID was not recieved',
+            message: 'Assignment ID was not received',
           });
 
         const quest = await ctx.db
