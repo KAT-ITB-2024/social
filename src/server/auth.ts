@@ -9,7 +9,7 @@ import { type Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { env } from '~/env';
 import { db } from '~/server/db';
-import { users, type UserRole } from '@katitb2024/database';
+import { users, type UserRole, profiles } from '@katitb2024/database';
 import { type DefaultJWT } from 'next-auth/jwt';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
@@ -27,6 +27,7 @@ declare module 'next-auth' {
       id: string;
       nim: string;
       role: UserRole;
+      group: string;
     } & DefaultSession['user'];
   }
   interface User extends DefaultUser {
@@ -150,10 +151,25 @@ export const authOptions: NextAuthOptions = {
             });
           }
 
+          const profile = await db.query.profiles.findFirst({
+            columns: {
+              groupNumber: true,
+            },
+            where: eq(profiles.userId, user.id),
+          });
+
+          if (!profile) {
+            throw new TRPCError({
+              code: 'NOT_FOUND',
+              message: 'Profile not found!',
+            });
+          }
+
           return {
             id: user.id,
             nim: user.nim,
             role: user.role,
+            groupNumber: profile.groupNumber,
           };
         } catch (error) {
           if (error instanceof TRPCError) {
