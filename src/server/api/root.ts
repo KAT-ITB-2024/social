@@ -5,7 +5,6 @@ import { profileRouter } from './routers/profile';
 import { userRouter } from './routers/user';
 import { assignmentRouter } from './routers/assignment';
 import { submissionRouter } from './routers/submission';
-import { mapDaysRouter } from './routers/mapDays';
 import { postTestRouter } from './routers/postTest';
 import { classRouter } from './routers/class';
 /**
@@ -20,7 +19,6 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   assignment: assignmentRouter,
   submission: submissionRouter,
-  mapsDays: mapDaysRouter,
   postTest: postTestRouter,
   class: classRouter,
 });

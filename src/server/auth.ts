@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: env.NEXTAUTH_SECRET,
   callbacks: {
-    jwt: ({ token, user }) => {
+    jwt: ({ token, user, profile }) => {
       if (user) {
         token.id = user.id;
         token.nim = user.nim;
@@ -153,7 +153,7 @@ export const authOptions: NextAuthOptions = {
 
           const profile = await db.query.profiles.findFirst({
             columns: {
-              groupNumber: true,
+              group: true,
             },
             where: eq(profiles.userId, user.id),
           });
@@ -169,7 +169,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             nim: user.nim,
             role: user.role,
-            groupNumber: profile.groupNumber,
+            group: profile.group,
           };
         } catch (error) {
           if (error instanceof TRPCError) {

@@ -71,9 +71,8 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
         gender: i % 2 === 0 ? 'Male' : 'Female',
         profileImage: '',
         point: 0,
-        groupNumber: 1,
-        updatedAt: new Date(),
         group: group.name,
+        updatedAt: new Date(),
       });
     } catch (error) {
       console.error(`Error seeding profile`);
@@ -163,7 +162,7 @@ export async function seedAssignmentSubmission(
     await db.insert(schema.assignmentSubmissions).values({
       assignmentId: assignments[i % 4]?.id ?? '',
       userNim: users[i]?.nim ?? '',
-      files: ['file1', 'file2'],
+      file: 'file 1',
       point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
       updatedAt: new Date(),
     });
