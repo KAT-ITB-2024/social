@@ -9,7 +9,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:update": "yarn remove @katitb2024/database && yarn add @katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#master && yarn db:migrate",
-    "dev:wss": "cross-env NODE_ENV=development tsx watch src/server/redis-dev-server.ts --tsconfig tsconfig.server.json",
+    "dev:wss": "cross-env NODE_ENV=development tsx watch src/server/wss-dev-server.ts --tsconfig tsconfig.server.json",
     "dev:next": "next dev",
     "dev": "env-cmd run-p dev:*",
     "lint": "next lint",
