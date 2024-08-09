@@ -73,7 +73,7 @@ export const submissionRouter = createTRPCRouter({
           .values({
             assignmentId: input.assignmentId,
             userNim: user.nim,
-            files: input.files,
+            file: input.file,
             createdAt: new Date(),
             updatedAt: new Date(),
           })
@@ -88,7 +88,7 @@ export const submissionRouter = createTRPCRouter({
             point: profiles.point,
           })
           .from(profiles)
-          .where(eq(profiles.groupNumber, ctx.session.user.groupNumber));
+          .where(eq(profiles.group, ctx.session.user.group));
 
         if (!usersInGroup) {
           throw new TRPCError({
@@ -122,7 +122,7 @@ export const submissionRouter = createTRPCRouter({
           submissions.push({
             assignmentId: input.assignmentId,
             userNim: userDetail.nim,
-            files: input.files,
+            file: input.file,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -140,7 +140,7 @@ export const submissionRouter = createTRPCRouter({
           .set({
             point: sql`${profiles.point} + ${assignment.assignments.point}`,
           })
-          .where(eq(profiles.groupNumber, ctx.session.user.groupNumber));
+          .where(eq(profiles.group, ctx.session.user.group));
       }
 
       return { message: 'Assignment successfully submitted' };
@@ -194,7 +194,7 @@ export const submissionRouter = createTRPCRouter({
       await ctx.db
         .update(assignmentSubmissions)
         .set({
-          files: input.files,
+          file: input.file,
           updatedAt: new Date(),
         })
         .where(eq(assignmentSubmissions.id, input.submissionId));
