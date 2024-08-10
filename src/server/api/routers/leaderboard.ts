@@ -1,5 +1,5 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
-import { profiles, users } from '@katitb2024/database';
+import { groups, profiles, users } from '@katitb2024/database';
 import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
@@ -115,4 +115,56 @@ export const leaderboardRouter = createTRPCRouter({
       currentUserProfile,
     };
   }),
+
+  getGroupLeaderboard: publicProcedure
+    .input(
+      z.object({
+        page: z.number().min(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!ctx.session) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not logged in',
+        });
+      }
+
+      const sessionUser = ctx.session?.user;
+
+      if (!sessionUser) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      const { page } = input;
+      const itemsPerPage = 20;
+      const offset = (page - 1) * itemsPerPage;
+
+      const groupResults = await ctx.db
+        .select({
+          name: groups.name,
+          point: groups.point,
+          rank: sql<number>`RANK() OVER (ORDER BY groups.point DESC)`,
+          totalGroups: sql<number>`count(*) OVER ()`,
+        })
+        .from(groups)
+        .orderBy(sql`groups.point DESC`)
+        .limit(itemsPerPage)
+        .offset(offset);
+
+      const totalGroups =
+        groupResults.length > 0 ? groupResults[0]?.totalGroups ?? 0 : 0;
+      const groupLeaderboard = groupResults.map(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ({ totalGroups, ...rest }) => rest,
+      );
+
+      return {
+        groupLeaderboard,
+        totalGroups,
+      };
+    }),
 });
