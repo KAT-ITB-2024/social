@@ -1,6 +1,3 @@
-import * as ENV from '@next/env';
-import dotenv from 'dotenv';
-// // import { env } from '~/env';
 import { getAdapter, initializeSocket, type SocketServer } from './socket';
 import { Server } from 'socket.io';
 import parser from 'socket.io-msgpack-parser';

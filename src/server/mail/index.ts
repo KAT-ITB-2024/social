@@ -2,7 +2,7 @@ import { createTransport, type Transporter } from 'nodemailer';
 import type SMTPPool from 'nodemailer/lib/smtp-pool';
 import { env } from '~/env.js';
 
-const instantiateTransporter = () => {
+const instantiateTransporter = (): Transporter<SMTPPool.SentMessageInfo> => {
   return createTransport({
     host: env.SMTP_HOST,
     port: env.SMTP_PORT, // Ensure port is parsed as a number

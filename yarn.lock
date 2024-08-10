@@ -617,7 +617,7 @@
 
 "@katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#master":
   version "1.0.0"
-  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#efff84b7f810166ddeead8f482d28dfa099344e4"
+  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#bc7500d52bdcb7cee3b00ec63557bf9bb01fbddd"
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     bcrypt "^5.1.1"
