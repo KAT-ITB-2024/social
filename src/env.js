@@ -28,6 +28,15 @@ export const env = createEnv({
       )
       .default('http://localhost:3000'),
     REDIS_URL: z.string().url(),
+    SMTP_HOST: z.string().min(1),
+    SMTP_PORT: z.preprocess(
+      // If SMTP_PORTL is not set, set it to 587
+      (str) => (str ? +str : 587),
+      // SMTP_PORTL must be a positive integer
+      z.number().int().positive(),
+    ),
+    SMTP_USER: z.string().min(1),
+    SMTP_PASS: z.string().min(1),
     WS_PORT: z.preprocess(
       (str) => (str ? +str : 3001),
       z.number().int().positive(),
@@ -57,6 +66,10 @@ export const env = createEnv({
     WS_PORT: process.env.WS_PORT,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
