@@ -38,13 +38,6 @@ export const authRouter = createTRPCRouter({
         });
       }
 
-      if (!userId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'User ID tidak ditemukan!',
-        });
-      }
-
       // Delete existing reset token for the user if it exists
       await ctx.db
         .delete(resetTokens)
