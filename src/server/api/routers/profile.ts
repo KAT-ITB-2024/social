@@ -21,7 +21,10 @@ export const profileRouter = createTRPCRouter({
       .where(eq(profiles.userId, userId));
 
     if (!profile) {
-      throw new Error('Profile not found');
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Profile not found',
+      });
     }
 
     return profile;

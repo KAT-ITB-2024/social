@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
 import { type UserQueue } from '~/types/payloads/message';
-import { findMatch, generateQueueKey } from '../messaging/queue';
+import { findMatch, generateQueueKey, cancelQueue } from '../messaging/queue';
 import { type UserMatch, userMatches } from '@katitb2024/database';
 import { Redis } from '~/server/redis';
 import { generateKey } from 'crypto';
-import { eq, or } from 'drizzle-orm';
+import { eq, ne, or } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 
 export const findMatchEvent = createEvent(
@@ -79,7 +79,8 @@ export const checkMatchEvent = createEvent(
     };
 
     // Kasus kalau dia belum dapet match, jadi queue nya ga null
-    if (!userQueue) {
+    if (userQueue) {
+      result.queue = JSON.parse(userQueue) as UserQueue;
       result.match = undefined;
       return result;
     }
@@ -99,5 +100,61 @@ export const checkMatchEvent = createEvent(
     ctx.client.data.matchQueue = null;
     result.match = ctx.client.data.match;
     return result;
+  },
+);
+
+export const endMatchEvent = createEvent(
+  {
+    name: 'endMatch',
+    authRequired: true,
+  },
+  async ({ ctx }) => {
+    const currentMatch = ctx.client.data.match;
+    if (!currentMatch) return;
+
+    const result = await ctx.drizzle
+      .update(userMatches)
+      .set({ endedAt: new Date() })
+      .where(eq(userMatches.id, currentMatch.id))
+      .returning();
+
+    const match = result[0];
+    if (!match) {
+      return;
+    }
+    const sockets = await ctx.io
+      .in([match.firstUserId, match.secondUserId])
+      .fetchSockets();
+
+    for (const otherSocket of sockets) {
+      otherSocket.data.match = undefined;
+    }
+
+    ctx.io.to([match.firstUserId, match.secondUserId]).emit('endMatch', match);
+  },
+);
+
+export const cancelMatchEvent = createEvent(
+  {
+    name: 'cancelMatch',
+    authRequired: true,
+    input: undefined,
+  },
+  async ({ ctx }) => {
+    const queue = ctx.client.data.matchQueue;
+
+    if (!queue) {
+      return;
+    }
+
+    await cancelQueue(queue);
+
+    const sockets = await ctx.io
+      .in(ctx.client.data.session.user.id)
+      .fetchSockets();
+
+    for (const otherSocket of sockets) {
+      otherSocket.data.matchQueue = null;
+    }
   },
 );
