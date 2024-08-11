@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        turkwa: "url('/images/Background.png')",
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -165,6 +168,9 @@ const config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      dropShadow: {
+        'orange-shadow': '4px 4px 10px rgba(255, 191, 81, 0.50)',
       },
       keyframes: {
         'accordion-down': {
