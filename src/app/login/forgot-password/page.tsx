@@ -18,23 +18,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { RequestResetPasswordPayload } from '~/types/payloads/auth';
 
-// Import Alert Dialog
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-
 // Image Import
 import Image from 'next/image';
-import Starfish from 'public/login/Starfish.png';
-import CloseIcon from 'public/login/CloseIcon.svg'
+import Starfish from 'public/images/login/Starfish.png';
+
+// Component Import
+import CustomDialog from '~/components/custom-dialog';
 
 const ForgotPasswordPage = () => {
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
@@ -78,32 +67,15 @@ const ForgotPasswordPage = () => {
             <Button type="submit" className=" bg-blue-500 hover:bg-blue-400 shadow-lg px-8">Send</Button>
           </div>
 
-          <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-            <AlertDialogContent className='w-[300px] bg-blue-500 flex flex-col items-center border-none text-yellow text-center'>
-                <div className='absolute top-4 right-4 text-2xl text-yellow cursor-pointer' onClick={() => setIsAlertOpen(false)}>
-                  <Image 
-                    src={CloseIcon}
-                    alt='Close Icon'
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <AlertDialogTitle className='flex flex-col items-center gap-y-4'>
-                  <Image 
-                    src={Starfish}
-                    alt="Star"
-                    height={150}
-                    width={150}
-                  />
-                  <p className='text-center text-4xl font-normal'>
-                    Email Terkirim    
-                  </p>
-                </AlertDialogTitle>
-                <AlertDialogDescription className='text-yellow text-center font-normal'>
-                  Cek email mu Aqualings, untuk mengubah password!
-                </AlertDialogDescription>
-            </AlertDialogContent>
-          </AlertDialog>
+          <CustomDialog 
+            image={Starfish}
+            title='Email Terkirim'
+            description='Cek email mu Aqualings, untuk mengubah password!'
+            isOpen={isAlertOpen}
+            setIsOpen={setIsAlertOpen}
+            className='bg-blue-500 flex flex-col items-center border-none text-yellow text-center'
+          />
+
         </form>
       </Form>
     </div>

@@ -4,7 +4,7 @@ import React from 'react';
 
 // Images Import
 import Image from 'next/image';
-import OSKMLogo from 'public/login/Logo.png';
+import OSKMLogo from 'public/images/login/Logo.png';
 
 // Form Import
 import { z } from 'zod';

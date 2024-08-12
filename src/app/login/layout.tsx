@@ -2,12 +2,12 @@ import React, { ReactNode } from 'react'
 
 // Images Import
 import Image from 'next/image';
-import LoginBackground from 'public/login/Login Background.png';
-import BubbleCorner from 'public/login/Bubble Corner.png';
-import CoralPensu from 'public/login/Coral Pensu.png';
-import Coral from 'public/login/Coral.png';
-import SeaHorse from 'public/login/Sea Horse.png';
-import Starfish from 'public/login/Starfish.png';
+import LoginBackground from 'public/images/login/Login Background.png';
+import BubbleCorner from 'public/images/login/Bubble Corner.png';
+import CoralPensu from 'public/images/login/Coral Pensu.png';
+import Coral from 'public/images/login/Coral.png';
+import SeaHorse from 'public/images/login/Sea Horse.png';
+import Starfish from 'public/images/login/Starfish.png';
 
 const LoginLayout = ({ 
   children 
