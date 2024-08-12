@@ -7,14 +7,14 @@ export default function Home() {
       <div
         className="fixed-width-container flex flex-col items-center justify-center"
         style={{
-          backgroundImage: "url('/components/bg-404.png')",
+          backgroundImage: "url('/components/images/bg-404.png')",
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
         }}
       >
         <Image
           className="-mb-8"
-          src="/components/404.png"
+          src="/components/images/404.png"
           alt="404 | Page not found"
           width={300}
           height={300}
