@@ -21,7 +21,12 @@ const Navbar = () => {
         }}
       >
         <div className="flex items-center">
-          <Image src="/images/oskm-logo.png" alt="OSKM ITB 2024" width={110} />
+          <Image
+            src="/images/oskm-logo.png"
+            alt="OSKM ITB 2024"
+            width={110}
+            height={40}
+          />
         </div>
         <div className="flex items-center space-x-4">
           <button className="bg-turquoise-100 p-1 rounded-lg border-2 border-blue-600 shadow-custom">
@@ -29,13 +34,19 @@ const Navbar = () => {
               src="/icons/notification-icon.svg"
               alt="Notification"
               width={24}
+              height={24}
             />
           </button>
           <button
             className="bg-turquoise-100 px-[7px] py-[10px] rounded-lg border-2 border-blue-600 shadow-custom"
             onClick={handleToggleSidebar}
           >
-            <Image src="/icons/hamburg-icon.svg" alt="Menu" width={24} />
+            <Image
+              src="/icons/hamburg-icon.svg"
+              alt="Menu"
+              width={24}
+              height={24}
+            />
           </button>
         </div>
       </div>

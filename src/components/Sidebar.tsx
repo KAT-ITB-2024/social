@@ -22,7 +22,12 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
             />
           </button>
         </div>
-        <Image src="/images/oskm-logo.png" alt="OSKM ITB 2024" width={110} />
+        <Image
+          src="/images/oskm-logo.png"
+          alt="OSKM ITB 2024"
+          width={110}
+          height={40}
+        />
         <nav className="flex flex-col gap-2 overflow-y-auto no-scrollbar">
           {[
             { href: '#', src: '/icons/sidebar/home.svg', text: 'Home' },
@@ -87,6 +92,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               alt="logout"
               className="mr-2"
               width={24}
+              height={24}
             />
             Logout
           </button>
