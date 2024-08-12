@@ -46,9 +46,9 @@ const NewPasswordPage = () => {
             name='newPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className='text-blue-500'>Email <span className='text-red-500'>*</span></FormLabel>
+                <FormLabel className='text-blue-500'>New Password<span className='text-red-500'>*</span></FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder='Email' type='password' className='focus-visible:ring-transparent border-neutral-400 rounded-lg border-2'/> 
+                  <Input {...field} placeholder='New Password' type='password' className='focus-visible:ring-transparent border-neutral-400 rounded-lg border-2'/> 
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -61,7 +61,7 @@ const NewPasswordPage = () => {
               <FormItem>
                 <FormLabel className='text-blue-500'>Confirm Password <span className='text-red-500'>*</span></FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder='Email' type='password' className='focus-visible:ring-transparent border-neutral-400 rounded-lg border-2'/> 
+                  <Input {...field} placeholder='Confirm Password' type='password' className='focus-visible:ring-transparent border-neutral-400 rounded-lg border-2'/> 
                 </FormControl>
                 <FormMessage />
               </FormItem>
