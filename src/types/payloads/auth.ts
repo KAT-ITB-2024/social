@@ -8,4 +8,5 @@ export const ResetPasswordPayload = z.object({
   userId: z.string(),
   token: z.string(),
   newPassword: z.string().min(6), // Adjust the password validation as needed
+  confirmPassword: z.string().min(6)
 });
