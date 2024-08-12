@@ -126,3 +126,12 @@ h6 {
   font-weight: bold;
   font-style: normal;
 }
+
+.fixed-width-container {
+  width: 100%;
+  height: 100vh;
+  max-width: 450px;
+  max-height: 1000px;
+  background-color: transparent;
+  padding: 0px;
+}
