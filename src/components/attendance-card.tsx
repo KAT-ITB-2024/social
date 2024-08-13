@@ -1,13 +1,27 @@
-import { Badge } from './ui/badge';
+'use client';
+
+import { useTransition } from 'react';
+import { Chip } from './Chip';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 
 export const AttendanceCard = ({
   data,
 }: {
-  data: { Sesi: string; Waktu: string; Status: string };
+  data: { Id: number; Sesi: string; Waktu: string; Status: string };
 }) => {
-  const { Sesi, Waktu, Status } = data;
+  // !Optional for integration with backend function
+  const [isLoading, startTransition] = useTransition();
+
+  const { Id, Sesi, Waktu, Status } = data;
+
+  const handleAbsen = () => {
+    startTransition(() => {
+      // !Optional
+      console.log('Absen', Id);
+    });
+  };
+
   return (
     <Card className="w-full px-6 py-4 bg-card-radial border-turquoise-300 border-2 rounded-[12px]">
       <CardContent className="p-0 flex justify-between items-center">
@@ -20,34 +34,17 @@ export const AttendanceCard = ({
           </h2>
         </div>
         {Status === 'BELUM ABSEN' && (
-          <Button className="bg-pink-400 h-fit px-5 py-2 text-xs font-subheading font-normal text-shade-200 rounded-[4px] hover:bg-pink-500/80">
+          <Button
+            onClick={handleAbsen}
+            disabled={isLoading} // !Optional
+            className="bg-pink-400 h-fit px-5 py-2 text-xs font-subheading font-normal text-shade-200 rounded-[4px] hover:bg-pink-500/80"
+          >
             Tandai Hadir
           </Button>
         )}
-        {Status === 'HADIR' && (
-          <Badge
-            variant="kehadiran"
-            className="bg-success-200 border-success-600 text-success-600"
-          >
-            Hadir
-          </Badge>
-        )}
-        {Status === 'TIDAK HADIR' && (
-          <Badge
-            variant="kehadiran"
-            className="bg-error-200 border-error-600 text-error-600"
-          >
-            Tidak Hadir
-          </Badge>
-        )}
-        {Status === 'SAKIT' && (
-          <Badge
-            variant="kehadiran"
-            className="bg-orange-100 border-orange-400 text-orange-500"
-          >
-            Sakit
-          </Badge>
-        )}
+        {Status === 'HADIR' && <Chip label="Hadir" variant="GREEN" />}
+        {Status === 'TIDAK HADIR' && <Chip label="Tidak Hadir" variant="RED" />}
+        {Status === 'SAKIT' && <Chip label="Sakit" variant="YELLOW" />}
       </CardContent>
     </Card>
   );

@@ -11,11 +11,13 @@ const dummy = [
     day: 'DAY 2',
     data: [
       {
+        Id: 1,
         Sesi: 'Sesi - 1 (Mentoring)',
         Waktu: '10:00 - 11:00',
         Status: 'BELUM ABSEN',
       },
       {
+        Id: 2,
         Sesi: 'Sesi - 2 (Mentoring)',
         Waktu: '11:00 - 12:00',
         Status: 'SAKIT',
@@ -26,11 +28,13 @@ const dummy = [
     day: 'DAY 1',
     data: [
       {
+        Id: 3,
         Sesi: 'Sesi - 1 (Mentoring)',
         Waktu: '09:00 - 10:00',
         Status: 'HADIR',
       },
       {
+        Id: 4,
         Sesi: 'Sesi - 2 (Mentoring)',
         Waktu: '10:00 - 11:00',
         Status: 'TIDAK HADIR',
