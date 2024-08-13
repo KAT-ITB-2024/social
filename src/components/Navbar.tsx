@@ -14,7 +14,7 @@ const Navbar = () => {
       {!isSidebarOpen && (
         <div className="max-w-md w-full justify-center">
           <div
-            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-custom absolute top-4 z-20"
+            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm absolute top-4 z-20"
             style={{
               backgroundImage: "url('/images/navbar/seaweed.png')",
               backgroundPosition: '95% 30%',
@@ -31,7 +31,7 @@ const Navbar = () => {
               />
             </div>
             <div className="flex items-center space-x-4">
-              <button className="bg-turquoise-100 p-1 rounded-lg border-2 border-blue-600 shadow-custom">
+              <button className="bg-turquoise-100 p-1 rounded-lg border-2 border-blue-600 shadow-green-sm">
                 <Image
                   src="/icons/notification-icon.svg"
                   alt="Notification"
@@ -40,7 +40,7 @@ const Navbar = () => {
                 />
               </button>
               <button
-                className="bg-turquoise-100 px-[7px] py-[10px] rounded-lg border-2 border-blue-600 shadow-custom"
+                className="bg-turquoise-100 px-[7px] py-[10px] rounded-lg border-2 border-blue-600 shadow-green-sm"
                 onClick={handleToggleSidebar}
               >
                 <Image
