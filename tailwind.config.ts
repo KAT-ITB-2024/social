@@ -180,6 +180,26 @@ const config = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      boxShadow: {
+        // Pink shadows
+        'pink-sm': '4px 4px 10px rgba(255, 140, 217, 0.5)',
+        'pink-md': '4px 4px 10px rgba(255, 140, 217, 0.75)',
+        'pink-lg': '4px 4px 20px rgba(255, 140, 217, 0.75)',
+        'pink-xl': '4px 4px 20px rgba(255, 140, 217, 1)',
+        'pink-2xl': '4px 4px 50px rgba(255, 140, 217, 1)',
+        // Green shadows
+        'green-sm': '4px 4px 10px rgba(12, 235, 204, 0.5)',
+        'green-md': '4px 4px 10px rgba(12, 235, 204, 0.75)',
+        'green-lg': '4px 4px 20px rgba(12, 235, 204, 0.75)',
+        'green-xl': '4px 4px 20px rgba(12, 235, 204, 1)',
+        'green-2xl': '4px 4px 50px rgba(12, 235, 204, 1)',
+        // Blue shadows
+        'blue-sm': '4px 4px 10px rgba(100, 177, 247, 0.5)',
+        'blue-md': '4px 4px 10px rgba(100, 177, 247, 0.75)',
+        'blue-lg': '4px 4px 20px rgba(100, 177, 247, 0.75)',
+        'blue-xl': '4px 4px 20px rgba(100, 177, 247, 1)',
+        'blue-2xl': '4px 4px 50px rgba(100, 177, 247, 1)',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
