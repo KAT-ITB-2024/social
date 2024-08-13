@@ -9,7 +9,8 @@ export default function Home() {
         style={{
           backgroundImage: "url('/images/conditional/bg-404.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
         <Image

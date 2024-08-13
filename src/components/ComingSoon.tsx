@@ -9,7 +9,8 @@ export default function ComingSoon() {
         style={{
           backgroundImage: "url('/images/conditional/bg-comingsoon.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
         <Image

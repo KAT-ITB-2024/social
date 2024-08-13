@@ -9,7 +9,8 @@ export default function Maintenance() {
         style={{
           backgroundImage: "url('/images/conditional/bg-maintenance.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
         <Image
