@@ -3,7 +3,7 @@ import Sidebar from '~/components/Sidebar';
 import Image from 'next/image';
 
 const Navbar = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleToggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
