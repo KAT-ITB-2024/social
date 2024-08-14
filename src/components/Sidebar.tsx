@@ -9,15 +9,9 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   return (
     <div
-      className={`fixed top-0 h-[100vh] w-full lg:w-[450px] right-0 lg:right-auto ease-in-out duration-200 z-20 ${isOpen ? 'opacity-100' : 'opacity-0'} mx-auto`}
+      className={`fixed top-0 h-[100vh] right-0 lg:right-auto ease-in-out duration-200 z-20 ${isOpen ? 'opacity-100 w-full lg:w-[450px]' : 'opacity-0 w-0'} mx-auto`}
     >
       <div className="relative w-full h-full">
-        {/* Black Overlay */}
-        <div
-          className={`w-full h-full bg-black z-[-1] ease-in-out duration-200 ${isOpen ? `opacity-80` : `opacity-0`}`}
-          onClick={toggleSidebar}
-        />
-
         <div
           className={`absolute top-0 right-0 h-full ease-in-out duration-200 ${isOpen ? 'w-[60%]' : 'w-0'} bg-[url('/images/navbar/sidebar-background.png')] bg-no-repeat bg-cover bg-center`}
         >
