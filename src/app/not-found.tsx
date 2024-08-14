@@ -34,11 +34,7 @@ export default function Home() {
         </p>
         <p className="text-blue-600 text-center text-base px-10">
           langsung kembali ke <span> </span>
-          {/*Link not change yet*/}
-          <Link
-            href="https://www.figma.com/design/GxFkyC2v4j4Ha9SxT79gjm/OSKM-ITB-2024---SOCIAL?node-id=935-802&t=Kf6oGFf5C2mXrvnv-0"
-            legacyBehavior
-          >
+          <Link href="/" legacyBehavior>
             <a className="text-pink-400 text-base hover:underline">home</a>
           </Link>
         </p>
