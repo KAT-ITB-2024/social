@@ -7,13 +7,14 @@ export default function ComingSoon() {
       <div
         className="fixed-width-container flex flex-col items-center justify-center"
         style={{
-          backgroundImage: "url('/components/bg-comingsoon.png')",
+          backgroundImage: "url('/images/conditional/bg-comingsoon.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
         <Image
-          src="/components/comingsoon.png"
+          src="/images/conditional/comingsoon.png"
           alt="Maintenance"
           width={350}
           height={350}

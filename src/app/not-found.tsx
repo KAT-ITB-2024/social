@@ -7,14 +7,15 @@ export default function Home() {
       <div
         className="fixed-width-container flex flex-col items-center justify-center"
         style={{
-          backgroundImage: "url('/components/bg-404.png')",
+          backgroundImage: "url('/images/conditional/bg-404.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
         <Image
           className="-mb-8"
-          src="/components/404.png"
+          src="/images/conditional/404.png"
           alt="404 | Page not found"
           width={300}
           height={300}
@@ -33,11 +34,7 @@ export default function Home() {
         </p>
         <p className="text-blue-600 text-center text-base px-10">
           langsung kembali ke <span> </span>
-          {/*Link not change yet*/}
-          <Link
-            href="https://www.figma.com/design/GxFkyC2v4j4Ha9SxT79gjm/OSKM-ITB-2024---SOCIAL?node-id=935-802&t=Kf6oGFf5C2mXrvnv-0"
-            legacyBehavior
-          >
+          <Link href="/" legacyBehavior>
             <a className="text-pink-400 text-base hover:underline">home</a>
           </Link>
         </p>
