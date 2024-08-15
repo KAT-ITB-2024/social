@@ -8,6 +8,7 @@ import { submissionRouter } from './routers/submission';
 import { postTestRouter } from './routers/postTest';
 import { classRouter } from './routers/class';
 import { authRouter } from './routers/auth';
+import { leaderboardRouter } from './routers/leaderboard';
 /**
  * This is the primary router for your server.
  *
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   submission: submissionRouter,
   postTest: postTestRouter,
   class: classRouter,
+  leaderboard: leaderboardRouter,
   auth: authRouter,
 });
 
