@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from 'react';
 
 // Images Import
 import Image from 'next/image';
@@ -9,17 +9,12 @@ import Coral from 'public/images/login/Coral.png';
 import SeaHorse from 'public/images/login/Sea Horse.png';
 import Starfish from 'public/images/login/Starfish.png';
 
-const LoginLayout = ({ 
-  children 
-}:{
-  children: ReactNode
-} ) => {
+const LoginLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="bg-black h-screen w-full flex items-center justify-center">
-
       {/* Iphone View : Ukuran Width mengikuti Figma, Ukuran Height Screen */}
-      <div className="relative h-full w-[393px] bg-white overflow-hidden">
-        <div className='flex flex-col items-center h-full justify-start px-8 relative z-20'>
+      <div className="relative h-full w-full bg-white overflow-hidden">
+        <div className="flex flex-col items-center h-full justify-start px-8 relative z-20">
           {children}
         </div>
 
@@ -70,7 +65,7 @@ const LoginLayout = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginLayout
+export default LoginLayout;
