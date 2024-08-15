@@ -6,6 +6,7 @@ import { TRPCReactProvider } from '~/trpc/react';
 import { SessionProvider } from 'next-auth/react';
 import { NextAuthProvider } from './provider';
 import { Toaster } from 'sonner';
+import { SuccessToast } from '~/components/ui/success-toast';
 
 export const metadata = {
   title: 'Create T3 App',
@@ -22,7 +23,20 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
         <TRPCReactProvider>
-          <Toaster duration={3000} position="top-center" />
+          {/* <SuccessToast title='hjeh' desc='heh' /> */}
+          <Toaster
+            toastOptions={{
+              unstyled: false,
+              classNames: {
+                error: 'bg-white text-error-500',
+                success: 'bg-white text-success-500',
+                warning: 'text-yellow-400',
+                info: 'bg-blue-400',
+              },
+            }}
+            position="top-center"
+            duration={3000}
+          />
           <NextAuthProvider>{children}</NextAuthProvider>
         </TRPCReactProvider>
       </body>

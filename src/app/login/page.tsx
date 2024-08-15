@@ -25,6 +25,7 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { SuccessToast } from '~/components/ui/success-toast';
 
 const LoginPage = () => {
   type loginPayloadSchema = z.infer<typeof loginPayload>;
@@ -39,6 +40,7 @@ const LoginPage = () => {
 
   async function onSubmit(values: loginPayloadSchema) {
     const { nim, password } = values;
+
     await signIn('credentials', {
       redirect: false,
       nim,
@@ -49,7 +51,9 @@ const LoginPage = () => {
         console.error('Sign in error:', res.error);
         toast.error(res.error);
       } else {
-        toast.success('Logged in successfully!');
+        toast(
+          <SuccessToast title="Login success!" desc="Logged in successfully" />,
+        );
         router.push('/');
       }
     });
