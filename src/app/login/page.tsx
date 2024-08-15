@@ -1,12 +1,8 @@
 'use client';
 
 import React from 'react';
-
-// Images Import
 import Image from 'next/image';
 import OSKMLogo from 'public/images/login/Logo.png';
-
-// Form Import
 import { type z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginPayload } from '~/types/payloads/login';
@@ -36,7 +32,10 @@ const LoginPage = () => {
       nim: '',
       password: '',
     },
+    mode: 'onChange', // Enables validation on change
   });
+
+  const { isValid } = form.formState;
 
   async function onSubmit(values: loginPayloadSchema) {
     const { nim, password } = values;
@@ -70,7 +69,7 @@ const LoginPage = () => {
           <FormField
             control={form.control}
             name="nim"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel className="text-blue-500">
                   NIM <span className="text-red-500">*</span>
@@ -82,14 +81,16 @@ const LoginPage = () => {
                     className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
                   />
                 </FormControl>
-                <FormMessage />
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel className="text-blue-500">
                   Password <span className="text-red-500">*</span>
@@ -102,7 +103,9 @@ const LoginPage = () => {
                     className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
                   />
                 </FormControl>
-                <FormMessage />
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
               </FormItem>
             )}
           />
@@ -116,7 +119,8 @@ const LoginPage = () => {
           <div className="w-full flex justify-center">
             <Button
               type="submit"
-              className=" bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              className="bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              disabled={!isValid}
             >
               Login
             </Button>
