@@ -1,11 +1,9 @@
 'use client';
 
-import React from 'react';
-
-// Form Import
-import { z } from 'zod';
+import React, { useState, useEffect } from 'react';
+import { type z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -24,11 +22,13 @@ const NewPasswordPage = () => {
   const form = useForm<ResetPasswordPayloadSchema>({
     resolver: zodResolver(ResetPasswordPayload),
     defaultValues: {
-      token: '',
       newPassword: '',
       confirmPassword: '',
     },
+    mode: 'onChange',
   });
+
+  const { isValid } = form.formState;
 
   function onSubmit(values: ResetPasswordPayloadSchema) {
     console.log(values);
@@ -39,7 +39,7 @@ const NewPasswordPage = () => {
       <h3 className="text-[60px] text-blue-500 text-center">
         Password <br /> Baru
       </h3>
-      <p className="text-blue-500  font-bold text-center">
+      <p className="text-blue-500 font-bold text-center">
         Mari masukkan password baru, Aqualings!
       </p>
 
@@ -51,7 +51,7 @@ const NewPasswordPage = () => {
           <FormField
             control={form.control}
             name="newPassword"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel className="text-blue-500">
                   New Password<span className="text-red-500">*</span>
@@ -64,14 +64,18 @@ const NewPasswordPage = () => {
                     className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
                   />
                 </FormControl>
-                <FormMessage />
+                {fieldState.error && (
+                  <FormMessage className="text-red-500">
+                    {fieldState.error.message}
+                  </FormMessage>
+                )}
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
             name="confirmPassword"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel className="text-blue-500">
                   Confirm Password <span className="text-red-500">*</span>
@@ -84,7 +88,12 @@ const NewPasswordPage = () => {
                     className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
                   />
                 </FormControl>
-                <FormMessage />
+
+                {fieldState.error && (
+                  <FormMessage className="text-red-500">
+                    {fieldState.error.message}
+                  </FormMessage>
+                )}
               </FormItem>
             )}
           />
@@ -92,7 +101,8 @@ const NewPasswordPage = () => {
           <div className="w-full flex justify-center">
             <Button
               type="submit"
-              className=" bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              className="bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              disabled={!isValid}
             >
               Send
             </Button>
