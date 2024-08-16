@@ -21,7 +21,6 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.variable}>
       <body className="max-w-md mx-auto">
         <TRPCReactProvider>
-          {/* <SuccessToast title='hjeh' desc='heh' /> */}
           <Toaster
             toastOptions={{
               unstyled: false,
