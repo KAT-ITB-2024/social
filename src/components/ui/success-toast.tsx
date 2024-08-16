@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 
 export const SuccessToast = ({
-  title,
+  title = 'Success',
   desc,
 }: {
-  title: string;
+  title?: string;
   desc: string;
 }) => {
   return (

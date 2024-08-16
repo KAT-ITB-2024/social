@@ -91,7 +91,6 @@ export const authRouter = createTRPCRouter({
           ),
         )
         .execute();
-
       if (!tokenData || tokenData.length === 0) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
