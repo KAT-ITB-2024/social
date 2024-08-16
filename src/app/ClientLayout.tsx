@@ -14,7 +14,7 @@ export default function ClientLayout({
 
   // Add routes to hide the navbar
   const routes = useMemo(
-    () => ['/maintenance', '/coming-soon', '/not-found'],
+    () => ['/maintenance', '/coming-soon', '/not-found', '/login'],
     [],
   );
 
