@@ -64,7 +64,7 @@ export default function MatchPage() {
 
   if (isLoading) {
     return (
-      <div className="py-24">
+      <div>
         {/* To-Do : Ganti sama loading page dari FE */}
         <LoadingSpinner />
         <Button variant={'default'} onClick={cancelFindMatch}>
@@ -74,7 +74,7 @@ export default function MatchPage() {
     );
   }
   return (
-    <div className="py-24">
+    <div>
       {/* to do : design page ini sendiri, tpi tiru aja cari panggil logic BE nya */}
       Match page
       <Button variant={'default'} onClick={findMatch}>
