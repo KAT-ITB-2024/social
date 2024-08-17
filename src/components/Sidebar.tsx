@@ -9,7 +9,7 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   return (
     <div
-      className={`fixed top-0 h-[100vh] right-0 lg:right-auto ease-in-out duration-200 z-30 ${isOpen ? 'opacity-100 w-[60%] lg:w-[450px]' : 'opacity-0 w-0'} mx-auto`}
+      className={`fixed top-0 h-[100vh] right-0 lg:right-auto ease-in-out duration-200 z-30 ${isOpen ? 'opacity-100 min-w-[60%] lg:w-[450px]' : 'opacity-0 w-0'} mx-auto`}
     >
       <div className="relative w-full h-full">
         <div
