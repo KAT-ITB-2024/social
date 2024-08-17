@@ -6,23 +6,58 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import CustomDialog from './custom-dialog';
 import Cumi from 'public/images/attendance/cumi.png';
+import { api } from '~/trpc/react';
 
 export const AttendanceCard = ({
   data,
 }: {
-  data: { Id: number; Sesi: string; Waktu: string; Status: string };
+  data: { Id: string; Sesi: string; Waktu: string; Status: string };
 }) => {
-  const [isLoading, startTransition] = useTransition(); // !Optional for integration with backend function
-  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
-
   const { Id, Sesi, Waktu, Status } = data;
+
+  const attendanceMutation = api.attendance.attend.useMutation();
+  const [isLoading, startTransition] = useTransition();
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>(Status);
 
   const handleAbsen = () => {
     startTransition(() => {
-      // !Optional
+      attendanceMutation.mutate({
+        eventId: Id,
+        presenceEvent: Sesi as 'Opening' | 'Closing',
+      });
+      setStatus('Hadir');
       setIsAlertOpen(true);
       console.log('Absen', Id);
     });
+  };
+
+  const isInRange = () => {
+    const currentTime = new Date();
+    const timeRange = Waktu.split(' - ');
+    const startTime = new Date();
+    const endTime = new Date();
+    startTime.setHours(
+      parseInt(timeRange[0]?.split(':')[0] ?? ''),
+      parseInt(timeRange[0]?.split(':')[1] ?? ''),
+    );
+    endTime.setHours(
+      parseInt(timeRange[1]?.split(':')[0] ?? ''),
+      parseInt(timeRange[1]?.split(':')[1] ?? ''),
+    );
+
+    return currentTime >= startTime && currentTime <= endTime;
+  };
+
+  const isLate = () => {
+    const currentTime = new Date();
+    const timeRange = Waktu.split(' - ');
+    const endTime = new Date();
+    endTime.setHours(
+      parseInt(timeRange[1]?.split(':')[0] ?? ''),
+      parseInt(timeRange[1]?.split(':')[1] ?? ''),
+    );
+    return currentTime > endTime;
   };
 
   return (
@@ -36,18 +71,20 @@ export const AttendanceCard = ({
             Waktu: {Waktu}
           </h2>
         </div>
-        {Status === 'BELUM ABSEN' && (
+        {status === 'Alpha' && isInRange() && (
           <Button
             onClick={handleAbsen}
-            disabled={isLoading} // !Optional
+            disabled={isLoading}
             className="bg-pink-400 h-fit px-5 py-2 text-xs font-subheading font-normal text-shade-200 rounded-[4px] hover:bg-pink-500/80"
           >
             Tandai Hadir
           </Button>
         )}
-        {Status === 'HADIR' && <Chip label="Hadir" variant="GREEN" />}
-        {Status === 'TIDAK HADIR' && <Chip label="Tidak Hadir" variant="RED" />}
-        {Status === 'SAKIT' && <Chip label="Sakit" variant="YELLOW" />}
+        {status === 'Hadir' && <Chip label="Hadir" variant="GREEN" />}
+        {status === 'Alpha' && isLate() && (
+          <Chip label="Tidak Hadir" variant="RED" />
+        )}
+        {status === 'Izin/Sakit' && <Chip label="Sakit" variant="YELLOW" />}
 
         {/* Modal Hadir */}
         <CustomDialog
