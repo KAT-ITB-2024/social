@@ -11,9 +11,15 @@ import { api } from '~/trpc/react';
 export const AttendanceCard = ({
   data,
 }: {
-  data: { Id: string; Sesi: string; Waktu: string; Status: string };
+  data: {
+    Id: string;
+    Tanggal: Date;
+    Sesi: string;
+    Waktu: string;
+    Status: string;
+  };
 }) => {
-  const { Id, Sesi, Waktu, Status } = data;
+  const { Id, Tanggal, Sesi, Waktu, Status } = data;
 
   const attendanceMutation = api.attendance.attend.useMutation();
   const [isLoading, startTransition] = useTransition();
@@ -35,8 +41,8 @@ export const AttendanceCard = ({
   const isInRange = () => {
     const currentTime = new Date();
     const timeRange = Waktu.split(' - ');
-    const startTime = new Date();
-    const endTime = new Date();
+    const startTime = new Date(Tanggal);
+    const endTime = new Date(Tanggal);
     startTime.setHours(
       parseInt(timeRange[0]?.split(':')[0] ?? ''),
       parseInt(timeRange[0]?.split(':')[1] ?? ''),
@@ -52,11 +58,12 @@ export const AttendanceCard = ({
   const isLate = () => {
     const currentTime = new Date();
     const timeRange = Waktu.split(' - ');
-    const endTime = new Date();
+    const endTime = new Date(Tanggal);
     endTime.setHours(
       parseInt(timeRange[1]?.split(':')[0] ?? ''),
       parseInt(timeRange[1]?.split(':')[1] ?? ''),
     );
+
     return currentTime > endTime;
   };
 

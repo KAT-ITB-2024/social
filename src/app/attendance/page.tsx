@@ -9,46 +9,8 @@ import CoralPensu from 'public/images/attendance/Coral Pensu.png';
 import { AttendanceCard } from '~/components/attendance-card';
 import { api } from '~/trpc/react';
 
-const dummy = [
-  {
-    day: 'DAY 2',
-    data: [
-      {
-        Id: 1,
-        Sesi: 'Sesi - 1 (Mentoring)',
-        Waktu: '10:00 - 11:00',
-        Status: 'BELUM ABSEN',
-      },
-      {
-        Id: 2,
-        Sesi: 'Sesi - 2 (Mentoring)',
-        Waktu: '11:00 - 12:00',
-        Status: 'SAKIT',
-      },
-    ],
-  },
-  {
-    day: 'DAY 1',
-    data: [
-      {
-        Id: 3,
-        Sesi: 'Sesi - 1 (Mentoring)',
-        Waktu: '09:00 - 10:00',
-        Status: 'HADIR',
-      },
-      {
-        Id: 4,
-        Sesi: 'Sesi - 2 (Mentoring)',
-        Waktu: '10:00 - 11:00',
-        Status: 'TIDAK HADIR',
-      },
-    ],
-  },
-];
-
 export default function AttendancePage() {
   const getAllAttendancesQuery = api.attendance.getAllAttendances.useQuery();
-
   return (
     <main className="flex min-h-screen w-screen max-w-md flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
       <div className="min-h-screen w-full bg-[url('/images/attendance/Background.png')] bg-center bg-no-repeat bg-cover p-6 pt-28">
@@ -75,8 +37,7 @@ export default function AttendancePage() {
         </h1>
         <div className="flex flex-col gap-7">
           {getAllAttendancesQuery.data
-            ?.filter((data) => data.eventDate <= new Date())
-            .sort((a, b) => b.eventDate.getTime() - a.eventDate.getTime())
+            ?.sort((a, b) => b.eventDate.getTime() - a.eventDate.getTime())
             .map((day, index) => (
               <div
                 key={index}
@@ -89,6 +50,7 @@ export default function AttendancePage() {
                 <AttendanceCard
                   data={{
                     Id: day.id,
+                    Tanggal: day.eventDate,
                     Sesi: 'Opening',
                     Waktu:
                       day.openingOpenPresenceTime.substring(0, 5) +
@@ -101,6 +63,7 @@ export default function AttendancePage() {
                 <AttendanceCard
                   data={{
                     Id: day.id,
+                    Tanggal: day.eventDate,
                     Sesi: 'Closing',
                     Waktu:
                       day.closingOpenPresenceTime.substring(0, 5) +
