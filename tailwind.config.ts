@@ -97,7 +97,7 @@ const config = {
           400: '#F06B02',
           500: '#E84300',
         },
-        lightYellow: '##FEFDA3',
+        lightYellow: '#FEFDA3',
         yellow: '#FFE429',
         greenishYellow: '#D4F951',
         purple: '#470BBB',
@@ -217,6 +217,10 @@ const config = {
         'white-lg': '0px 0px 20px rgba(255, 255, 255, 1)',
         'white-xl': '0px 0px 40px rgba(255, 255, 255, 1)',
         'white-2xl': '0px 0px 60px rgba(255, 255, 255, 1)',
+      },
+      backgroundImage: {
+        'orange-lightYellow':
+          'linear-gradient(139.62deg, #FEFDA3 -24.66%, #FFBF51 77.02%)',
       },
     },
   },
