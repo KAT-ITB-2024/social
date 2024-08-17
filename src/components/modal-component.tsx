@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/alert-dialog-assignment';
 import Image, { type StaticImageData } from 'next/image';
 import DeleteIcon from 'public/images/modal-component/delete.svg';
 import CloseIcon from 'public/images/modal-component/close.svg';
