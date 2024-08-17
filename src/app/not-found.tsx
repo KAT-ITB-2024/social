@@ -1,0 +1,44 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center bg-sky-800">
+      <div
+        className="fixed-width-container flex flex-col items-center justify-center"
+        style={{
+          backgroundImage: "url('/images/conditional/bg-404.png')",
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+        }}
+      >
+        <Image
+          className="-mb-8"
+          src="/images/conditional/404.png"
+          alt="404 | Page not found"
+          width={300}
+          height={300}
+        />
+        <p className="text-blue-600 text-center text-5xl px-10 font-heading ">
+          {' '}
+          UPS!{' '}
+        </p>
+        <p className="text-blue-600 text-center text-xl px-10 font-bold">
+          {' '}
+          Kamu menyelam terlalu dalam!{' '}
+        </p>
+        <p className="text-blue-600 text-center text-base px-10">
+          {' '}
+          Jangan khawatir, Aqualings! Kalian bisa{' '}
+        </p>
+        <p className="text-blue-600 text-center text-base px-10">
+          langsung kembali ke <span> </span>
+          <Link href="/" legacyBehavior>
+            <a className="text-pink-400 text-base hover:underline">home</a>
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}

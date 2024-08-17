@@ -1,9 +1,9 @@
 import Image from 'next/image';
 
 // Image import
-import Bubble from 'public/images/Bubble.png';
-import Coral from 'public/images/Coral.png';
-import CoralPensu from 'public/images/Coral Pensu.png';
+import Bubble from 'public/images/attendance/Bubble.png';
+import Coral from 'public/images/attendance/Coral.png';
+import CoralPensu from 'public/images/attendance/Coral Pensu.png';
 import { AttendanceCard } from '~/components/attendance-card';
 
 const dummy = [
@@ -46,22 +46,22 @@ const dummy = [
 export default function AttendancePage() {
   return (
     <main className="flex min-h-screen w-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
-      <div className="h-screen w-full bg-turkwa bg-center bg-no-repeat bg-cover p-6 pt-32">
+      <div className="min-h-screen w-full bg-[url('/images/attendance/Background.png')] bg-center bg-no-repeat bg-cover p-6 pt-28">
         {/* Background Component */}
         <Image
           src={Bubble}
           alt="bubble"
-          className="fixed top-0 right-0 w-[90%] z-10"
+          className="absolute top-0 right-0 w-[90%] z-10"
         />
         <Image
           src={Coral}
           alt="coral"
-          className="fixed right-0 bottom-0 w-[60%] z-10 opacity-70"
+          className="absolute right-0 bottom-0 w-[60%] z-10 opacity-70"
         />
         <Image
           src={CoralPensu}
           alt="coral pensu"
-          className="fixed left-0 bottom-0 z-10"
+          className="absolute left-0 bottom-0 z-10"
         />
 
         {/* Content */}

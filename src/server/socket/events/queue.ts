@@ -85,8 +85,7 @@ export const checkMatchEvent = createEvent(
       return result;
     }
 
-    // Kasus kalau dia baru aja match
-    if (!ctx.client.data.match) {
+    if (ctx.client.data.match) {
       const userId = ctx.client.data.session.user.id;
       const userMatch = await ctx.drizzle.query.userMatches.findFirst({
         where: or(
@@ -95,10 +94,11 @@ export const checkMatchEvent = createEvent(
         ),
       });
       result.match = userMatch;
+    } else {
+      result.match = undefined;
     }
 
     ctx.client.data.matchQueue = null;
-    result.match = ctx.client.data.match;
     return result;
   },
 );
@@ -107,9 +107,11 @@ export const endMatchEvent = createEvent(
   {
     name: 'endMatch',
     authRequired: true,
+    input: undefined,
   },
   async ({ ctx }) => {
     const currentMatch = ctx.client.data.match;
+    console.log('Masuk');
     if (!currentMatch) return;
 
     const result = await ctx.drizzle

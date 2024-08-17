@@ -1,23 +1,26 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { Chip } from './Chip';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
+import CustomDialog from './custom-dialog';
+import Cumi from 'public/images/attendance/cumi.png';
 
 export const AttendanceCard = ({
   data,
 }: {
   data: { Id: number; Sesi: string; Waktu: string; Status: string };
 }) => {
-  // !Optional for integration with backend function
-  const [isLoading, startTransition] = useTransition();
+  const [isLoading, startTransition] = useTransition(); // !Optional for integration with backend function
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   const { Id, Sesi, Waktu, Status } = data;
 
   const handleAbsen = () => {
     startTransition(() => {
       // !Optional
+      setIsAlertOpen(true);
       console.log('Absen', Id);
     });
   };
@@ -45,6 +48,16 @@ export const AttendanceCard = ({
         {Status === 'HADIR' && <Chip label="Hadir" variant="GREEN" />}
         {Status === 'TIDAK HADIR' && <Chip label="Tidak Hadir" variant="RED" />}
         {Status === 'SAKIT' && <Chip label="Sakit" variant="YELLOW" />}
+
+        {/* Modal Hadir */}
+        <CustomDialog
+          image={Cumi}
+          title="HADIR!"
+          description="Kehadiran berhasil dicatat"
+          isOpen={isAlertOpen}
+          setIsOpen={setIsAlertOpen}
+          className="bg-blue-500 flex flex-col items-center border-none text-yellow text-center rounded-[12px]"
+        />
       </CardContent>
     </Card>
   );
