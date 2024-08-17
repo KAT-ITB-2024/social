@@ -22,6 +22,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
+import { ErrorToast } from '~/components/ui/error-toast';
 
 const LoginPage = () => {
   type loginPayloadSchema = z.infer<typeof loginPayload>;
@@ -51,8 +52,7 @@ const LoginPage = () => {
       callbackUrl: '/',
     }).then((res) => {
       if (res?.error) {
-        console.error('Sign in error:', res.error);
-        toast.error(res.error);
+        toast(<ErrorToast desc={res.error} />);
       } else {
         toast(
           <SuccessToast title="Login success!" desc="Logged in successfully" />,
