@@ -7,6 +7,7 @@ import { Card, CardContent } from './ui/card';
 import CustomDialog from './custom-dialog';
 import Cumi from 'public/images/attendance/cumi.png';
 import { api } from '~/trpc/react';
+import { ErrorToast } from './ui/error-toast';
 
 export const AttendanceCard = ({
   data,
@@ -28,13 +29,16 @@ export const AttendanceCard = ({
 
   const handleAbsen = () => {
     startTransition(() => {
-      attendanceMutation.mutate({
-        eventId: Id,
-        presenceEvent: Sesi as 'Opening' | 'Closing',
-      });
-      setStatus('Hadir');
-      setIsAlertOpen(true);
-      console.log('Absen', Id);
+      try {
+        attendanceMutation.mutate({
+          eventId: Id,
+          presenceEvent: Sesi as 'Opening' | 'Closing',
+        });
+        setStatus('Hadir');
+        setIsAlertOpen(true);
+      } catch (e) {
+        ErrorToast({ title: 'Oops!', desc: 'Gagal melakukan absensi' });
+      }
     });
   };
 
