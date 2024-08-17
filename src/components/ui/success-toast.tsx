@@ -11,7 +11,7 @@ export const SuccessToast = ({
   return (
     <div className="relative bg-white text-success-500 w-[450px] h-[70px] flex items-center">
       <div className="flex flex-row border-l-4 border-success-600 ml-2 h-[60px] pl-4">
-        <div className="flex flex-row flex items-center justify-center gap-x-4">
+        <div className="flex flex-row items-center justify-center gap-x-4">
           <Image
             src={'/images/toast/check_circle.png'}
             width={28}
