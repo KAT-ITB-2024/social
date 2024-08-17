@@ -9,11 +9,11 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   return (
     <div
-      className={`fixed top-0 h-[100vh] right-0 lg:right-auto ease-in-out duration-200 z-20 ${isOpen ? 'opacity-100 w-full lg:w-[450px]' : 'opacity-0 w-0'} mx-auto`}
+      className={`fixed top-0 h-[100vh] right-0 lg:right-auto ease-in-out duration-200 z-30 ${isOpen ? 'opacity-100 min-w-[60%] lg:w-[450px]' : 'opacity-0 w-0'} mx-auto`}
     >
       <div className="relative w-full h-full">
         <div
-          className={`absolute top-0 right-0 h-full ease-in-out duration-200 ${isOpen ? 'w-[60%]' : 'w-0'} bg-[url('/images/navbar/sidebar-background.png')] bg-no-repeat bg-cover bg-center`}
+          className={`absolute top-0 right-0 h-full ease-in-out duration-200 ${isOpen ? 'w-full' : 'w-0'} bg-[url('/images/navbar/sidebar-background.png')] bg-no-repeat bg-cover bg-center`}
         >
           <div className="flex flex-col h-full w-full py-6 px-4 gap-2">
             <div className="flex items-center justify-end">
@@ -42,7 +42,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                   text: 'Assignment',
                 },
                 {
-                  href: '#',
+                  href: '/attendance',
                   src: '/icons/sidebar/attendance.svg',
                   text: 'Attendance',
                 },

@@ -31,7 +31,7 @@ const CustomDialog = ({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
-        className={cn('w-[300px]', className)}
+        className={cn('w-[300px] px-9 py-14', className)}
         onClick={() => setIsOpen(false)}
       >
         {/* Close Icon */}
@@ -39,13 +39,13 @@ const CustomDialog = ({
           className="absolute top-4 right-4 text-2xl text-yellow cursor-pointer"
           onClick={() => setIsOpen(false)}
         >
-          <Image src={CloseIcon} alt="Close Icon" width={24} height={24} />
+          <Image src={CloseIcon} alt="Close Icon" width={32} height={32} />
         </div>
         <AlertDialogTitle className="flex flex-col items-center gap-y-4">
           <Image src={image} alt="Star" height={150} width={150} />
-          <p className="text-center text-4xl font-normal">{title}</p>
+          <p className="text-center text-h3 font-normal">{title}</p>
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-yellow text-center font-normal">
+        <AlertDialogDescription className="text-yellow text-center font-normal text-b5">
           {description}
         </AlertDialogDescription>
       </AlertDialogContent>

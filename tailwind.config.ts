@@ -18,9 +18,6 @@ const config = {
       },
     },
     extend: {
-      backgroundImage: {
-        turkwa: "url('/images/Background.png')",
-      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
