@@ -18,6 +18,11 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        turkwa: "url('/images/Background.png')",
+        classes:
+          "url('/images/class-selection/class-selection-background.png')",
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
