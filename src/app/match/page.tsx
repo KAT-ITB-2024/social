@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { LoadingSpinner } from '~/components/loading';
+import { LoadingSpinner } from '~/components/Loading';
 import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
