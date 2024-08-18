@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import CardDefault from '~/components/leaderboard/CardDefault';
 import TopThreeContainer from '~/components/leaderboard/TopThreeContainer';
+import { PaginationCustom } from '~/components/Pagination';
+import { TabsAssignment } from '~/components/Tabs';
 import { Button } from '~/components/ui/button';
 
 interface CardDefaultProps {
@@ -177,25 +179,68 @@ export default function LeaderBoard() {
   }
 
   return (
-    <main className="mt-[90px] items-center justify-center flex flex-col gap-3">
-      <h2 className="font-heading text-[32px] text-[#000D76] [text-shadow:4px_4px_20px_var(--tw-shadow-color)] shadow-[#FFBF51BF]">
-        Leaderboard
-      </h2>
-      <Button
-        className="bg-[#0010A4] hover:bg-[#15f5c5]"
-        onClick={() => {
-          setIsIndividual((prev) => !prev);
+    <main className="min-h-screen items-center justify-center flex flex-col ">
+      <div
+        className="w-[100%] h-[100vh] max-w-[450px] bg-[transparent] p-0 flex flex-col"
+        style={{
+          backgroundImage: "url('/images/leaderboard/bg-leaderboard.png')",
+          backgroundRepeat: 'repeat',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
-        {isIndividual ? 'Individual' : 'Kelompok'}
-      </Button>
-      {content}
+        <h2 className="mt-[86px] font-heading mb-4 text-[32px] text-center text-[#000D76] [text-shadow:4px_4px_20px_var(--tw-shadow-color)] shadow-[#FFBF51BF]">
+          Leaderboard
+        </h2>
+        <TabsAssignment
+          leftTrigger="Individu"
+          rightTrigger="Kelompok"
+          leftContent={
+            <div className="flex flex-col mt-2 gap-3 justify-center items-center">
+              {
+                <TopThreeContainer
+                  isIndividual
+                  cards={dataIndividual.slice(0, 3)}
+                />
+              }
+              {dataIndividual.slice(3).map((item, index) => (
+                <CardDefault
+                  key={`${index}-${item.name}`}
+                  rank={index + 4}
+                  name={item.name}
+                  point={item.point}
+                  isIndividual
+                  sid={item.sid}
+                  profilePicture={item.profilePicture}
+                />
+              ))}
+              <PaginationCustom />
+            </div>
+          }
+          rightContent={
+            <div className="flex flex-col mt-2 gap-3 justify-center items-center">
+              {
+                <TopThreeContainer
+                  isIndividual={false}
+                  cards={dataKelompok.slice(0, 3)}
+                />
+              }
+              {dataKelompok.slice(3).map((item, index) => (
+                <CardDefault
+                  key={`${index}-${item.name}`}
+                  rank={index + 4}
+                  name={item.name}
+                  point={item.point}
+                  isIndividual
+                  sid={item.sid}
+                  profilePicture={item.profilePicture}
+                />
+              ))}
+              <PaginationCustom />
+            </div>
+          }
+        />
+      </div>
     </main>
   );
 }
-
-/**
- * box-shadow: 4px 4px 20px 0px #FFBF51BF;
- * box-shadow: 4px 4px 20px 0px #FFBF51BF;
-
- */
