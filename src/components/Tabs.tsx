@@ -16,8 +16,11 @@ export const TabsAssignment = ({
   rightContent,
 }: TabsProps) => {
   return (
-    <Tabs defaultValue="account" className="w-[400px]">
-      <TabsList className="rounded-full p-0 bg-lightYellow w-[300px] shadow-orange-sm">
+    <Tabs
+      defaultValue="account"
+      className="flex flex-col items-center justify-center w-full"
+    >
+      <TabsList className="flex justify-center items-center rounded-full p-0 bg-lightYellow shadow-orange-sm w-full max-w-[400px]">
         <TabsTrigger
           value="account"
           className="w-1/2 bg-lightYellow h-full text-blue-500 rounded-full 
