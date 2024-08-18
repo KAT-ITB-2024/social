@@ -22,6 +22,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
+import { LoadingSpinner } from '~/components/loading';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const LoginPage = () => {
   type loginPayloadSchema = z.infer<typeof loginPayload>;
@@ -36,6 +38,7 @@ const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { isValid } = form.formState;
 
@@ -60,6 +63,10 @@ const LoginPage = () => {
         router.push('/');
       }
     });
+  }
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
   }
 
   return (
