@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { Chip } from '../Chip';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
-import CustomDialog from '../CustomDialog';
+import InfoModal from '../InfoModal';
 import Cumi from 'public/images/attendance/cumi.png';
 import { api } from '~/trpc/react';
 import { ErrorToast } from '../ui/error-toast';
@@ -98,7 +98,7 @@ export const AttendanceCard = ({
         {status === 'Izin/Sakit' && <Chip label="Sakit" variant="YELLOW" />}
 
         {/* Modal Hadir */}
-        <CustomDialog
+        <InfoModal
           image={Cumi}
           title="HADIR!"
           description="Kehadiran berhasil dicatat"

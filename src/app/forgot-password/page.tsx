@@ -23,7 +23,7 @@ import Image from 'next/image';
 import Starfish from 'public/images/login/Starfish.png';
 
 // Component Import
-import CustomDialog from '~/components/CustomDialog';
+import InfoModal from '~/components/InfoModal';
 import { api } from '~/trpc/react';
 
 const ForgotPasswordPage = () => {
@@ -102,7 +102,7 @@ const ForgotPasswordPage = () => {
             </Button>
           </div>
 
-          <CustomDialog
+          <InfoModal
             image={Starfish}
             title="Email Terkirim"
             description="Cek email mu Aqualings, untuk mengubah password!"

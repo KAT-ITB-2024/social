@@ -9,11 +9,11 @@ import {
 } from '@/components/ui/alert-dialog';
 
 // Image Import
-import Image, { StaticImageData } from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 import CloseIcon from 'public/images/login/CloseIcon.svg';
 import { cn } from '~/lib/utils';
 
-const CustomDialog = ({
+const InfoModal = ({
   image,
   title,
   description,
@@ -53,4 +53,4 @@ const CustomDialog = ({
   );
 };
 
-export default CustomDialog;
+export default InfoModal;

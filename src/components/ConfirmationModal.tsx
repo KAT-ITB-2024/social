@@ -15,7 +15,7 @@ import {
 import Image, { type StaticImageData } from 'next/image';
 import DeleteIcon from 'public/images/modal-component/delete.svg';
 
-interface ModalComponentProps {
+interface ConfirmationModalProps {
   triggerText?: string;
   image: StaticImageData;
   title: string;
@@ -27,7 +27,7 @@ interface ModalComponentProps {
   cancelColor?: string;
 }
 
-export function ModalComponent({
+export function ConfirmationModal({
   triggerText,
   image,
   title,
@@ -37,7 +37,7 @@ export function ModalComponent({
   actionColor,
   action,
   cancelColor,
-}: ModalComponentProps) {
+}: ConfirmationModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
