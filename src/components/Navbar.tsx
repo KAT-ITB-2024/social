@@ -57,11 +57,12 @@ const Navbar = () => {
       {/* Black Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 z-30"
+          className="fixed inset-0 bg-black bg-opacity-80 z-30 w-screen h-screen"
           onClick={handleToggleSidebar}
-        ></div>
+        >
+          <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
+        </div>
       )}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
     </div>
   );
 };
