@@ -23,7 +23,7 @@ import Image from 'next/image';
 import Starfish from 'public/images/login/Starfish.png';
 
 // Component Import
-import CustomDialog from '~/components/custom-dialog';
+import CustomDialog from '~/components/CustomDialog';
 import { api } from '~/trpc/react';
 
 const ForgotPasswordPage = () => {

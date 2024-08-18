@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Chip } from './Chip';
-import { Button } from './ui/button';
-import { Card, CardContent } from './ui/card';
-import CustomDialog from './custom-dialog';
+import { Chip } from '../Chip';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
+import CustomDialog from '../CustomDialog';
 import Cumi from 'public/images/attendance/cumi.png';
 import { api } from '~/trpc/react';
-import { ErrorToast } from './ui/error-toast';
+import { ErrorToast } from '../ui/error-toast';
 
 export const AttendanceCard = ({
   data,

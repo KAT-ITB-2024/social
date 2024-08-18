@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { Button } from './ui/button';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +22,6 @@ export default function Modal({
   icon?: string;
   children?: string | JSX.Element | JSX.Element[];
 }) {
-  console.log('Ini icon', icon);
   return (
     <Dialog>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>

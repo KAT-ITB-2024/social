@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Bubble from 'public/images/attendance/Bubble.png';
 import Coral from 'public/images/attendance/Coral.png';
 import CoralPensu from 'public/images/attendance/Coral Pensu.png';
-import { AttendanceCard } from '~/components/attendance-card';
+import { AttendanceCard } from '~/components/attendance/AttendanceCard';
 import { api } from '~/trpc/react';
 
 export default function AttendancePage() {
