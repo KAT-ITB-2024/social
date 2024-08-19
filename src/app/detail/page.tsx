@@ -7,15 +7,30 @@ import Image from 'next/image';
 import AttachmentButton from '~/components/Attachment';
 import { useState } from 'react';
 import FileUpload from '~/components/FileUpload';
+import { Chip } from '~/components/Chip';
+import { ConfirmationModal } from '~/components/ConfirmationModal';
+import kurakura from '/public/images/detail/kura-kura.png';
+import gurita from '/public/images/detail/gurita.png';
+import InfoModal from '~/components/InfoModal';
 export default function DetailPage() {
   const [FileName, setFileName] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
   console.log(FileName);
   function handleBack() {
     console.log('back to previous page');
   }
 
+  function handleSubmit() {
+    setIsSubmitted(true);
+  }
+
+  function handleDeleteFile() {
+    setFileName('');
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
+      {/* {showModal != '' && <ModalSubmit onClose={handleBack} />} */}
       <div
         className="fixed-width-container flex flex-col"
         style={{
@@ -25,6 +40,15 @@ export default function DetailPage() {
           backgroundPosition: 'center',
         }}
       >
+        <InfoModal
+          description="TugasMu berhasil dikumpul!"
+          title="Terkumpul!"
+          className="w-[282px] px-9 py-14 bg-blue-500 text-yellow rounded-[12px] border-none"
+          image={gurita}
+          isOpen={isSubmitted}
+          setIsOpen={setIsSubmitted}
+        />
+
         <div className="mx-6 mt-20">
           <button onClick={() => handleBack()}>
             <Image
@@ -35,12 +59,18 @@ export default function DetailPage() {
               height={40}
             />
           </button>
-          <div className="mt-[36px] flex flex-col gap-8 text-pink-400">
-            <div className="gap-1">
+          <div className="mt-[8px] flex flex-col gap-5 text-pink-400">
+            <div className="flex flex-col gap-2">
               <h3>Tugas Hari 1</h3>
               <div className="flex flex-row">
                 <p className="text-b4 font-bold "> Deadline :</p>
                 <p className="text-b4"> 13 September 2024</p>
+              </div>
+              <div>
+                <Chip
+                  label={isSubmitted ? 'terkumpul' : 'belum kumpul'}
+                  variant={isSubmitted ? 'GREEN' : 'YELLOW'}
+                />
               </div>
             </div>
             <p className="text-b3 leading-[24px]">
@@ -54,7 +84,6 @@ export default function DetailPage() {
             <AttachmentButton
               fileName="Soal.pdf"
               fileUrl="https://instagram.com"
-              isUserSubmit={false}
             />
 
             <div
@@ -81,14 +110,24 @@ export default function DetailPage() {
                 <AttachmentButton
                   fileName={FileName}
                   fileUrl="https://instagram.com"
-                  isUserSubmit={true}
+                  handleDelete={handleDeleteFile}
                 />
               )}
             </div>
             {FileName != '' && (
-              <button className="w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5">
-                Submit
-              </button>
+              <ConfirmationModal
+                action={handleSubmit}
+                actionText="Kumpul Sekarang"
+                description="Pastikan jawaban yang kamu unggah sudah benar!"
+                image={kurakura}
+                imageWidth={120}
+                imageHeight={81}
+                title="Kumpul?"
+                customStylesTrigger="w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
+                triggerText="Submit"
+                cancelText="Batal"
+                key={1}
+              />
             )}
           </div>
         </div>

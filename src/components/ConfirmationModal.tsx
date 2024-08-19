@@ -17,7 +17,10 @@ import DeleteIcon from 'public/images/modal-component/delete.svg';
 
 interface ConfirmationModalProps {
   triggerText?: string;
+  customStylesTrigger?: string;
   image: StaticImageData;
+  imageWidth?: number;
+  imageHeight?: number;
   title: string;
   description: string;
   actionText: string;
@@ -29,7 +32,10 @@ interface ConfirmationModalProps {
 
 export function ConfirmationModal({
   triggerText,
+  customStylesTrigger,
   image,
+  imageWidth,
+  imageHeight,
   title,
   description,
   actionText,
@@ -44,7 +50,10 @@ export function ConfirmationModal({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         {triggerText ? (
-          <button className="btn" onClick={() => setIsOpen(true)}>
+          <button
+            className={customStylesTrigger ? customStylesTrigger : 'btn'}
+            onClick={() => setIsOpen(true)}
+          >
             {triggerText}
           </button>
         ) : (
@@ -56,7 +65,12 @@ export function ConfirmationModal({
       <AlertDialogContent className="border-none bg-blue-500 text-yellow flex flex-col items-center p-6 rounded-[12px] w-80">
         <AlertDialogHeader className="flex flex-col items-center">
           <AlertDialogTitle className="flex flex-col items-center gap-y-4">
-            <Image src={image} alt="Star" height={150} width={150} />
+            <Image
+              src={image}
+              alt="Star"
+              height={imageHeight ? imageHeight : 150}
+              width={imageWidth ? imageWidth : 150}
+            />
             <p className="text-center text-h3 font-normal">{title}</p>
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center text-b5 text-yellow">
