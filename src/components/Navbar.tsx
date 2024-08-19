@@ -12,9 +12,9 @@ const Navbar = () => {
   return (
     <div className="relative">
       {!isSidebarOpen && (
-        <div className="max-w-md w-full justify-center">
+        <div className="fixed max-w-md w-full justify-center z-20">
           <div
-            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm absolute top-4 z-20"
+            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm top-4"
             style={{
               backgroundImage: "url('/images/navbar/seaweed.png')",
               backgroundPosition: '95% 30%',
@@ -57,11 +57,12 @@ const Navbar = () => {
       {/* Black Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 z-10"
+          className="fixed inset-0 bg-black bg-opacity-80 z-30 w-screen h-screen"
           onClick={handleToggleSidebar}
-        ></div>
+        >
+          <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
+        </div>
       )}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
     </div>
   );
 };
