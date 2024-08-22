@@ -1,12 +1,15 @@
 import CardTopScore from './CardTopScore';
 
 interface CardTopScoreProps {
-  profilePicture?: string;
+  profileImage?: string | null;
   name: string;
-  sid?: string;
-  point: number;
+  nim?: string;
+  point: number | null;
+  rank: number;
   isIndividual?: boolean;
 }
+
+//name: string; nim: string; profileImage: string | null; point: number | null; rank: number;
 
 interface TopScoreProps {
   cards: Array<CardTopScoreProps>;
@@ -23,20 +26,20 @@ export default function TopThreeContainer({
         <div className="h-16"></div>
         <CardTopScore
           isIndividual={isIndividual}
-          rank={2}
-          profilePicture={cards[1]!.profilePicture}
+          rank={cards[1]!.rank}
+          profileImage={cards[1]!.profileImage}
           name={cards[1]!.name}
-          sid={cards[1]!.sid}
+          nim={cards[1]!.nim}
           point={cards[1]!.point}
         />
       </div>
       <div>
         <CardTopScore
           isIndividual={isIndividual}
-          rank={1}
-          profilePicture={cards[0]!.profilePicture}
+          rank={cards[0]!.rank}
+          profileImage={cards[0]!.profileImage}
           name={cards[0]!.name}
-          sid={cards[0]!.sid}
+          nim={cards[0]!.nim}
           point={cards[0]!.point}
         />
       </div>
@@ -44,10 +47,10 @@ export default function TopThreeContainer({
         <div className="h-16"></div>
         <CardTopScore
           isIndividual={isIndividual}
-          rank={3}
-          profilePicture={cards[2]!.profilePicture}
+          rank={cards[2]!.rank}
+          profileImage={cards[2]!.profileImage}
           name={cards[2]!.name}
-          sid={cards[2]!.sid}
+          nim={cards[2]!.nim}
           point={cards[2]!.point}
         />
       </div>

@@ -2,9 +2,9 @@ import Image from 'next/image';
 
 interface CardDefaultProps {
   rank: number;
-  profilePicture?: string;
+  profileImage?: string;
   name: string;
-  sid?: string;
+  nim?: string;
   point: number;
   isUser?: boolean;
   isIndividual?: boolean;
@@ -12,9 +12,9 @@ interface CardDefaultProps {
 
 export default function CardDefault({
   rank,
-  profilePicture,
+  profileImage,
   name,
-  sid,
+  nim,
   point,
   isUser = false,
   isIndividual = true,
@@ -34,26 +34,26 @@ export default function CardDefault({
 
       {/* Profile section*/}
       <div className="flex gap-2 flex-row items-center flex-grow">
-        {isIndividual && profilePicture ? (
+        {isIndividual && profileImage ? (
           <>
             <Image
               className="w-[40px] h-[40px] rounded-full"
-              src={profilePicture}
+              src={profileImage}
               alt="profile-image"
               width={40}
               height={40}
             />
             <div className="flex flex-col justify-between">
               <p className="font-subheading font-bold">{name}</p>
-              <p className="font-body text-sm font-normal">{sid}</p>
+              <p className="font-body text-sm font-normal">{nim}</p>
             </div>
           </>
         ) : (
           <>
             <span className="w-10 flex items-center justify-center h-10 rounded-full bg-[#FEFDA3] font-heading font-normal text-xl">
-              {name}
+              {name.split('-')[1]}
             </span>
-            <p className="font-subheading font-bold">{`Kelompok ${name}`}</p>
+            <p className="font-subheading font-bold">{`${name}`}</p>
           </>
         )}
       </div>
