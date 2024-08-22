@@ -61,7 +61,6 @@ const LoginPage = () => {
       }
     });
   }
-
   return (
     <div className="mt-[120px] w-full flex flex-col items-center">
       <Image src={OSKMLogo} alt="Logo OSKM" width={100} height={100} />
