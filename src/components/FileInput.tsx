@@ -7,10 +7,11 @@ import Submission from 'public/images/assignment/details/submission.png';
 import { useState } from 'react';
 import { FileChip } from './FileChip';
 import { getFileDetail } from '~/lib/file';
+import { api } from '~/trpc/react';
 
 export const FileInput = () => {
   const [file, setFile] = useState<File | null>(null);
-
+  const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
   const fileUploadHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files);
     const files = e.target.files;
@@ -23,8 +24,15 @@ export const FileInput = () => {
     setFile(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log('submit');
+    try {
+      // const result = uploadFileMutation.mutate({
+      //   fileName:
+      // })
+      //   filen,
+      // });
+    } catch (error) {}
   };
 
   return (

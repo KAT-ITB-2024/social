@@ -13,24 +13,7 @@ const AssignmentPage = () => {
         <Image src={TR} alt="TR" className="fixed w-[35%] top-0 right-0 z-10" />
 
         {/* Content */}
-        {/* <h1 className="w-full relative z-20 text-blue-600 text-center font-heading font-normal text-h3 drop-shadow-orange-shadow pb-6">
-        Attendance List
-      </h1>
-      <div className="flex flex-col gap-7">
-        {dummy.map((day, index) => (
-          <div
-            key={index}
-            className="w-full relative z-20 flex flex-col items-center justify-center gap-4"
-          >
-            <h1 className="w-full text-blue-600 text-center font-heading font-normal text-h4 drop-shadow-orange-shadow">
-              {day.day}
-            </h1>
-            {day.data.map((data, index) => (
-              <AttendanceCard key={index} data={data} />
-            ))}
-          </div>
-        ))}
-      </div> */}
+        <input type="file" />
       </div>
     </main>
   );
