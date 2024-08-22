@@ -22,8 +22,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
-import { LoadingSpinner } from '~/components/loading';
-import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { ErrorToast } from '~/components/ui/error-toast';
 
 const LoginPage = () => {
   type loginPayloadSchema = z.infer<typeof loginPayload>;
@@ -38,7 +37,6 @@ const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const { isValid } = form.formState;
 
@@ -54,8 +52,7 @@ const LoginPage = () => {
       callbackUrl: '/',
     }).then((res) => {
       if (res?.error) {
-        console.error('Sign in error:', res.error);
-        toast.error(res.error);
+        toast(<ErrorToast desc={res.error} />);
       } else {
         toast(
           <SuccessToast title="Login success!" desc="Logged in successfully" />,
@@ -64,11 +61,6 @@ const LoginPage = () => {
       }
     });
   }
-
-  if (isLoading) {
-    return <LoadingSpinnerCustom />;
-  }
-
   return (
     <div className="mt-[120px] w-full flex flex-col items-center">
       <Image src={OSKMLogo} alt="Logo OSKM" width={100} height={100} />

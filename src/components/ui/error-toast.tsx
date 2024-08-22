@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { toast } from 'sonner';
 
-export const SuccessToast = ({
-  title = 'Success',
+export const ErrorToast = ({
+  title = 'Error',
   desc,
 }: {
   title?: string;
@@ -10,10 +10,10 @@ export const SuccessToast = ({
 }) => {
   return (
     <div className="relative bg-white text-success-500 w-[450px] h-[70px] flex items-center">
-      <div className="flex flex-row border-l-4 border-success-600 ml-2 h-[60px] pl-4">
+      <div className="flex flex-row border-l-4 border-error-600 ml-2 h-[60px] pl-4">
         <div className="flex flex-row items-center justify-center gap-x-4">
           <Image
-            src={'/images/toast/check_circle.png'}
+            src={'/images/toast/error.png'}
             width={28}
             height={28}
             alt="check box"
@@ -40,7 +40,7 @@ export const SuccessToast = ({
       </div>
       <div className="absolute right-[-2.5rem] bottom-[-2rem]">
         <Image
-          src={'/images/toast/Pulau.png'}
+          src={'/images/toast/Coral.png'}
           width={90}
           height={90}
           alt="Dekorasi toast"
