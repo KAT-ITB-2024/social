@@ -10,7 +10,7 @@ import { useSearchParams } from 'next/navigation';
 
 function LeaderBoardContent() {
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) ?? 1;
+  const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
 
   const leaderboardData = api.leaderboard.getLeaderboard.useQuery(

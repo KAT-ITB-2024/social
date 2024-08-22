@@ -13,7 +13,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 export const CustomPagination = ({ totalPages }: { totalPages: number }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
 
   const pages = getPaginationItems(currentPage, totalPages);
