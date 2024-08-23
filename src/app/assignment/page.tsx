@@ -5,7 +5,7 @@ import TR from 'public/images/assignment/top-right.png';
 
 const AssignmentPage = () => {
   return (
-    <main className="flex min-h-screen w-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
       <div className="h-screen w-full bg-[url('/images/assignment/main-background.png')] bg-center bg-no-repeat bg-cover p-6 pt-32">
         {/* Background Component */}
         <Image src={LM} alt="LM" className="fixed top-30 left-0 w-[90%] z-10" />
