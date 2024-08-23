@@ -18,7 +18,7 @@ export const SuccessToast = ({
             height={28}
             alt="check box"
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col w-3/4">
             <p className="text-b2 text-neutral-700 font-bold">{title}</p>
             <p className="text-h6 text-neutral-400">{desc}</p>
           </div>

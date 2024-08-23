@@ -1,84 +1,109 @@
+'use client';
+import { useState } from 'react';
 import Image from 'next/image';
-import { Button } from '~/components/ui/button';
 import { Chip } from '~/components/Chip';
-import { FileChip } from '~/components/FileChip';
+import AttachmentButton from '~/components/Attachment';
+import FileUpload from '~/components/FileUpload';
+import { useRouter } from 'next/navigation';
 
-import BR from 'public/images/assignment/details/bottom-right.png';
-import LT from 'public/images/assignment/details/left-top.png';
-import M from 'public/images/assignment/details/middle.png';
+export default function DetailPage() {
+  const router = useRouter();
+  const [FileName, setFileName] = useState('');
+  console.log(FileName);
+  function handleBack() {
+    router.back();
+  }
 
-import LeftArrow from 'public/icons/left-arrow.svg';
-import { FileInput } from '~/components/FileInput';
-
-const AssignmentDetailPage = () => {
-  const dummy = {
-    Title: 'Tugas Hari 1',
-    Deadline: '13 September 2024',
-    Status: 'belum kumpul', // belum kumpul, terkumpul, terlambat
-    Description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur',
-    Attachment: {
-      type: 'file', // file, link
-      name: 'Soal.pdf',
-      ext: 'pdf', // pdf, doc, docx, xls, xlsx, ppt, pptx, jpg, jpeg, png
-    },
-  };
-  const { Title, Deadline, Status, Description, Attachment } = dummy;
+  const status = 'terkumpul';
 
   return (
-    <main className="flex min-h-screen w-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
-      <div className="h-screen w-full bg-[url('/images/assignment/main-background.png')] bg-center bg-no-repeat bg-cover p-6 pt-32">
-        {/* Background Component */}
-        <Image
-          src={LT}
-          alt="LT"
-          className="fixed top-[-10%] left-0 w-[90%] z-10"
-        />
-        <Image src={BR} alt="BR" className="fixed right-0 bottom-0 z-10" />
-        <Image
-          src={M}
-          alt="M"
-          className="fixed w-[70%] left-[15%] top-[10%] z-10"
-        />
-
-        {/* Content */}
-        <div className="relative w-full h-full z-20">
-          <Button size={'icon'} className="bg-transparent mb-[35px]">
-            <Image src={LeftArrow} alt="Left Arrow" />
-          </Button>
-
-          {/* Detail */}
-          <div className="w-full flex flex-col gap-5 text-pink-400 mb-[11px]">
-            {/* Header */}
-            <div className="w-full flex flex-col gap-4">
-              <h1 className="font-heading text-h3">{Title}</h1>
-              <h2 className="font-subheading text-b4">
-                <b>Deadline : </b> {Deadline}
-              </h2>
-              {Status === 'terkumpul' && (
-                <Chip label={Status} variant="GREEN" />
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <div
+        className="fixed-width-container flex flex-col"
+        style={{
+          backgroundImage: "url('/images/detail/bg-detail.png')",
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="mx-6 mt-20 overflow-y-scroll no-scrollbar">
+          <button onClick={() => handleBack()}>
+            <Image
+              className=""
+              src="/images/detail/arrow-back.svg"
+              alt="Arrow back"
+              width={40}
+              height={40}
+            />
+          </button>
+          <div className="mt-[20px] flex flex-col gap-8 lg:gap-4 text-pink-400">
+            <div className="flex flex-col gap-2">
+              <div>
+                <h3>Tugas Hari 1</h3>
+                <div className="flex flex-row">
+                  <p className="text-b4 font-bold "> Deadline :</p>
+                  <p className="text-b4"> 13 September 2024</p>
+                </div>
+              </div>
+              {status === 'terkumpul' && (
+                <Chip label={status} variant="GREEN" />
               )}
-              {Status === 'belum kumpul' && (
-                <Chip label={Status} variant="YELLOW" />
+              {/* {status === 'belum kumpul' && (
+                <Chip label={status} variant="YELLOW" />
               )}
-              {Status === 'terlambat' && <Chip label={Status} variant="RED" />}
+              {status === 'terlambat' && <Chip label={status} variant="RED" />} */}
             </div>
-
-            {/* Description */}
-            <p className="font-subheading text-b3 leading-[150%]">
-              {Description}
+            <p className="text-b3 leading-[24px]">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur
             </p>
+            <AttachmentButton
+              fileName="Soal.pdf"
+              fileUrl="https://instagram.com"
+              isUserSubmit={false}
+            />
 
-            {/* Attachment */}
-            <FileChip {...Attachment} />
+            <div
+              className={`flex flex-col overflow-visible w-full justify-center ${FileName == '' ? 'h-36 items-center' : 'h-24 pl-3'} border-2 border-blue-300 rounded-[14px]`}
+              style={{
+                background:
+                  'linear-gradient(to right, rgba(12,188,204,0.6), rgba(100,177,247,0.6))',
+              }}
+            >
+              {FileName == '' ? (
+                <div className="relative -top-4">
+                  <Image
+                    src="/images/detail/ubur-ubur.png"
+                    alt="Ubur-Ubur"
+                    width={120}
+                    height={120}
+                  />
+                  <FileUpload
+                    className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
+                    onSubmitted={setFileName}
+                  />
+                </div>
+              ) : (
+                <AttachmentButton
+                  fileName={FileName}
+                  fileUrl="https://instagram.com"
+                  isUserSubmit={true}
+                />
+              )}
+            </div>
+            {FileName != '' && (
+              <button className="w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5">
+                Submit
+              </button>
+            )}
           </div>
-
-          {/* Submission */}
-          <FileInput />
         </div>
       </div>
     </main>
   );
-};
-
-export default AssignmentDetailPage;
+}
