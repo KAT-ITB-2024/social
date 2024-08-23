@@ -6,12 +6,15 @@ import { Input } from './ui/input';
 import Submission from 'public/images/assignment/details/submission.png';
 import { useState } from 'react';
 import { FileChip } from './FileChip';
-import { getFileDetail } from '~/lib/file';
+import { getFileDetail, uploadFile } from '~/lib/file';
 import { api } from '~/trpc/react';
+import { AllowableFileTypeEnum, FolderEnum } from '~/types/payloads/storage';
 
 export const FileInput = () => {
   const [file, setFile] = useState<File | null>(null);
   const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
+  const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
+  const submissionMutation = api.submission.postSubmission.useMutation();
   const fileUploadHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.files);
     const files = e.target.files;
@@ -25,14 +28,30 @@ export const FileInput = () => {
   };
 
   const handleSubmit = async () => {
-    console.log('submit');
+    if (!file) {
+      return;
+    }
     try {
-      // const result = uploadFileMutation.mutate({
-      //   fileName:
-      // })
-      //   filen,
-      // });
-    } catch (error) {}
+      const { url, filename } = await uploadFileMutation.mutateAsync({
+        folder: FolderEnum.ASSIGNMENT,
+        filename: file.name,
+        contentType: AllowableFileTypeEnum.PDF,
+      });
+      try {
+        await uploadFile(url, file, AllowableFileTypeEnum.PDF);
+        await submissionMutation.mutateAsync({
+          assignmentId: 'm9ikdyam7mlbtd43i05abk5b',
+          file: filename,
+        });
+      } catch (error) {}
+      console.log('Ini url', url);
+    } catch (error) {
+      console.log('Error generating pre signed url');
+    }
+  };
+
+  const handleDownload = async () => {
+    console.log('Download');
   };
 
   return (
@@ -71,6 +90,15 @@ export const FileInput = () => {
       {file && (
         <Button onClick={handleSubmit} variant={'blue'} className="mt-5">
           Submit
+        </Button>
+      )}
+      {file && (
+        <Button
+          onClick={() => {
+            console.log('halo');
+          }}
+        >
+          Download Testing
         </Button>
       )}
     </>

@@ -37,6 +37,7 @@
     "@trpc/server": "next",
     "@types/ioredis": "^5.0.0",
     "@types/uuid": "^10.0.0",
+    "axios": "^1.7.4",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

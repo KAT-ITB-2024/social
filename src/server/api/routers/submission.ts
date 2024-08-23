@@ -23,20 +23,22 @@ export const submissionRouter = createTRPCRouter({
           message: 'User is not logged in',
         });
       }
-
       const assignment = await ctx.db
-        .select()
+        .select({
+          assignmentId: assignments.id,
+          assignmentType: assignments.assignmentType,
+          point: assignments.point,
+          submissionId: assignmentSubmissions.id,
+        })
         .from(assignments)
         .leftJoin(
           assignmentSubmissions,
-          eq(assignments.id, assignmentSubmissions.assignmentId),
-        )
-        .where(
           and(
-            eq(assignments.id, input.assignmentId),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+            eq(assignments.id, assignmentSubmissions.assignmentId),
+            eq(assignmentSubmissions.userNim, ctx.session.user.nim),
           ),
         )
+        .where(eq(assignments.id, input.assignmentId))
         .then((result) => result[0]);
 
       if (!assignment) {
@@ -44,17 +46,14 @@ export const submissionRouter = createTRPCRouter({
           code: 'NOT_FOUND',
           message: 'Assignment not found',
         });
-      } else if (assignment?.assignmentSubmissions) {
+      } else if (assignment.submissionId) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Submission already received, try updating',
         });
       }
 
-      if (
-        assignment?.assignments.assignmentType ==
-        assignmentTypeEnum.enumValues[0]
-      ) {
+      if (assignment.assignmentType == assignmentTypeEnum.enumValues[0]) {
         const user = await ctx.db
           .select()
           .from(users)
@@ -138,7 +137,7 @@ export const submissionRouter = createTRPCRouter({
         await ctx.db
           .update(profiles)
           .set({
-            point: sql`${profiles.point} + ${assignment.assignments.point}`,
+            point: sql`${profiles.point} + ${assignment.point}`,
           })
           .where(eq(profiles.group, ctx.session.user.group));
       }

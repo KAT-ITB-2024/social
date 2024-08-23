@@ -36,7 +36,7 @@ export const storageRouter = createTRPCRouter({
 
       try {
         const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // URL valid for 1 hour
-        return url;
+        return { url, filename };
       } catch (error) {
         console.error('Error generating pre-signed URL:', error);
         throw new TRPCError({
