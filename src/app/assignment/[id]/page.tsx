@@ -4,12 +4,14 @@ import Image from 'next/image';
 import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
 import FileUpload from '~/components/FileUpload';
+import { useRouter } from 'next/navigation';
 
 export default function DetailPage() {
+  const router = useRouter();
   const [FileName, setFileName] = useState('');
   console.log(FileName);
   function handleBack() {
-    console.log('back to previous page');
+    router.back();
   }
 
   const status = 'terkumpul';

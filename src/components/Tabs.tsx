@@ -1,12 +1,14 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '~/lib/utils';
 
-interface TabsProps {
+export interface TabsProps {
   leftTrigger: string;
   rightTrigger: string;
   leftContent: React.ReactNode;
   rightContent: React.ReactNode;
+  classname?: string;
   leftValue?: string;
   rightValue?: string;
 }
@@ -16,15 +18,16 @@ export const TabsAssignment = ({
   rightTrigger,
   leftContent,
   rightContent,
+  classname,
   leftValue = 'leftValue',
   rightValue = 'rightValue',
 }: TabsProps) => {
   return (
     <Tabs
       defaultValue={leftValue}
-      className="w-full flex flex-col items-center"
+      className={cn('w-full flex flex-col items-center', classname)}
     >
-      <TabsList className="rounded-full p-0 bg-lightYellow w-3/4 shadow-orange-sm">
+      <TabsList className="rounded-full p-0 bg-lightYellow w-3/4 shadow-orange-sm select-none">
         <TabsTrigger
           value={leftValue}
           className="w-1/2 bg-lightYellow h-full text-blue-500 rounded-full 
@@ -40,8 +43,12 @@ export const TabsAssignment = ({
           {rightTrigger}
         </TabsTrigger>
       </TabsList>
-      <TabsContent value={leftValue}>{leftContent}</TabsContent>
-      <TabsContent value={rightValue}>{rightContent}</TabsContent>
+      <TabsContent className="w-full mt-9" value={leftValue}>
+        {leftContent}
+      </TabsContent>
+      <TabsContent className="w-full mt-9" value={rightValue}>
+        {rightContent}
+      </TabsContent>
     </Tabs>
   );
 };
