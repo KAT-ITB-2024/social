@@ -16,7 +16,15 @@ const AssignmentPage = () => {
   return (
     <main className="h-screen w-full items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
       {/* Background Component */}
-      <div className="fixed h-screen w-full bg-[url('/images/assignment/main-background.png')] bg-center bg-no-repeat bg-cover p-6 pt-[100px]">
+      <div
+        className="fixed h-full w-full max-w-md"
+        style={{
+          backgroundImage: "url('/images/detail/bg-detail.png')",
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+        }}
+      >
         <Image
           src={LM}
           alt="LM"
@@ -33,8 +41,9 @@ const AssignmentPage = () => {
           className="absolute  w-[35%] top-0 right-0 z-10 select-none"
         />
       </div>
+
       {/* Content */}
-      <div className="h-full p-6 pb-0 pt-[100px] overflow-hidden">
+      <div className="h-full w-full p-6 pb-0 pt-[100px] overflow-auto">
         <div className="h-full w-full overflow-y-scroll no-scrollbar">
           <TabsAssignment {...TabsProps} classname="relative z-10" />
         </div>

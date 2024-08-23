@@ -43,10 +43,10 @@ export const TabsAssignment = ({
           {rightTrigger}
         </TabsTrigger>
       </TabsList>
-      <TabsContent className="w-full mt-9" value={leftValue}>
+      <TabsContent className="w-full my-9" value={leftValue}>
         {leftContent}
       </TabsContent>
-      <TabsContent className="w-full mt-9" value={rightValue}>
+      <TabsContent className="w-full my-9" value={rightValue}>
         {rightContent}
       </TabsContent>
     </Tabs>

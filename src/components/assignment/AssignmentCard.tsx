@@ -8,7 +8,7 @@ import { Card, CardContent } from '../ui/card';
 export interface AssignmentCardProps {
   id: string;
   title: string;
-  deadline: string;
+  deadline: Date;
   status: string;
 }
 
@@ -19,6 +19,12 @@ export const AssignmentCard = ({
   status,
 }: AssignmentCardProps) => {
   const router = useRouter();
+
+  const isLate = () => {
+    const currentTime = new Date();
+    return deadline.getTime() < currentTime.getTime();
+  };
+
   const handleClick = () => {
     console.log('task', id);
     router.push('/assignment/' + id);
@@ -32,13 +38,15 @@ export const AssignmentCard = ({
               {title}
             </h1>
             <h2 className="font-subheading font-normal text-b4 text-blue-500">
-              <b>Deadline : </b> {deadline}
+              <b>Deadline : </b> {deadline.toDateString()}
             </h2>
             {status === 'KUMPUL' && <Chip label="terkumpul" variant="GREEN" />}
-            {status === 'BELUM KUMPUL' && (
+            {status === 'BELUM KUMPUL' && !isLate() && (
               <Chip label="belum kumpul" variant="YELLOW" />
             )}
-            {status === 'TERLAMBAT' && <Chip label="terlambat" variant="RED" />}
+            {status === 'BELUM KUMPUL' && isLate() && (
+              <Chip label="terlambat" variant="RED" />
+            )}
           </div>
           <Button variant={'blue'} className="py-2 px-5" onClick={handleClick}>
             Open

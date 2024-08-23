@@ -1,70 +1,22 @@
 'use client';
 
+import { api } from '~/trpc/react';
 import { AssignmentCard } from './AssignmentCard';
 
-const dummy = [
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'KUMPUL',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'BELUM KUMPUL',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'TERLAMBAT',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'KUMPUL',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'BELUM KUMPUL',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'TERLAMBAT',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'KUMPUL',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'BELUM KUMPUL',
-  },
-  {
-    id: 'IDSDSDSDSD',
-    title: 'Tugas Tiktok',
-    deadline: '13 September 2024',
-    status: 'TERLAMBAT',
-  },
-];
-
 export const MainTask = () => {
+  const getMainQuestQuery = api.assignment.getDailyQuest.useQuery();
   return (
     <div className="w-full flex flex-col gap-5">
-      {dummy.map((task, idx) => (
-        <AssignmentCard key={idx} {...task} />
-      ))}
+      {getMainQuestQuery.data?.map((task, idx) => {
+        const status = task.assignmentSubmissions ? 'KUMPUL' : 'BELUM KUMPUL';
+        const data = {
+          id: task.assignments.id,
+          title: task.assignments.title,
+          deadline: task.assignments.deadline,
+          status,
+        };
+        return <AssignmentCard key={idx} {...data} />;
+      })}
     </div>
   );
 };
