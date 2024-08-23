@@ -63,7 +63,7 @@ export const assignmentRouter = createTRPCRouter({
         )
         .where(
           and(
-            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]),
             eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
           ),
         );
