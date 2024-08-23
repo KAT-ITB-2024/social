@@ -1,7 +1,3 @@
-// import Link from "next/link";
-// import { getServerAuthSession } from "~/server/auth";
-// import { api } from "~/trpc/server";
-// import { Button } from '@/components/ui/button';
 'use client';
 import Image from 'next/image';
 import AttachmentButton from '~/components/Attachment';
@@ -25,7 +21,7 @@ export default function DetailPage() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="mx-6 mt-20">
+        <div className="mx-6 mt-20 overflow-y-scroll no-scrollbar">
           <button onClick={() => handleBack()}>
             <Image
               className=""
