@@ -1,4 +1,3 @@
-import { Button } from '../ui/button';
 import { RadioGroupItem, RadioGroup } from '../ui/radio-group';
 import { Label } from '@radix-ui/react-label';
 interface QuestionProps {
@@ -18,14 +17,13 @@ interface Answers {
 
 export default function Question({ question, answers }: QuestionProps) {
   return (
-    <div className="flex flex-col text-blue-600 gap-3">
-      <p className="text-blue-600 text-sh5 font-bold text-center">{question}</p>
+    <div className="flex flex-col text-blue-600 gap-3 mb-7">
+      <p className="text-sh5 font-bold text-center text-shadow-green-md">
+        {question}
+      </p>
       <div
-        className="py-6 px-6 border-2 rounded-[12px] border-turquoise-300"
-        style={{
-          background:
-            'radial-gradient(100% 100% at 0% 0%, rgba(197, 255, 243, 0.7) 0%, rgba(153, 224, 255, 0.7) 100%)',
-        }}
+        className="py-6 px-6 border-2 rounded-3xl border-turquoise-300 bg-turquoise-100 shadow-blue-xl bg-opacity-70 focus-within:bg-opacity-100"
+        style={{}}
       >
         <RadioGroup className="flex flex-col gap-[30px]">
           {answers.map((answer, idx) => {
@@ -36,7 +34,7 @@ export default function Question({ question, answers }: QuestionProps) {
               >
                 <div className="flex items-center space-x-5">
                   <RadioGroupItem
-                    className="bg-none w-6 h-6 rounded-full focus:shadow-[0_0_0_2px] focus:shadow-black cursor-pointer"
+                    className=" flex-none rounded-full focus:shadow-[0_0_0_1px] focus:shadow-black cursor-pointer"
                     value={answer.answer}
                     id={answer.answer}
                   />
