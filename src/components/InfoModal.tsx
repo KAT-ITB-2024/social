@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // Alert Dialog Import
 import {
@@ -26,7 +26,7 @@ const InfoModal = ({
   description: string;
   isOpen: boolean;
   setIsOpen: (param: boolean) => void;
-  className: string;
+  className?: string;
 }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

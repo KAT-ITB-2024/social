@@ -3,6 +3,7 @@ import {
   assignmentSubmissions,
   assignmentTypeEnum,
   assignments,
+  groups,
   profiles,
   users,
 } from '@katitb2024/database';
@@ -53,24 +54,11 @@ export const submissionRouter = createTRPCRouter({
       }
 
       if (assignment.assignmentType == assignmentTypeEnum.enumValues[0]) {
-        const user = await ctx.db
-          .select()
-          .from(users)
-          .where(eq(users.nim, ctx.session?.user.nim ?? ''))
-          .then((result) => result[0]);
-
-        if (!user) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'User not found',
-          });
-        }
-
         await ctx.db
           .insert(assignmentSubmissions)
           .values({
             assignmentId: input.assignmentId,
-            userNim: user.nim,
+            userNim: ctx.session.user.nim,
             filename: input.filename,
             downloadUrl: input.downloadUrl,
             createdAt: new Date(),
@@ -88,13 +76,6 @@ export const submissionRouter = createTRPCRouter({
           })
           .from(profiles)
           .where(eq(profiles.group, ctx.session.user.group));
-
-        if (!usersInGroup) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'No users found in the group',
-          });
-        }
 
         const userIds = usersInGroup.map((element) => element.userid);
         const userDetails = await ctx.db
@@ -136,11 +117,11 @@ export const submissionRouter = createTRPCRouter({
           });
 
         await ctx.db
-          .update(profiles)
+          .update(groups)
           .set({
-            point: sql`${profiles.point} + ${assignment.point}`,
+            point: sql`${groups.point} + ${assignment.point}`,
           })
-          .where(eq(profiles.group, ctx.session.user.group));
+          .where(eq(groups.name, ctx.session.user.group));
       }
 
       return { message: 'Assignment successfully submitted' };

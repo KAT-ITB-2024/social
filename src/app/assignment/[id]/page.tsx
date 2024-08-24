@@ -12,10 +12,10 @@ import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
 import { uploadFile } from '~/lib/file';
 import { toast } from 'sonner';
 import { ErrorToast } from '~/components/ui/error-toast';
-import { SuccessToast } from '~/components/ui/success-toast';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
 import { AssignmentConfirmationModal } from '~/components/assignment/ConfirmationModal';
+import { AssingmentInfoModal } from '~/components/assignment/InfoModal';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   const [filename, setFilename] = useState<string | null>('');
   const [donwloadUrl, setDownloadUrl] = useState<string | null>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [assignmentStatus, setAssignmentStatus] =
     useState<AssignmentSubmission | null>(null);
   const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
@@ -76,6 +76,10 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     router.back();
   }
 
+  const openModal = (isOpen: boolean): void => {
+    setShowInfoModal(isOpen);
+  };
+
   const handleDelete = () => {
     if (
       assignmentStatus === AssignmentSubmission.TERKUMPUL ||
@@ -112,7 +116,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
         setFilename(filename);
         setDownloadUrl(downloadUrl);
         setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
-        toast(<SuccessToast desc="Tugas berhasil terkumpul!" />);
+        setShowInfoModal(true);
       } catch (error) {
         toast(<ErrorToast desc="Silakan coba submit ulang!" />);
       }
@@ -234,6 +238,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
+      <AssingmentInfoModal isOpen={showInfoModal} setIsOpen={openModal} />
     </main>
   );
 }
