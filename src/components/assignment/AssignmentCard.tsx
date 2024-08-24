@@ -38,7 +38,7 @@ export const AssignmentCard = ({
               {title}
             </h1>
             <h2 className="font-subheading font-normal text-b4 text-blue-500">
-              <b>Deadline : </b> {deadline.toDateString()}
+              <b>Deadline : </b> {deadline.toLocaleString()}
             </h2>
             {status === 'KUMPUL' && <Chip label="terkumpul" variant="GREEN" />}
             {status === 'BELUM KUMPUL' && !isLate() && (
