@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { AssignmentDeleteModal } from './assignment/DeleteModal';
 interface AttachmentButtonProps {
   fileUrl: string;
   fileName: string;
@@ -30,16 +31,21 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
         />
         <p className="ml-2 text-[#384053]">{fileName}</p>
       </Link>
-      {isUserSubmit && (
-        <button className="ml-4" onClick={onDelete}>
-          <Image
-            className=""
-            src="/images/detail/delete-logo.svg"
-            alt="Delete Logo"
-            width={27}
-            height={27}
-          />
-        </button>
+      {isUserSubmit && onDelete && (
+        <AssignmentDeleteModal
+          customTriggerButton={
+            <button className="ml-4">
+              <Image
+                className=""
+                src="/images/detail/delete-logo.svg"
+                alt="Delete Logo"
+                width={27}
+                height={27}
+              />
+            </button>
+          }
+          handleDelete={onDelete}
+        />
       )}
     </div>
   );

@@ -15,11 +15,13 @@ import { ErrorToast } from '~/components/ui/error-toast';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
+import { AssignmentConfirmationModal } from '~/components/assignment/ConfirmationModal';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [filename, setFilename] = useState<string | null>('');
+  const [donwloadUrl, setDownloadUrl] = useState<string | null>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [assignmentStatus, setAssignmentStatus] =
@@ -39,10 +41,10 @@ export default function DetailPage({ params }: { params: { id: string } }) {
           try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             setFilename(assignment.assignmentSubmissions.filename);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            setDownloadUrl(assignment.assignmentSubmissions.downloadUrl);
             setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
-          } catch (error) {
-            console.log('Error while fetching download url');
-          }
+          } catch (error) {}
         } else {
           if (assignment.assignments.deadline < new Date()) {
             setAssignmentStatus(AssignmentSubmission.TERLAMBAT);
@@ -75,7 +77,6 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   }
 
   const handleDelete = () => {
-    console.log('assingment status', assignmentStatus);
     if (
       assignmentStatus === AssignmentSubmission.TERKUMPUL ||
       assignmentStatus === AssignmentSubmission.BELUM_KUMPUL
@@ -108,6 +109,9 @@ export default function DetailPage({ params }: { params: { id: string } }) {
           filename,
           downloadUrl,
         });
+        setFilename(filename);
+        setDownloadUrl(downloadUrl);
+        setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
         toast(<SuccessToast desc="Tugas berhasil terkumpul!" />);
       } catch (error) {
         toast(<ErrorToast desc="Silakan coba submit ulang!" />);
@@ -189,7 +193,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               {filename ? (
                 <AttachmentButton
                   fileName={filename}
-                  fileUrl={assignment.assignmentSubmissions?.downloadUrl ?? ''}
+                  fileUrl={donwloadUrl ?? ''}
                   isUserSubmit={true}
                   onDelete={handleDelete}
                 />
@@ -211,17 +215,21 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               )}
             </div>
             {assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
-              <button
-                className={`w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5 ${
-                  file === null
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'opacity-100'
-                }`}
-                onClick={handleSubmit}
-                disabled={file === null}
-              >
-                Submit
-              </button>
+              <AssignmentConfirmationModal
+                handleSubmit={handleSubmit}
+                customTriggerButton={
+                  <button
+                    className={`w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5 ${
+                      file === null
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'opacity-100'
+                    }`}
+                    disabled={file === null}
+                  >
+                    Submit
+                  </button>
+                }
+              />
             )}
           </div>
         </div>
