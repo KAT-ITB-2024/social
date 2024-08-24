@@ -6,10 +6,9 @@ import Image from 'next/image';
 import { Textarea } from '~/components/ui/textarea';
 import BubbleChat from '~/components/chat/BubbleChat';
 import RulesModal from '~/components/chat/RulesModal';
+import InformationModal from '~/components/chat/InformationModal';
 
 const Chat = () => {
-  const [isRulesOpen, setIsRulesOpen] = useState<boolean>(true)
-
   const [messages, setMessages] = useState<
     { text: string; date: string; variant: 'sent' | 'received' }[]
   >([]);
@@ -120,9 +119,10 @@ const Chat = () => {
         </div>
       </div>
 
-      <RulesModal 
-        isOpen={isRulesOpen}
-        setIsOpen={setIsRulesOpen}
+      <InformationModal 
+        title='Skibidi Toilet'
+        description='Skibidi Sigma Rizz'
+        buttonLabel='Kembali'
       />
     </main>
   );

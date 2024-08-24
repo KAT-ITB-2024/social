@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,16 +12,12 @@ import {
 import Image from 'next/image'
 import Ombak from 'public/images/chat/Ombak.png'
 
-const RulesModal = ({
-  isOpen,
-  setIsOpen
-}:{
-  isOpen: boolean
-  setIsOpen: (params: boolean) =>  void;
-}) => {
+const RulesModal = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(true)
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      {/* Ukuran, Warna, Typography Mengikuti Figma */}
+      {/* Ukuran, Warna, Typography Mengikuti Figma, Tidak Bisa Rounded :( */}
       <AlertDialogContent className='w-[343px] rounded-[32px] border-none bg-blue-600 text-white flex flex-col items-center space-y-4 shadow-blue-xl'>
         <AlertDialogHeader>
           <AlertDialogTitle className='text-center font-subheading'>
