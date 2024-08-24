@@ -6,7 +6,7 @@ import {
   RevealStatusEvent,
   type RoomChat,
   type UserQueue,
-} from '~/types/payloads/message';
+} from '~/types/enums/message';
 import {
   cancelMatchEvent,
   checkMatchEvent,

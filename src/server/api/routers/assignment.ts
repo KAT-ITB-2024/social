@@ -110,28 +110,19 @@ export const assignmentRouter = createTRPCRouter({
             message: 'Assignment ID was not received',
           });
 
-        const quest = await ctx.db
+        const assignment = await ctx.db
           .select()
           .from(assignments)
           .leftJoin(
             assignmentSubmissions,
-            eq(assignments.id, assignmentSubmissions.assignmentId),
-          )
-          .where(
             and(
-              eq(assignments.id, input.id),
+              eq(assignments.id, assignmentSubmissions.assignmentId),
               eq(assignmentSubmissions.userNim, ctx.session.user.nim),
             ),
           )
+          .where(eq(assignments.id, input.id))
           .then((result) => result[0]);
-
-        if (!quest)
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'Quest not found',
-          });
-
-        return quest;
+        return assignment;
       } catch (e) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
