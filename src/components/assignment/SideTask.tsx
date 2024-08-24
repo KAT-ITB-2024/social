@@ -2,9 +2,13 @@
 
 import { api } from '~/trpc/react';
 import { AssignmentCard } from './AssignmentCard';
+import { LoadingSpinnerCustom } from '../ui/loading-spinner';
 
 export const SideTask = () => {
   const getSideQuestQuery = api.assignment.getSideQuest.useQuery();
+  if (getSideQuestQuery.isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
   return (
     <div className="w-full flex flex-col gap-5">
       {getSideQuestQuery.data?.map((task, idx) => {

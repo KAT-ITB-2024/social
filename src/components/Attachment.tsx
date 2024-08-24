@@ -5,14 +5,15 @@ interface AttachmentButtonProps {
   fileUrl: string;
   fileName: string;
   isUserSubmit: boolean;
+  onDelete?: () => void;
 }
 
 const AttachmentButton: React.FC<AttachmentButtonProps> = ({
   fileUrl,
   fileName,
   isUserSubmit,
+  onDelete,
 }) => {
-  console.log('ini file url filename', fileUrl, fileName);
   return (
     <div className="flex flex-row bg-[#FFFEFE] rounded-[10px] w-64 h-14 py-2 pl-[10px]">
       <Link
@@ -30,7 +31,7 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
         <p className="ml-2 text-[#384053]">{fileName}</p>
       </Link>
       {isUserSubmit && (
-        <button className="ml-4">
+        <button className="ml-4" onClick={onDelete}>
           <Image
             className=""
             src="/images/detail/delete-logo.svg"

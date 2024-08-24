@@ -8,10 +8,7 @@ import {
 } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
 import { and, eq, inArray, sql } from 'drizzle-orm';
-import {
-  putSubmissionPayload,
-  submissionPayload,
-} from '~/types/payloads/submission';
+import { submissionPayload } from '~/types/payloads/submission';
 
 export const submissionRouter = createTRPCRouter({
   postSubmission: publicProcedure
@@ -46,11 +43,13 @@ export const submissionRouter = createTRPCRouter({
           code: 'NOT_FOUND',
           message: 'Assignment not found',
         });
-      } else if (assignment.submissionId) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Submission already received, try updating',
-        });
+      }
+
+      if (assignment.submissionId) {
+        // Delete the existing submission before inserting a new one
+        await ctx.db
+          .delete(assignmentSubmissions)
+          .where(eq(assignmentSubmissions.id, assignment.submissionId));
       }
 
       if (assignment.assignmentType == assignmentTypeEnum.enumValues[0]) {
@@ -72,7 +71,8 @@ export const submissionRouter = createTRPCRouter({
           .values({
             assignmentId: input.assignmentId,
             userNim: user.nim,
-            file: input.file,
+            filename: input.filename,
+            downloadUrl: input.downloadUrl,
             createdAt: new Date(),
             updatedAt: new Date(),
           })
@@ -121,7 +121,8 @@ export const submissionRouter = createTRPCRouter({
           submissions.push({
             assignmentId: input.assignmentId,
             userNim: userDetail.nim,
-            file: input.file,
+            filename: input.filename,
+            downloadUrl: input.downloadUrl,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -143,61 +144,5 @@ export const submissionRouter = createTRPCRouter({
       }
 
       return { message: 'Assignment successfully submitted' };
-    }),
-
-  putSubmission: publicProcedure
-    .input(putSubmissionPayload)
-    .mutation(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User is not logged in',
-        });
-      }
-
-      const assignment = await ctx.db
-        .select()
-        .from(assignments)
-        .leftJoin(
-          assignmentSubmissions,
-          eq(assignments.id, assignmentSubmissions.assignmentId),
-        )
-        .where(
-          and(
-            eq(assignmentSubmissions.id, input.submissionId),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
-          ),
-        )
-        .then((result) => result[0]);
-
-      if (!assignment) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Assignment not found',
-        });
-      } else if (
-        assignment?.assignments.assignmentType ==
-        assignmentTypeEnum.enumValues[1]
-      ) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Cannot update sidequest',
-        });
-      } else if (assignment?.assignmentSubmissions?.point !== null) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Submission already scored, cannot be updated',
-        });
-      }
-
-      await ctx.db
-        .update(assignmentSubmissions)
-        .set({
-          file: input.file,
-          updatedAt: new Date(),
-        })
-        .where(eq(assignmentSubmissions.id, input.submissionId));
-
-      return 'Submission successfully updated';
     }),
 });

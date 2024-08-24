@@ -162,7 +162,8 @@ export async function seedAssignmentSubmission(
     await db.insert(schema.assignmentSubmissions).values({
       assignmentId: assignments[i % 4]?.id ?? '',
       userNim: users[i]?.nim ?? '',
-      file: 'file 1',
+      filename: 'file 1',
+      downloadUrl: 'https://google.com',
       point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
       updatedAt: new Date(),
     });

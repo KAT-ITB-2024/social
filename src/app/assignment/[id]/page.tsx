@@ -5,22 +5,23 @@ import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
 import FileUpload from '~/components/FileUpload';
 import { useRouter } from 'next/navigation';
-import { type GetServerSideProps } from 'next';
 import { api } from '~/trpc/react';
-import { LoadingSpinner } from '~/components/Loading';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
-import { type AssignmentData } from '~/types/payloads/assignment';
 import { AssignmentSubmission } from '~/types/enums/assignment';
 import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
 import { uploadFile } from '~/lib/file';
 import { toast } from 'sonner';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { SuccessToast } from '~/components/ui/success-toast';
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale/id';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string>('');
+  const [filename, setFilename] = useState<string | null>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [assignmentStatus, setAssignmentStatus] =
     useState<AssignmentSubmission | null>(null);
   const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
@@ -36,11 +37,8 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       if (assignment) {
         if (assignment.assignmentSubmissions !== null) {
           try {
-            const url = await downloadFileMutation.mutateAsync({
-              folder: FolderEnum.ASSIGNMENT,
-              filename: assignment.assignmentSubmissions.file,
-            });
-            setDownloadUrl(url);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            setFilename(assignment.assignmentSubmissions.filename);
             setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
           } catch (error) {
             console.log('Error while fetching download url');
@@ -64,16 +62,32 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     });
   }, [assignment, isLoading]);
 
+  useEffect(() => {
+    if (file) {
+      setFilename(file.name);
+    } else {
+      setFilename(null);
+    }
+  }, [file]);
+
   function handleBack() {
     router.back();
   }
 
-  // To do : handle kalo no assignment (sbnrnya hampir ga mungkin)
-  if (isLoading || !assignment) {
-    return <LoadingSpinnerCustom />;
-  }
+  const handleDelete = () => {
+    console.log('assingment status', assignmentStatus);
+    if (
+      assignmentStatus === AssignmentSubmission.TERKUMPUL ||
+      assignmentStatus === AssignmentSubmission.BELUM_KUMPUL
+    ) {
+      setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
+      setFilename(null);
+      setFile(null);
+    }
+  };
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     if (!file) {
       return;
     }
@@ -84,10 +98,15 @@ export default function DetailPage({ params }: { params: { id: string } }) {
         contentType: AllowableFileTypeEnum.PDF,
       });
       try {
+        const downloadUrl = await downloadFileMutation.mutateAsync({
+          folder: FolderEnum.ASSIGNMENT,
+          filename: filename,
+        });
         await uploadFile(url, file, AllowableFileTypeEnum.PDF);
         await submissionMutation.mutateAsync({
           assignmentId: params.id,
-          file: filename,
+          filename,
+          downloadUrl,
         });
         toast(<SuccessToast desc="Tugas berhasil terkumpul!" />);
       } catch (error) {
@@ -95,9 +114,14 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       }
     } catch (error) {
       toast(<ErrorToast desc="Silakan coba submit ulang!" />);
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
+  // To do : handle kalo no assignment (sbnrnya hampir ga mungkin)
+  if (isLoading || !assignment || isSubmitting) {
+    return <LoadingSpinnerCustom />;
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div
@@ -124,10 +148,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               <div>
                 <h3>{assignment.assignments.title}</h3>
                 <div className="flex flex-row">
-                  <p className="text-b4 font-bold "> Deadline :</p>
                   <p className="text-b4">
                     {' '}
-                    {assignment.assignments.deadline.toDateString()}
+                    <b>Deadline :</b>{' '}
+                    {format(assignment.assignments.deadline, 'PPPP', {
+                      locale: idLocale,
+                    })}
                   </p>
                 </div>
               </div>
@@ -148,7 +174,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               // To do : Handle buka + download soal
               <AttachmentButton
                 fileName="Soal.pdf"
-                fileUrl="https://instagram.com"
+                fileUrl={assignment.assignments.file}
                 isUserSubmit={false}
               />
             )}
@@ -160,18 +186,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   'linear-gradient(to right, rgba(12,188,204,0.6), rgba(100,177,247,0.6))',
               }}
             >
-              {assignment.assignmentSubmissions && (
+              {filename ? (
                 <AttachmentButton
-                  fileName={assignment.assignmentSubmissions.file}
-                  fileUrl={downloadUrl}
+                  fileName={filename}
+                  fileUrl={assignment.assignmentSubmissions?.downloadUrl ?? ''}
                   isUserSubmit={true}
-                />
-              )}
-              {file ? (
-                <AttachmentButton
-                  fileName={file.name}
-                  fileUrl="https://instagram.com"
-                  isUserSubmit={true}
+                  onDelete={handleDelete}
                 />
               ) : (
                 assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
@@ -190,10 +210,15 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                 )
               )}
             </div>
-            {file && (
+            {assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
               <button
-                className="w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
+                className={`w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5 ${
+                  file === null
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'opacity-100'
+                }`}
                 onClick={handleSubmit}
+                disabled={file === null}
               >
                 Submit
               </button>

@@ -5,7 +5,7 @@ import {
   assignments,
 } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, lte } from 'drizzle-orm';
 import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
 
 export const assignmentRouter = createTRPCRouter({
@@ -18,17 +18,23 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
+      const userSubmissionQuery = ctx.db
+        .select()
+        .from(assignmentSubmissions)
+        .where(eq(assignmentSubmissions.userNim, ctx.session.user.nim))
+        .as('assignmentSubmissions');
+
       const dailyQuests = await ctx.db
         .select()
         .from(assignments)
         .leftJoin(
-          assignmentSubmissions,
-          eq(assignments.id, assignmentSubmissions.assignmentId),
+          userSubmissionQuery,
+          eq(assignments.id, userSubmissionQuery.assignmentId),
         )
         .where(
           and(
             eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+            lte(assignments.startTime, new Date()),
           ),
         );
 
@@ -54,17 +60,23 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
+      const userSubmissionQuery = ctx.db
+        .select()
+        .from(assignmentSubmissions)
+        .where(eq(assignmentSubmissions.userNim, ctx.session.user.nim))
+        .as('assignmentSubmissions');
+
       const sideQuests = await ctx.db
         .select()
         .from(assignments)
         .leftJoin(
-          assignmentSubmissions,
-          eq(assignments.id, assignmentSubmissions.assignmentId),
+          userSubmissionQuery,
+          eq(assignments.id, userSubmissionQuery.assignmentId),
         )
         .where(
           and(
             eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+            lte(assignments.startTime, new Date()),
           ),
         );
 
