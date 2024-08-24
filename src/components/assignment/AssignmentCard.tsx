@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { Chip } from '../Chip';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale/id';
 
 export interface AssignmentCardProps {
   id: string;
@@ -38,7 +40,10 @@ export const AssignmentCard = ({
               {title}
             </h1>
             <h2 className="font-subheading font-normal text-b4 text-blue-500">
-              <b>Deadline : </b> {deadline.toLocaleString()}
+              <b>Deadline : </b>{' '}
+              {format(deadline, 'PPPP', {
+                locale: idLocale,
+              })}
             </h2>
             {status === 'KUMPUL' && <Chip label="terkumpul" variant="GREEN" />}
             {status === 'BELUM KUMPUL' && !isLate() && (

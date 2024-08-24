@@ -5,12 +5,12 @@ import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
 import FileUpload from '~/components/FileUpload';
 import { useRouter } from 'next/navigation';
-import { type GetServerSideProps } from 'next';
 import { api } from '~/trpc/react';
-import { LoadingSpinner } from '~/components/Loading';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { type AssignmentData } from '~/types/payloads/assignment';
 import { AssignmentSubmission } from '~/types/enums/assignment';
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale/id';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -80,10 +80,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               <div>
                 <h3>{assignment.assignments.title}</h3>
                 <div className="flex flex-row">
-                  <p className="text-b4 font-bold "> Deadline :</p>
                   <p className="text-b4">
                     {' '}
-                    {assignment.assignments.deadline.toDateString()}
+                    <b>Deadline :</b>{' '}
+                    {format(assignment.assignments.deadline, 'PPPP', {
+                      locale: idLocale,
+                    })}
                   </p>
                 </div>
               </div>
