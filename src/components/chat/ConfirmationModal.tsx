@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
@@ -12,14 +13,16 @@ import {
 import Image from 'next/image'
 import Ombak from 'public/images/chat/Ombak.png'
 
-const InformationModal = ({
+const ConfirmationModal = ({
   title,
   description,
-  buttonLabel
+  buttonLabel1,
+  buttonLabel2,
 }:{
   title: string
-  description: string
-  buttonLabel: string
+  description?: string
+  buttonLabel1: string
+  buttonLabel2?: string
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(true)
 
@@ -34,9 +37,14 @@ const InformationModal = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <div className='flex flex-col items-center gap-y-4 space-y-4'>
-            <AlertDialogCancel className='bg-pink-300 hover:bg-pink-400 border-white text-neutral-50 hover:text-neutral-100 rounded-[13px] font-body focus-visible:ring-transparent w-[192px] text-xl'>
-              {buttonLabel}
-            </AlertDialogCancel>
+            <div className='flex items-center gap-x-4'>
+              <AlertDialogCancel className='bg-pink-300 hover:bg-pink-400 border-white text-neutral-50 hover:text-neutral-100 rounded-[13px] font-body focus-visible:ring-transparent w-[120px] text-xl'>
+                {buttonLabel1}
+              </AlertDialogCancel>
+              <AlertDialogAction className='bg-neutral-50 border-blue-200 text-blue-600 hover:bg-neutral-100 w-[120px] rounded-[13px]'>
+                {buttonLabel2}
+              </AlertDialogAction>
+            </div>
             <p>{description}</p>
           </div>
         </AlertDialogFooter>
@@ -50,4 +58,4 @@ const InformationModal = ({
   )
 }
 
-export default InformationModal
+export default ConfirmationModal

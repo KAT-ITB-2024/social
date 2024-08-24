@@ -7,6 +7,7 @@ import { Textarea } from '~/components/ui/textarea';
 import BubbleChat from '~/components/chat/BubbleChat';
 import RulesModal from '~/components/chat/RulesModal';
 import InformationModal from '~/components/chat/InformationModal';
+import ConfirmationModal from '~/components/chat/ConfirmationModal';
 
 const Chat = () => {
   const [messages, setMessages] = useState<
@@ -118,12 +119,6 @@ const Chat = () => {
           </div>
         </div>
       </div>
-
-      <InformationModal 
-        title='Skibidi Toilet'
-        description='Skibidi Sigma Rizz'
-        buttonLabel='Kembali'
-      />
     </main>
   );
 };
