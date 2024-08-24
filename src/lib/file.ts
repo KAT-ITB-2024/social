@@ -1,5 +1,5 @@
-import { type AllowableFileTypeEnum } from '~/types/payloads/storage';
 import axios, { type AxiosProgressEvent } from 'axios';
+import { AllowableFileTypeEnum } from '~/types/enums/storage';
 
 export const getFileDetail = (file: File) => {
   const name = file.name;

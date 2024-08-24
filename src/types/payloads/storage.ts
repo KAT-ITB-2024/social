@@ -1,16 +1,5 @@
 import { z } from 'zod';
-
-export enum FolderEnum {
-  PROFILE = 'profile',
-  ASSIGNMENT = 'assignment',
-  MATERIAL = 'material',
-}
-
-export enum AllowableFileTypeEnum {
-  PDF = 'application/pdf',
-  PNG = 'image/png',
-  JPEG = 'image/jpeg',
-}
+import { AllowableFileTypeEnum, FolderEnum } from '../enums/storage';
 
 export const UploadFilePayload = z.object({
   folder: z.nativeEnum(FolderEnum),

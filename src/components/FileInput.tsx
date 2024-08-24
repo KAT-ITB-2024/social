@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { FileChip } from './FileChip';
 import { getFileDetail, uploadFile } from '~/lib/file';
 import { api } from '~/trpc/react';
-import { AllowableFileTypeEnum, FolderEnum } from '~/types/payloads/storage';
+import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
 
 export const FileInput = () => {
   const [file, setFile] = useState<File | null>(null);

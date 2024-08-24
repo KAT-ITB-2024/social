@@ -1,20 +1,58 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
 import FileUpload from '~/components/FileUpload';
 import { useRouter } from 'next/navigation';
+import { type GetServerSideProps } from 'next';
+import { api } from '~/trpc/react';
+import { LoadingSpinner } from '~/components/Loading';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { type AssignmentData } from '~/types/payloads/assignment';
+import { AssignmentSubmission } from '~/types/enums/assignment';
 
-export default function DetailPage() {
+export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [FileName, setFileName] = useState('');
-  console.log(FileName);
+  const [assignmentStatus, setAssignmentStatus] =
+    useState<AssignmentSubmission | null>(null);
+  const [currentAssingment, setCurrentAssignment] =
+    useState<AssignmentData | null>(null);
+  const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
+    id: params.id,
+  });
+
+  useEffect(() => {
+    console.log('Ini assingment', assignment);
+    if (assignment) {
+      setCurrentAssignment(assignment);
+      if (assignment.assignmentSubmissions !== null) {
+        setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+      } else {
+        console.log('Ga terkumpul');
+        if (assignment.assignments.deadline < new Date()) {
+          console.log('Terlambat');
+          setAssignmentStatus(AssignmentSubmission.TERLAMBAT);
+        } else {
+          console.log('belum kumpul');
+          setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
+        }
+      }
+    }
+    // if (!isLoading && !assignment) {
+    //   router.push('/not-found');
+    // }
+  }, [assignment, isLoading]);
+
   function handleBack() {
     router.back();
   }
 
-  const status = 'terkumpul';
+  // To do : handle kalo no assignment (sbnrnya hampir ga mungkin)
+  if (isLoading || !assignment) {
+    return <LoadingSpinnerCustom />;
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -40,33 +78,36 @@ export default function DetailPage() {
           <div className="mt-[20px] flex flex-col gap-8 lg:gap-4 text-pink-400">
             <div className="flex flex-col gap-2">
               <div>
-                <h3>Tugas Hari 1</h3>
+                <h3>{assignment.assignments.title}</h3>
                 <div className="flex flex-row">
                   <p className="text-b4 font-bold "> Deadline :</p>
-                  <p className="text-b4"> 13 September 2024</p>
+                  <p className="text-b4">
+                    {' '}
+                    {assignment.assignments.deadline.toDateString()}
+                  </p>
                 </div>
               </div>
-              {status === 'terkumpul' && (
-                <Chip label={status} variant="GREEN" />
+              {assignmentStatus === AssignmentSubmission.TERKUMPUL && (
+                <Chip label={assignmentStatus} variant="GREEN" />
               )}
-              {/* {status === 'belum kumpul' && (
-                <Chip label={status} variant="YELLOW" />
+              {assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
+                <Chip label={assignmentStatus} variant="YELLOW" />
               )}
-              {status === 'terlambat' && <Chip label={status} variant="RED" />} */}
+              {assignmentStatus === AssignmentSubmission.TERLAMBAT && (
+                <Chip label={assignmentStatus} variant="RED" />
+              )}
             </div>
             <p className="text-b3 leading-[24px]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur
+              {assignment.assignments.description}
             </p>
-            <AttachmentButton
-              fileName="Soal.pdf"
-              fileUrl="https://instagram.com"
-              isUserSubmit={false}
-            />
+            {assignment.assignments.file && (
+              // To do : Handle buka + download soal
+              <AttachmentButton
+                fileName="Soal.pdf"
+                fileUrl="https://instagram.com"
+                isUserSubmit={false}
+              />
+            )}
 
             <div
               className={`flex flex-col overflow-visible w-full justify-center ${FileName == '' ? 'h-36 items-center' : 'h-24 pl-3'} border-2 border-blue-300 rounded-[14px]`}
