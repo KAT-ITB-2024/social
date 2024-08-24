@@ -1,6 +1,6 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq, inArray, lte, or, sql } from 'drizzle-orm';
+import { and, desc, eq, isNotNull, lte, or } from 'drizzle-orm';
 import { messages, profiles, userMatches } from '@katitb2024/database';
 import { z } from 'zod';
 import { alias } from 'drizzle-orm/pg-core';
@@ -162,6 +162,13 @@ export const messageRouter = createTRPCRouter({
           content: input.content,
         });
 
+        await ctx.db
+          .update(userMatches)
+          .set({
+            lastMessage: input.content,
+          })
+          .where(eq(userMatches.id, input.userMatchId));
+
         return {
           status: 200,
           data: 'Message sent successfully',
@@ -198,10 +205,16 @@ export const messageRouter = createTRPCRouter({
       // get total number of headers and pages available
       // delete this query (along with the corresponding response) if you don't need the number of headers and cursors
       const totalCursor = await ctx.db
-        .selectDistinct({ userMatchId: messages.userMatchId })
-        .from(messages)
+        .select()
+        .from(userMatches)
         .where(
-          or(eq(messages.senderId, userId), eq(messages.receiverId, userId)),
+          and(
+            or(
+              eq(userMatches.firstUserId, userId),
+              eq(userMatches.secondUserId, userId),
+            ),
+            isNotNull(userMatches.endedAt),
+          ),
         );
 
       const numberOfHeaders = totalCursor.length;
@@ -210,65 +223,44 @@ export const messageRouter = createTRPCRouter({
         Math.ceil(numberOfHeaders / input.limit),
       );
 
-      // subquery for sorted messages
-      const sortedMessages = ctx.db
-        .select()
-        .from(messages)
-        .where(
-          or(eq(messages.senderId, userId), eq(messages.receiverId, userId)),
-        )
-        .orderBy(desc(messages.createdAt))
-        .as('sortedMessages');
-
-      const latestMessages = await ctx.db
-        .selectDistinctOn([sortedMessages.userMatchId], {
-          id: sortedMessages.id,
+      const chatHeaders: ChatHeaderData[] = await ctx.db
+        .select({
+          firstUser: {
+            id: userMatches.firstUserId,
+            name: profiles1.name,
+            profileImage: profiles1.profileImage,
+          },
+          secondUser: {
+            id: userMatches.secondUserId,
+            name: profiles2.name,
+            profileImage: profiles2.profileImage,
+          },
+          lastMessage: userMatches.lastMessage,
+          isRevealed: userMatches.isRevealed,
+          isAnonymous: userMatches.isAnonymous,
+          endedAt: userMatches.endedAt,
         })
-        .from(sortedMessages);
-
-      const latestMessagesIds = latestMessages.map((data) => data.id);
-
-      let chatHeaders: ChatHeaderData[] = [];
-
-      if (latestMessagesIds.length > 0) {
-        chatHeaders = await ctx.db
-          .select({
-            id: messages.id,
-            createdAt: messages.createdAt,
-            userMatchId: messages.userMatchId,
-            senderId: messages.senderId,
-            senderName: profiles1.name,
-            senderImage: profiles1.profileImage,
-            receiverId: messages.receiverId,
-            receiverName: profiles2.name,
-            receiverImage: profiles2.profileImage,
-            isRead: messages.isRead,
-            content: messages.content,
-            isRevealed: userMatches.isRevealed,
-          })
-          .from(messages)
-          .innerJoin(profiles1, eq(messages.senderId, profiles1.userId))
-          .innerJoin(profiles2, eq(messages.receiverId, profiles2.userId))
-          .innerJoin(userMatches, eq(messages.userMatchId, userMatches.id))
-          .where(inArray(messages.id, latestMessagesIds))
-          .orderBy(desc(messages.createdAt))
-          .limit(input.limit)
-          .offset(input.limit * (input.cursor - 1));
-      }
+        .from(userMatches)
+        .innerJoin(profiles1, eq(profiles1.userId, userMatches.firstUserId))
+        .innerJoin(profiles2, eq(profiles2.userId, userMatches.secondUserId))
+        .where(
+          and(
+            or(
+              eq(userMatches.firstUserId, userId),
+              eq(userMatches.secondUserId, userId),
+            ),
+            isNotNull(userMatches.endedAt),
+          ),
+        )
+        .orderBy(desc(userMatches.createdAt))
+        .limit(input.limit)
+        .offset(input.limit * (input.cursor - 1));
 
       const data: ChatHeader[] = chatHeaders.map((chatHeader) => {
         const otherUser =
-          chatHeader.senderId === userId
-            ? {
-                id: chatHeader.receiverId,
-                name: chatHeader.receiverName,
-                profileImage: chatHeader.receiverImage,
-              }
-            : {
-                id: chatHeader.senderId,
-                name: chatHeader.senderName,
-                profileImage: chatHeader.receiverImage,
-              };
+          chatHeader.firstUser.id === userId
+            ? chatHeader.secondUser
+            : chatHeader.firstUser;
         if (!otherUser) {
           throw new TRPCError({
             code: 'NOT_FOUND',
@@ -277,67 +269,27 @@ export const messageRouter = createTRPCRouter({
         }
 
         return {
+          lastMessage: chatHeader.lastMessage,
           user: {
             id: otherUser.id,
-            name: !chatHeader.isRevealed ? 'Anonymous' : otherUser.name,
-            profileImage: !chatHeader.isRevealed
-              ? null
-              : otherUser.profileImage,
+            name:
+              chatHeader.isAnonymous && !chatHeader.isRevealed
+                ? 'Anynomous'
+                : otherUser.name,
+            profileImage:
+              chatHeader.isAnonymous && !chatHeader.isRevealed
+                ? null
+                : otherUser.profileImage,
           },
-          lastMessage: {
-            id: chatHeader.id,
-            senderId: chatHeader.senderId,
-            receiverId: chatHeader.receiverId,
-            content: chatHeader.content,
-            isRead: chatHeader.isRead,
-            createdAt: chatHeader.createdAt,
-            userMatchId: chatHeader.userMatchId,
-          },
-          unreadMessageCount: 0,
+          endedAt: chatHeader.endedAt,
         };
       });
-
-      // check all ids in chatHeaders where the current user is the receiver and lastMessage's isRead status is false
-      const toCheckIds = chatHeaders
-        .filter((e) => !e.isRead && e.receiverId === userId)
-        .map((e) => e.senderId);
-
-      if (toCheckIds.length > 0) {
-        // count unreadCount for all corresponding sender in toCheckIds
-        const unreadCount = await ctx.db
-          .select({
-            senderId: messages.senderId,
-            count: sql<number>`cast(count(*) as integer)`.as('count'),
-          })
-          .from(messages)
-          .where(
-            and(
-              eq(messages.receiverId, userId),
-              eq(messages.isRead, false),
-              inArray(messages.senderId, toCheckIds),
-            ),
-          )
-          .groupBy(messages.senderId);
-
-        // update the unreadMessageCount for all chatHeaders data
-        data.forEach((e) => {
-          if (!e.lastMessage.isRead && e.lastMessage.receiverId === userId) {
-            const unreadTarget = unreadCount.filter(
-              (u) => u.senderId === e.lastMessage.senderId,
-            )[0];
-
-            if (unreadTarget) {
-              e.unreadMessageCount = unreadTarget.count;
-            }
-          }
-        });
-      }
 
       return {
         data,
         nextCursor: data.length < input.limit ? undefined : input.cursor + 1,
-        numberOfCursors, // number of pages available (delete if not needed)
-        numberOfHeaders, // number of header records in db (delete if not needed)
+        numberOfCursors,
+        numberOfHeaders,
       };
     }),
 
@@ -366,5 +318,54 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  // TODO: updateisRead
+  updateIsRead: publicProcedure
+    .input(
+      z.object({
+        userMatchId: z.string(),
+        receiverId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(messages)
+        .set({ isRead: true })
+        .where(
+          and(
+            and(
+              eq(messages.userMatchId, input.userMatchId),
+              eq(messages.receiverId, input.receiverId),
+            ),
+            eq(messages.isRead, false),
+          ),
+        );
+    }),
+
+  updateIsReadCurrUser: publicProcedure
+    .input(
+      z.object({
+        userMatchId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session === null) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+        });
+      }
+
+      const userId = ctx.session.user.id;
+
+      await ctx.db
+        .update(messages)
+        .set({ isRead: true })
+        .where(
+          and(
+            and(
+              eq(messages.userMatchId, input.userMatchId),
+              eq(messages.receiverId, userId),
+            ),
+            eq(messages.isRead, false),
+          ),
+        );
+    }),
 });

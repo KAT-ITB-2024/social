@@ -1,4 +1,3 @@
-import { type Message } from '@katitb2024/database';
 import { z } from 'zod';
 
 export type UserQueue = {
@@ -18,28 +17,30 @@ export enum RevealStatusEvent {
 }
 
 export type ChatHeaderData = {
-  id: string;
-  createdAt: Date;
-  userMatchId: string;
-  senderId: string;
-  senderName: string;
-  senderImage: string | null;
-  receiverId: string;
-  receiverName: string;
-  receiverImage: string | null;
-  isRead: boolean;
-  content: string;
+  firstUser: {
+    id: string;
+    name: string;
+    profileImage: string | null;
+  };
+  secondUser: {
+    id: string;
+    name: string;
+    profileImage: string | null;
+  };
+  lastMessage: string | null;
   isRevealed: boolean;
+  isAnonymous: boolean;
+  endedAt: Date | null;
 };
 
 export type ChatHeader = {
-  lastMessage: Message;
+  lastMessage: string | null;
+  endedAt: Date | null;
   user: {
     id: string;
     name: string;
     profileImage: string | null;
   };
-  unreadMessageCount: number;
 };
 
 export const createMessagePayload = z.object({
