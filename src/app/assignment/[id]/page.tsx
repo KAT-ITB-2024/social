@@ -11,38 +11,57 @@ import { LoadingSpinner } from '~/components/Loading';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { type AssignmentData } from '~/types/payloads/assignment';
 import { AssignmentSubmission } from '~/types/enums/assignment';
+import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
+import { uploadFile } from '~/lib/file';
+import { toast } from 'sonner';
+import { ErrorToast } from '~/components/ui/error-toast';
+import { SuccessToast } from '~/components/ui/success-toast';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [FileName, setFileName] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string>('');
   const [assignmentStatus, setAssignmentStatus] =
     useState<AssignmentSubmission | null>(null);
-  const [currentAssingment, setCurrentAssignment] =
-    useState<AssignmentData | null>(null);
   const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
     id: params.id,
   });
 
+  const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
+  const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
+  const submissionMutation = api.submission.postSubmission.useMutation();
+
   useEffect(() => {
-    console.log('Ini assingment', assignment);
-    if (assignment) {
-      setCurrentAssignment(assignment);
-      if (assignment.assignmentSubmissions !== null) {
-        setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
-      } else {
-        console.log('Ga terkumpul');
-        if (assignment.assignments.deadline < new Date()) {
-          console.log('Terlambat');
-          setAssignmentStatus(AssignmentSubmission.TERLAMBAT);
+    const fetchDownloadUrl = async () => {
+      if (assignment) {
+        if (assignment.assignmentSubmissions !== null) {
+          try {
+            const url = await downloadFileMutation.mutateAsync({
+              folder: FolderEnum.ASSIGNMENT,
+              filename: assignment.assignmentSubmissions.file,
+            });
+            setDownloadUrl(url);
+            setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+          } catch (error) {
+            console.log('Error while fetching download url');
+          }
         } else {
-          console.log('belum kumpul');
-          setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
+          if (assignment.assignments.deadline < new Date()) {
+            setAssignmentStatus(AssignmentSubmission.TERLAMBAT);
+          } else {
+            setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
+          }
         }
       }
-    }
-    // if (!isLoading && !assignment) {
-    //   router.push('/not-found');
-    // }
+
+      if (!isLoading && !assignment) {
+        router.push('/not-found');
+      }
+    };
+
+    fetchDownloadUrl().catch((error) => {
+      console.error('An unexpected error occurred in fetchDownloadUrl', error);
+    });
   }, [assignment, isLoading]);
 
   function handleBack() {
@@ -53,6 +72,31 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   if (isLoading || !assignment) {
     return <LoadingSpinnerCustom />;
   }
+
+  const handleSubmit = async () => {
+    if (!file) {
+      return;
+    }
+    try {
+      const { url, filename } = await uploadFileMutation.mutateAsync({
+        folder: FolderEnum.ASSIGNMENT,
+        filename: file.name,
+        contentType: AllowableFileTypeEnum.PDF,
+      });
+      try {
+        await uploadFile(url, file, AllowableFileTypeEnum.PDF);
+        await submissionMutation.mutateAsync({
+          assignmentId: params.id,
+          file: filename,
+        });
+        toast(<SuccessToast desc="Tugas berhasil terkumpul!" />);
+      } catch (error) {
+        toast(<ErrorToast desc="Silakan coba submit ulang!" />);
+      }
+    } catch (error) {
+      toast(<ErrorToast desc="Silakan coba submit ulang!" />);
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -110,35 +154,47 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             )}
 
             <div
-              className={`flex flex-col overflow-visible w-full justify-center ${FileName == '' ? 'h-36 items-center' : 'h-24 pl-3'} border-2 border-blue-300 rounded-[14px]`}
+              className={`flex flex-col overflow-visible w-full justify-center ${file === null ? 'h-36 items-center' : 'h-24 pl-3'} border-2 border-blue-300 rounded-[14px]`}
               style={{
                 background:
                   'linear-gradient(to right, rgba(12,188,204,0.6), rgba(100,177,247,0.6))',
               }}
             >
-              {FileName == '' ? (
-                <div className="relative -top-4">
-                  <Image
-                    src="/images/detail/ubur-ubur.png"
-                    alt="Ubur-Ubur"
-                    width={120}
-                    height={120}
-                  />
-                  <FileUpload
-                    className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
-                    onSubmitted={setFileName}
-                  />
-                </div>
-              ) : (
+              {assignment.assignmentSubmissions && (
                 <AttachmentButton
-                  fileName={FileName}
-                  fileUrl="https://instagram.com"
+                  fileName={assignment.assignmentSubmissions.file}
+                  fileUrl={downloadUrl}
                   isUserSubmit={true}
                 />
               )}
+              {file ? (
+                <AttachmentButton
+                  fileName={file.name}
+                  fileUrl="https://instagram.com"
+                  isUserSubmit={true}
+                />
+              ) : (
+                assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
+                  <div className="relative -top-4">
+                    <Image
+                      src="/images/detail/ubur-ubur.png"
+                      alt="Ubur-Ubur"
+                      width={120}
+                      height={120}
+                    />
+                    <FileUpload
+                      className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
+                      onSubmitted={setFile}
+                    />
+                  </div>
+                )
+              )}
             </div>
-            {FileName != '' && (
-              <button className="w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5">
+            {file && (
+              <button
+                className="w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
+                onClick={handleSubmit}
+              >
                 Submit
               </button>
             )}

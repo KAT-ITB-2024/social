@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 interface FileUploadProps {
   className: string;
-  onSubmitted: (fileName: string) => void;
+  onSubmitted: (file: File) => void;
 }
 const FileUploader: React.FC<FileUploadProps> = ({
   className,
@@ -19,7 +19,7 @@ const FileUploader: React.FC<FileUploadProps> = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      onSubmitted(file.name);
+      onSubmitted(file);
     }
   };
 
