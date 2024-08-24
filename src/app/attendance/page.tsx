@@ -8,8 +8,16 @@ import Coral from 'public/images/attendance/Coral.png';
 import CoralPensu from 'public/images/attendance/Coral Pensu.png';
 import { AttendanceCard } from '~/components/attendance/AttendanceCard';
 import { api } from '~/trpc/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function AttendancePage() {
+  const { data: session } = useSession();
+
+  if (!session) {
+    redirect("/login")
+  }
+
   const getAllAttendancesQuery = api.attendance.getAllAttendances.useQuery();
   return (
     <main className="flex min-h-screen w-screen max-w-md flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">

@@ -3,7 +3,16 @@ import Image from 'next/image';
 import AttachmentButton from '~/components/Attachment';
 import { useState } from 'react';
 import FileUpload from '~/components/FileUpload';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+
 export default function DetailPage() {
+  const { data: session } = useSession();
+
+  if (!session) {
+    redirect("/login")
+  }
+  
   const [FileName, setFileName] = useState('');
   console.log(FileName);
   function handleBack() {

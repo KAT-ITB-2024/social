@@ -25,8 +25,16 @@ import Starfish from 'public/images/login/Starfish.png';
 // Component Import
 import InfoModal from '~/components/InfoModal';
 import { api } from '~/trpc/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const ForgotPasswordPage = () => {
+  const { data: session } = useSession();
+
+  if (!session) {
+    redirect("/login")
+  }
+
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   type RequestResetPasswordPayloadSchema = z.infer<

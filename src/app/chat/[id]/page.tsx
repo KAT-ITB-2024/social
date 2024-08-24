@@ -8,8 +8,16 @@ import BubbleChat from '~/components/chat/BubbleChat';
 import RulesModal from '~/components/chat/RulesModal';
 import InformationModal from '~/components/chat/InformationModal';
 import ConfirmationModal from '~/components/chat/ConfirmationModal';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const Chat = () => {
+  const { data: session } = useSession();
+
+  if (!session) {
+    redirect("/login")
+  }
+
   const [messages, setMessages] = useState<
     { text: string; date: string; variant: 'sent' | 'received' }[]
   >([]);

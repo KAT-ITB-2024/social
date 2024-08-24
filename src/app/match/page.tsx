@@ -6,8 +6,16 @@ import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
 import { socket } from '~/utils/socket';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function MatchPage() {
+  const { data: session } = useSession();
+
+  if (!session) {
+    redirect("/login")
+  }
+  
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();

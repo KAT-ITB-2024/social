@@ -1,7 +1,7 @@
 'use client';
 import { type Message } from '@katitb2024/database';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
@@ -10,9 +10,13 @@ import { RevealStatusEvent } from '~/types/payloads/message';
 import { socket } from '~/utils/socket';
 
 export default function MatchPage() {
+  const { data: session } = useSession({ required: true });
+
+  if (!session) {
+    redirect("/login")
+  }
   // const queueEmit = useEmit('findMatch');
   // socket.connect();
-  const { data: session } = useSession({ required: true });
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [showRevealPopup, setShowRevealPopup] = useState(false);
