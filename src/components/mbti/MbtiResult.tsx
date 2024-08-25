@@ -23,7 +23,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
         height={350}
         alt="Mova"
       />
-      <h3 className="text-blue-500 text-center text-xl text-shadow-white-sm">
+      <h3 className="text-blue-500 text-center text-xl text-shadow-white-sm mt-2">
         Let&rsquo;s check out what personalities does your character has!
       </h3>
       <div
@@ -35,7 +35,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
         </h1>
         <p className=" text-white w-5/6 mt-1">{result!.personality}</p>
       </div>
-      <Button className="mt-5 text-purple bg-yellow rounded-lg text-xl w-[40%] py-7 hover:bg-lightYellow font-medium">
+      <Button className="mt-5 text-purple bg-yellow rounded-lg text-xl w-[40%] py-7 hover:bg-lightYellow font-medium shadow-orange-md">
         Save Result
       </Button>
     </div>
