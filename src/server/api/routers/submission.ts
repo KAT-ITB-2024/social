@@ -73,9 +73,10 @@ export const submissionRouter = createTRPCRouter({
           .values({
             assignmentId: input.assignmentId,
             userNim: user.nim,
-            file: input.file,
+            filename: input.file,
             createdAt: new Date(),
             updatedAt: new Date(),
+            downloadUrl: '',
           })
           .returning({
             id: assignmentSubmissions.id,
@@ -122,9 +123,10 @@ export const submissionRouter = createTRPCRouter({
           submissions.push({
             assignmentId: input.assignmentId,
             userNim: userDetail.nim,
-            file: input.file,
+            filename: input.file,
             createdAt: new Date(),
             updatedAt: new Date(),
+            downloadUrl: '',
           });
         }
 
@@ -194,7 +196,7 @@ export const submissionRouter = createTRPCRouter({
       await ctx.db
         .update(assignmentSubmissions)
         .set({
-          file: input.file,
+          filename: input.file,
           updatedAt: new Date(),
         })
         .where(eq(assignmentSubmissions.id, input.submissionId));
