@@ -1,0 +1,28 @@
+{
+    "apps": [
+      {
+        "name": "oskm-dashboard-1",
+        "script": "yarn",
+        "args": "start -p 3008",
+        "exec_mode": "fork"
+      },
+      {
+        "name": "oskm-dashboard-2",
+        "script": "yarn",
+        "args": "start -p 3009",
+        "exec_mode": "fork"
+      },
+      {
+        "name": "oskm-dashboard-3",
+        "script": "yarn",
+        "args": "start -p 3010",
+        "exec_mode": "fork"
+      },
+      {
+        "name": "oskm-dashboard-4",
+        "script": "yarn",
+        "args": "start -p 3011",
+        "exec_mode": "fork"
+      }
+    ]
+  }
