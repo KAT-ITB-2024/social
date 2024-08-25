@@ -68,18 +68,18 @@ export const submissionRouter = createTRPCRouter({
           });
         }
 
-        await ctx.db
-          .insert(assignmentSubmissions)
-          .values({
-            assignmentId: input.assignmentId,
-            userNim: user.nim,
-            file: input.file,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          })
-          .returning({
-            id: assignmentSubmissions.id,
-          });
+        // await ctx.db
+        //   .insert(assignmentSubmissions)
+        //   .values({
+        //     assignmentId: input.assignmentId,
+        //     userNim: user.nim,
+        //     file: input.file,
+        //     createdAt: new Date(),
+        //     updatedAt: new Date(),
+        //   })
+        //   .returning({
+        //     id: assignmentSubmissions.id,
+        //   });
       } else {
         const usersInGroup = await ctx.db
           .select({
@@ -128,19 +128,19 @@ export const submissionRouter = createTRPCRouter({
           });
         }
 
-        await ctx.db
-          .insert(assignmentSubmissions)
-          .values(submissions)
-          .returning({
-            id: assignmentSubmissions.id,
-          });
+        // await ctx.db
+        //   .insert(assignmentSubmissions)
+        //   .values(submissions)
+        //   .returning({
+        //     id: assignmentSubmissions.id,
+        //   });
 
-        await ctx.db
-          .update(profiles)
-          .set({
-            point: sql`${profiles.point} + ${assignment.assignments.point}`,
-          })
-          .where(eq(profiles.group, ctx.session.user.group));
+        // await ctx.db
+        //   .update(profiles)
+        //   .set({
+        //     point: sql`${profiles.point} + ${assignment.assignments.point}`,
+        //   })
+        //   .where(eq(profiles.group, ctx.session.user.group));
       }
 
       return { message: 'Assignment successfully submitted' };
@@ -191,13 +191,13 @@ export const submissionRouter = createTRPCRouter({
         });
       }
 
-      await ctx.db
-        .update(assignmentSubmissions)
-        .set({
-          file: input.file,
-          updatedAt: new Date(),
-        })
-        .where(eq(assignmentSubmissions.id, input.submissionId));
+      // await ctx.db
+      //   .update(assignmentSubmissions)
+      //   .set({
+      //     file: input.file,
+      //     updatedAt: new Date(),
+      //   })
+      //   .where(eq(assignmentSubmissions.id, input.submissionId));
 
       return 'Submission successfully updated';
     }),

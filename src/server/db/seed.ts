@@ -82,19 +82,19 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
 }
 
 export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
-  let dayCounter = 25;
-  for (let i = 0; i < 4; i++) {
-    await db.insert(schema.assignments).values({
-      title: `Assignment ${i}`,
-      description: `Description buat assignment ke ${i}`,
-      startTime: new Date(`2023-07-${dayCounter}T00:00:00Z`), // Tanggal 25
-      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      assignmentType: 'Main',
-      point: 10,
-      updatedAt: new Date(),
-    });
-    dayCounter += 1;
-  }
+  // let dayCounter = 25;
+  // for (let i = 0; i < 4; i++) {
+  //   await db.insert(schema.assignments).values({
+  //     title: `Assignment ${i}`,
+  //     description: `Description buat assignment ke ${i}`,
+  //     startTime: new Date(`2023-07-${dayCounter}T00:00:00Z`), // Tanggal 25
+  //     deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  //     assignmentType: 'Main',
+  //     point: 10,
+  //     updatedAt: new Date(),
+  //   });
+  //   dayCounter += 1;
+  // }
 }
 
 export async function seedCharacter(db: PostgresJsDatabase<typeof schema>) {
@@ -158,15 +158,15 @@ export async function seedAssignmentSubmission(
     );
   }
 
-  for (let i = 0; i < 10; i++) {
-    await db.insert(schema.assignmentSubmissions).values({
-      assignmentId: assignments[i % 4]?.id ?? '',
-      userNim: users[i]?.nim ?? '',
-      file: 'file 1',
-      point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
-      updatedAt: new Date(),
-    });
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   await db.insert(schema.assignmentSubmissions).values({
+  //     assignmentId: assignments[i % 4]?.id ?? '',
+  //     userNim: users[i]?.nim ?? '',
+  //     file: 'file 1',
+  //     point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
+  //     updatedAt: new Date(),
+  //   });
+  // }
 }
 
 export async function seedPostTest(db: PostgresJsDatabase<typeof schema>) {
