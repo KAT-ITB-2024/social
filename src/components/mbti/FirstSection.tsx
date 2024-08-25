@@ -5,6 +5,7 @@ import type { Point, State } from './QnAData';
 import { useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import React from 'react';
+import Image from 'next/image';
 
 interface FirstSectionProps {
   setMostType: Dispatch<SetStateAction<string>>;
@@ -19,7 +20,7 @@ export default function FirstSection({
     {},
   );
   const [isMissing, setIsMissing] = useState(false);
-
+  const [confirmable, setConfirmable] = useState(false);
   const qtyQuestions = FirstSectionQuestions.length;
   const inputRefs = useRef<Array<React.RefObject<HTMLDivElement>>>([]);
   inputRefs.current = Array(qtyQuestions)
@@ -82,8 +83,7 @@ export default function FirstSection({
     }
 
     if (missingAnswers.length === 0) {
-      calcScore();
-      onFinished('finished');
+      setConfirmable(true);
     } else {
       const firstMissingRef = inputRefs.current[firstIdx]?.current;
       if (firstMissingRef) {
@@ -141,6 +141,45 @@ export default function FirstSection({
         <div className="rounded-xl text-white text-lg absolute top-24 bg-pink-400 w-5/6 py-5 text-center">
           You haven&rsquo;t answered all of the questions!
         </div>
+      )}
+      {confirmable && (
+        <>
+          <div className="fixed inset-0 bg-black opacity-50 z-10"></div>
+          <div className="absolute top-1/2 left-1/2 bg-blue-500 translate-x-[-50%] translate-y-[-50%] w-3/4 py-7 rounded-xl z-20">
+            <div className="flex flex-col items-center text-yellow">
+              <Image
+                src={'/images/mbti/mbti-turtle.png'}
+                width={180}
+                height={120}
+                alt="turtle"
+                className="my-4"
+              />
+              <h2>Kumpul?</h2>
+              <p className="w-3/4 text-center text-sm">
+                Pastikan jawaban yang kamu unggah sudah benar!
+              </p>
+              <div className="flex flex-col w-3/4 mt-6">
+                <Button
+                  className="bg-yellow text-blue-500 mb-2"
+                  onClick={() => {
+                    calcScore();
+                    onFinished('finished');
+                  }}
+                >
+                  Kumpul Sekarang
+                </Button>
+                <Button
+                  className="text-yellow border-yellow bg-blue-500 border-2"
+                  onClick={() => {
+                    setConfirmable(false);
+                  }}
+                >
+                  Batal
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
