@@ -1,13 +1,18 @@
-interface Answers {
-  answer: string;
-  point: {
-    mova?: number;
-    kovva?: number;
-    odra?: number;
-    sylas?: number;
-    ozirron?: number;
-  };
+interface Point {
+  mova?: number;
+  kovva?: number;
+  odra?: number;
+  sylas?: number;
+  ozirron?: number;
 }
+
+interface Answer {
+  answer: string;
+  point: Point;
+}
+
+type State = 'not started' | 'started' | 'finished';
+
 const FirstSectionQuestions: string[] = [
   'Apa tipe kepribadianmu?',
   'Apa rasa makanan favoritmu?',
@@ -21,7 +26,7 @@ const FirstSectionQuestions: string[] = [
   'Apakah kamu semangat untuk OSKM ITB 2024?',
 ];
 
-const FirstSectionAnswers: Answers[][] = [
+const FirstSectionAnswers: Answer[][] = [
   [
     {
       answer: 'Extrovert',
@@ -314,3 +319,4 @@ const FirstSectionAnswers: Answers[][] = [
 ];
 
 export { FirstSectionQuestions, FirstSectionAnswers };
+export type { Answer, Point, State };

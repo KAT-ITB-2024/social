@@ -1,6 +1,8 @@
+import type { Dispatch, SetStateAction } from 'react';
 import { Button } from '~/components/ui/button';
+import { type State } from './QnAData';
 interface LandingProps {
-  onStart: () => void;
+  onStart: Dispatch<SetStateAction<State>>;
 }
 export default function Landing({ onStart }: LandingProps) {
   return (
@@ -21,7 +23,7 @@ export default function Landing({ onStart }: LandingProps) {
       </p>
 
       <Button
-        onClick={() => onStart()}
+        onClick={() => onStart('started')}
         className="mt-8 w-36 h-12 bg-pink-400 py-2 px-5 font-body text-shadow-pink-sm text-[#FEFEFE] "
       >
         <p className="text-b2">Let&#39;s Start!</p>
