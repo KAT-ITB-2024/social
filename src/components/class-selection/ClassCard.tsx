@@ -15,7 +15,7 @@ const Card = () => {
         </div>
         <img
           src="/components/coralpensu.png"
-          className="w-40 h-auto object-cover"
+          className="w-30 h-auto object-cover"
         />
       </div>
     </div>
