@@ -29,7 +29,7 @@ export default function ProfileHeader() {
                 alt="Profile"
                 layout="fill"
                 objectFit="cover"
-                className="cursor-pointer rounded"
+                className="cursor-pointer rounded-full"
               />
             </div>
           }
