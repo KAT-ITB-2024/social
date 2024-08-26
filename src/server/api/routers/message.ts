@@ -182,7 +182,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  chatHeader: publicProcedure
+  chatHeaders: publicProcedure
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
@@ -293,7 +293,7 @@ export const messageRouter = createTRPCRouter({
       };
     }),
 
-  chatHeaderAll: publicProcedure.query(async ({ ctx }) => {
+  chatHeadersAll: publicProcedure.query(async ({ ctx }) => {
     if (ctx.session === null) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -335,7 +335,7 @@ export const messageRouter = createTRPCRouter({
           isNotNull(userMatches.endedAt),
         ),
       )
-      .orderBy(desc(userMatches.endedAt))
+      .orderBy(desc(userMatches.endedAt));
 
     const data: ChatHeader[] = chatHeaders.map((chatHeader) => {
       const otherUser =
@@ -367,7 +367,7 @@ export const messageRouter = createTRPCRouter({
     });
 
     return {
-      data
+      data,
     };
   }),
 
