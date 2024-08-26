@@ -197,6 +197,9 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   fileUrl={downloadUrl ?? ''}
                   isUserSubmit={true}
                   onDelete={handleDelete}
+                  isDeleteable={
+                    assignment.assignmentSubmissions?.point === null
+                  }
                 />
               ) : (
                 assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
