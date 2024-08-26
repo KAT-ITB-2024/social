@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
-import { RevealStatusEvent } from '~/types/payloads/message';
+import { RevealStatusEvent } from '~/types/enums/message';
 import { socket } from '~/utils/socket';
 
 export default function MatchPage() {

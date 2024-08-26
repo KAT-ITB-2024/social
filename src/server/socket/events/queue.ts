@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { type UserQueue } from '~/types/payloads/message';
+import { type UserQueue } from '~/types/enums/message';
 import { findMatch, generateQueueKey, cancelQueue } from '../messaging/queue';
 import { type UserMatch, userMatches } from '@katitb2024/database';
 import { Redis } from '~/server/redis';
