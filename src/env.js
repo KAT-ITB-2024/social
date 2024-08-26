@@ -41,6 +41,11 @@ export const env = createEnv({
       (str) => (str ? +str : 3001),
       z.number().int().positive(),
     ),
+    DO_ACCESS_KEY: z.string(),
+    DO_SECRET_KEY: z.string(),
+    DO_BUCKET_NAME: z.string(),
+    DO_REGION: z.string(),
+    DO_ORIGIN_ENDPOINT: z.string(),
   },
 
   /**
@@ -70,6 +75,11 @@ export const env = createEnv({
     SMTP_PORT: process.env.SMTP_PORT,
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASS: process.env.SMTP_PASS,
+    DO_ACCESS_KEY: process.env.DO_ACCESS_KEY,
+    DO_SECRET_KEY: process.env.DO_SECRET_KEY,
+    DO_REGION: process.env.DO_REGION,
+    DO_ORIGIN_ENDPOINT: process.env.DO_ORIGIN_ENDPOINT,
+    DO_BUCKET_NAME: process.env.DO_BUCKET_NAME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
