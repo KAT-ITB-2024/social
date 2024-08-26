@@ -39,6 +39,7 @@ export const submissionRouter = createTRPCRouter({
               point: assignments.point,
               submissionId: assignmentSubmissions.id,
               startTime: assignments.startTime,
+              graded: assignmentSubmissions.point,
             })
             .from(assignments)
             .leftJoin(
@@ -65,6 +66,12 @@ export const submissionRouter = createTRPCRouter({
               .where(eq(assignmentSubmissions.id, assignment.submissionId));
           }
 
+          if (assignment.graded != null) {
+            throw new TRPCError({
+              code: 'BAD_REQUEST',
+              message: 'Assignment has been graded',
+            });
+          }
           if (assignment.assignmentType === assignmentTypeEnum.enumValues[0]) {
             // Insert new submission for individual assignments
             await transaction
@@ -76,6 +83,7 @@ export const submissionRouter = createTRPCRouter({
                 downloadUrl: input.downloadUrl,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                point: null,
               })
               .returning({
                 id: assignmentSubmissions.id,
