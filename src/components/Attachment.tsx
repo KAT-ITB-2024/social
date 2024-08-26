@@ -7,6 +7,7 @@ interface AttachmentButtonProps {
   fileName: string;
   isUserSubmit: boolean;
   onDelete?: () => void;
+  isDeleteable?: boolean;
 }
 
 const AttachmentButton: React.FC<AttachmentButtonProps> = ({
@@ -14,8 +15,13 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
   fileName,
   isUserSubmit,
   onDelete,
+  isDeleteable = true,
 }) => {
-  const sanitizedFileName = isUserSubmit ? fileName.split('-')[5] : fileName;
+  const sanitizedFileName = isUserSubmit
+    ? fileName.split('-').length >= 5
+      ? fileName.split('-')[5]
+      : fileName
+    : fileName;
   return (
     <div className="flex justify-between bg-[#FFFEFE] rounded-[10px] min-w-64 w-fit min-h-14 py-2 pl-[10px] pr-1">
       <Link
@@ -33,7 +39,7 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
         />
         <p className="ml-2 m-1 text-[#384053] break-all">{sanitizedFileName}</p>
       </Link>
-      {isUserSubmit && onDelete && (
+      {isUserSubmit && onDelete && isDeleteable && (
         <AssignmentDeleteModal
           customTriggerButton={
             <button className="">
