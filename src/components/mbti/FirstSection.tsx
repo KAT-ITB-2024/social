@@ -163,7 +163,7 @@ export default function FirstSection({
                   className="bg-yellow text-blue-500 mb-2"
                   onClick={() => {
                     calcScore();
-                    onFinished('finished');
+                    onFinished('loading');
                   }}
                 >
                   Kumpul Sekarang
