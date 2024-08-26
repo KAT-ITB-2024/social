@@ -10,7 +10,7 @@ import {
   updateVisibilityPayload,
   type ChatHeader,
   type ChatHeaderData,
-} from '~/types/payloads/message';
+} from '~/types/enums/message';
 
 export const messageRouter = createTRPCRouter({
   /**
