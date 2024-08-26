@@ -12,7 +12,7 @@ export const uploadFile = async (
   url: string,
   file: File,
   contentType: AllowableFileTypeEnum,
-  onProgress: (progress: number) => void,
+  onProgress?: (progress: number) => void,
 ) => {
   return new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -20,7 +20,7 @@ export const uploadFile = async (
     xhr.setRequestHeader('Content-Type', contentType);
 
     xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
+      if (event.lengthComputable && onProgress) {
         const progress = (event.loaded / event.total) * 100;
         onProgress(progress); // Update progress
       }
