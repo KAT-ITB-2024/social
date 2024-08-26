@@ -27,7 +27,7 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
       <Link
         className="flex items-center min-w-48 w-fit pl-2 bg-pink-200 bg-opacity-30 rounded-[10px]"
         href={fileUrl}
-        download={fileUrl}
+        // download={fileUrl}
         target="_blank"
       >
         <Image

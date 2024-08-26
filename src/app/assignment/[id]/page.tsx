@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
@@ -19,7 +19,11 @@ import { AssingmentInfoModal } from '~/components/assignment/InfoModal';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
+  const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
+  const [file, setFile] = useState<File | null>(null);
   const [filename, setFilename] = useState<string | null>('');
+  const [progress, setProgress] = useState<number>(0);
   const [downloadUrl, setDownloadUrl] = useState<string | null>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -103,18 +107,32 @@ export default function DetailPage({ params }: { params: { id: string } }) {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    if (!filename || !downloadUrl) {
+    if (!file) {
       return;
     }
     try {
       try {
+        setProgress(1);
+        const { url, filename } = await uploadFileMutation.mutateAsync({
+          filename: file.name,
+          folder: FolderEnum.ASSIGNMENT,
+          contentType: AllowableFileTypeEnum.PDF,
+        });
+        const downloadUrl = await downloadFileMutation.mutateAsync({
+          filename: filename,
+          folder: FolderEnum.ASSIGNMENT,
+        });
+
         await submissionMutation.mutateAsync({
           assignmentId: params.id,
           filename,
           downloadUrl,
         });
-
+        await uploadFile(url, file, AllowableFileTypeEnum.PDF);
+        setProgress(0);
         setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        setDownloadUrl(downloadUrl);
+        setFilename(filename);
         setShowInfoModal(true);
       } catch (error) {
         toast(<ErrorToast desc="Silakan coba submit ulang!" />);
@@ -122,6 +140,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     } catch (error) {
       toast(<ErrorToast desc="Silakan coba submit ulang!" />);
     } finally {
+      setProgress(0);
       setIsSubmitting(false);
     }
   };
@@ -212,8 +231,9 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                     />
                     <FileUpload
                       className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
-                      onSubmitted={handleFileUpload}
-                      folder={FolderEnum.ASSIGNMENT}
+                      progress={progress}
+                      setFile={setFile}
+                      setFilename={setFilename}
                     />
                   </div>
                 )
