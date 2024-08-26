@@ -1,11 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { Chip } from '../Chip';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
+import Link from 'next/link';
 
 export interface AssignmentCardProps {
   id: string;
@@ -20,17 +20,11 @@ export const AssignmentCard = ({
   deadline,
   status,
 }: AssignmentCardProps) => {
-  const router = useRouter();
-
   const isLate = () => {
     const currentTime = new Date();
     return deadline.getTime() < currentTime.getTime();
   };
 
-  const handleClick = () => {
-    console.log('task', id);
-    router.push('/assignment/' + id);
-  };
   return (
     <Card className="w-full px-6 py-4 bg-card-radial border-turquoise-300 border-2 rounded-[12px]">
       <CardContent className="p-0 flex justify-between items-center">
@@ -53,8 +47,8 @@ export const AssignmentCard = ({
               <Chip label="terlambat" variant="RED" />
             )}
           </div>
-          <Button variant={'blue'} className="py-2 px-5" onClick={handleClick}>
-            Open
+          <Button variant={'blue'} className="py-2 px-5">
+            <Link href={`/assignment/${id}`}>Open</Link>
           </Button>
         </div>
       </CardContent>
