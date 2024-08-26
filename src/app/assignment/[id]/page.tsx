@@ -185,7 +185,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             )}
 
             <div
-              className={`flex flex-col overflow-visible w-full justify-center ${filename === '' ? 'h-36 items-center' : 'h-24 pl-3'} border-2 border-blue-300 rounded-[14px]`}
+              className={`flex flex-col overflow-visible w-full justify-center ${filename === '' ? 'min-h-36 items-center py-3' : 'min-h-24 p-3'} border-2 border-blue-300 rounded-[14px]`}
               style={{
                 background:
                   'linear-gradient(to right, rgba(12,188,204,0.6), rgba(100,177,247,0.6))',
@@ -200,12 +200,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                 />
               ) : (
                 assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
-                  <div className="relative -top-4">
+                  <div className="relative">
                     <Image
                       src="/images/detail/ubur-ubur.png"
                       alt="Ubur-Ubur"
                       width={120}
-                      height={120}
+                      height={90}
                     />
                     <FileUpload
                       className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
