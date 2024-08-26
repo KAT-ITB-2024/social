@@ -42,6 +42,7 @@ export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
     try {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
+        point: 0,
       });
     } catch (error) {}
   }

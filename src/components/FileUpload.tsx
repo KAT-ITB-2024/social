@@ -1,24 +1,25 @@
 import React, { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { uploadFile } from '~/lib/file'; // Ensure this function supports progress tracking
 import { api } from '~/trpc/react';
 import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
+import { ErrorToast } from './ui/error-toast';
 
 interface FileUploadProps {
   className: string;
   onSubmitted: (fileName: string, downloadUrl: string) => void;
   folder: FolderEnum;
-  onUploading?: (isUploading: boolean) => void;
 }
 
 const FileUploader: React.FC<FileUploadProps> = ({
   className,
   onSubmitted,
   folder,
-  onUploading,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [progress, setProgress] = useState<number>(0);
-  const generateUploadUrl = api.storage.generateUploadUrl.useMutation();
-  const generateDownloadUrl = api.storage.generateDownloadUrl.useMutation();
+  const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
+  const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -27,71 +28,37 @@ const FileUploader: React.FC<FileUploadProps> = ({
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    if (onUploading) {
-      onUploading(true);
-    }
     const file = event.target.files?.[0];
 
     if (file) {
-      const { name: filename, type: contentType } = file;
-
       try {
-        const { url, filename: savedFilename } =
-          await generateUploadUrl.mutateAsync({
-            filename,
-            contentType: contentType as AllowableFileTypeEnum,
-            folder,
-          });
+        // Set progress to a small value to indicate the upload is starting
+        setProgress(1);
 
-        const xhr = new XMLHttpRequest();
+        const { url, filename } = await uploadFileMutation.mutateAsync({
+          folder: folder,
+          filename: file.name,
+          contentType: AllowableFileTypeEnum.PDF,
+        });
 
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const percentComplete = (event.loaded / event.total) * 100;
-            setProgress(percentComplete);
-          }
-        };
+        // Generate download URL (if needed) before upload starts
+        const downloadUrl = await downloadFileMutation.mutateAsync({
+          folder: folder,
+          filename: filename,
+        });
 
-        xhr.open('PUT', url, true);
-        xhr.setRequestHeader('Content-Type', contentType);
+        // Upload the file and update progress
+        await uploadFile(url, file, AllowableFileTypeEnum.PDF, setProgress);
 
-        xhr.onload = async () => {
-          if (xhr.status === 200) {
-            const downloadUrl = await generateDownloadUrl.mutateAsync({
-              filename: savedFilename,
-              folder,
-            });
-
-            if (downloadUrl) {
-              onSubmitted(savedFilename, downloadUrl);
-            } else {
-              console.error('Failed to get download URL');
-            }
-          } else {
-            console.error('Upload failed:', xhr.statusText);
-          }
-
-          if (onUploading) {
-            onUploading(false);
-          }
-          setProgress(0);
-        };
-
-        xhr.onerror = () => {
-          console.error('Upload failed:', xhr.statusText);
-          if (onUploading) {
-            onUploading(false);
-          }
-          setProgress(0);
-        };
-
-        xhr.send(file);
-      } catch (error) {
-        console.error('Error during file upload:', error);
-        if (onUploading) {
-          onUploading(false);
-        }
+        // Reset progress after successful upload
         setProgress(0);
+
+        // Notify parent component about successful upload
+        onSubmitted(filename, downloadUrl);
+      } catch (error) {
+        console.error(error);
+        toast(<ErrorToast desc="Failed to upload file" />);
+        setProgress(0); // Reset progress on error
       }
     }
   };

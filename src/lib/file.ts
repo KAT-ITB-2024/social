@@ -11,32 +11,47 @@ export const getFileDetail = (file: File) => {
 export const uploadFile = async (
   url: string,
   file: File,
-  type: AllowableFileTypeEnum,
-  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void,
+  contentType: AllowableFileTypeEnum,
+  onProgress: (progress: number) => void,
 ) => {
-  const axiosInstance = axios.create();
-  try {
-    await axiosInstance.put<null>(url, file, {
-      headers: {
-        'Content-Type': type,
-      },
-      onUploadProgress,
-    });
-  } catch (error) {
-    console.log('Error', error);
-  }
+  return new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', url, true);
+    xhr.setRequestHeader('Content-Type', contentType);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const progress = (event.loaded / event.total) * 100;
+        onProgress(progress); // Update progress
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        resolve();
+      } else {
+        reject(new Error('Failed to upload file.'));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error('Network error.'));
+
+    xhr.send(file);
+  });
 };
 
 export const downloadFile = async (
   url: string,
   onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void,
 ) => {
-  const axiosInstance = axios.create();
-
-  const response = await axiosInstance.get<Blob>(url, {
-    responseType: 'blob',
-    onDownloadProgress,
-  });
-
-  return response.data;
+  try {
+    const response = await axios.get<Blob>(url, {
+      responseType: 'blob',
+      onDownloadProgress,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('File download error:', error);
+    throw error;
+  }
 };
