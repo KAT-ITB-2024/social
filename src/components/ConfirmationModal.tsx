@@ -44,7 +44,10 @@ export function ConfirmationModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger
+        asChild
+        className="flex items-center justify-center px-2"
+      >
         {customTriggerButton ? (
           <div onClick={() => setIsOpen(true)}>{customTriggerButton}</div>
         ) : triggerText ? (
@@ -72,7 +75,7 @@ export function ConfirmationModal({
           <AlertDialogFooter className="flex flex-col w-full mt-6">
             <AlertDialogAction
               onClick={action}
-              className={`${actionColor ?? 'bg-yellow'} w-full text-blue-500`}
+              className={`${actionColor ?? 'bg-yellow'} w-full text-blue-500 hover:bg-shade-200`}
             >
               {actionText}
             </AlertDialogAction>
