@@ -1,25 +1,98 @@
-// components/FileUploader.tsx
+import React, { useRef, useState } from 'react';
+import { api } from '~/trpc/react';
+import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
 
-import React, { useRef } from 'react';
 interface FileUploadProps {
   className: string;
-  onSubmitted: (fileName: string) => void;
+  onSubmitted: (fileName: string, downloadUrl: string) => void;
+  folder: FolderEnum;
+  onUploading?: (isUploading: boolean) => void;
 }
+
 const FileUploader: React.FC<FileUploadProps> = ({
   className,
   onSubmitted,
+  folder,
+  onUploading,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [progress, setProgress] = useState<number>(0);
+  const generateUploadUrl = api.storage.generateUploadUrl.useMutation();
+  const generateDownloadUrl = api.storage.generateDownloadUrl.useMutation();
 
   const handleButtonClick = () => {
-    // Trigger file input click
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (onUploading) {
+      onUploading(true);
+    }
     const file = event.target.files?.[0];
+
     if (file) {
-      onSubmitted(file.name);
+      const { name: filename, type: contentType } = file;
+
+      try {
+        const { url, filename: savedFilename } =
+          await generateUploadUrl.mutateAsync({
+            filename,
+            contentType: contentType as AllowableFileTypeEnum,
+            folder,
+          });
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            setProgress(percentComplete);
+          }
+        };
+
+        xhr.open('PUT', url, true);
+        xhr.setRequestHeader('Content-Type', contentType);
+
+        xhr.onload = async () => {
+          if (xhr.status === 200) {
+            const downloadUrl = await generateDownloadUrl.mutateAsync({
+              filename: savedFilename,
+              folder,
+            });
+
+            if (downloadUrl) {
+              onSubmitted(savedFilename, downloadUrl);
+            } else {
+              console.error('Failed to get download URL');
+            }
+          } else {
+            console.error('Upload failed:', xhr.statusText);
+          }
+
+          if (onUploading) {
+            onUploading(false);
+          }
+          setProgress(0);
+        };
+
+        xhr.onerror = () => {
+          console.error('Upload failed:', xhr.statusText);
+          if (onUploading) {
+            onUploading(false);
+          }
+          setProgress(0);
+        };
+
+        xhr.send(file);
+      } catch (error) {
+        console.error('Error during file upload:', error);
+        if (onUploading) {
+          onUploading(false);
+        }
+        setProgress(0);
+      }
     }
   };
 
@@ -34,8 +107,20 @@ const FileUploader: React.FC<FileUploadProps> = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
-        accept=".pdf" // Change this if you want to allow different file types
+        accept=".pdf"
       />
+
+      {/* Progress Bar */}
+      {progress > 0 && (
+        <div className="w-full bg-gray-200 rounded-full mt-2">
+          <div
+            className="bg-blue-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+            style={{ width: `${progress}%` }}
+          >
+            {Math.round(progress)}%
+          </div>
+        </div>
+      )}
     </div>
   );
 };

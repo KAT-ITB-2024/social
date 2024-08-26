@@ -11,10 +11,6 @@ import {
 } from '~/types/payloads/storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-export const uploadFilePayload = z.object({
-  file: z.instanceof(File),
-});
-
 export const storageRouter = createTRPCRouter({
   generateUploadUrl: publicProcedure
     .input(UploadFilePayload)

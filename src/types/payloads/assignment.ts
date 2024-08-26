@@ -11,6 +11,7 @@ interface AssignmentSubmission {
   id: string;
   point: number | null;
   updatedAt: Date;
+
   userNim: string;
 }
 

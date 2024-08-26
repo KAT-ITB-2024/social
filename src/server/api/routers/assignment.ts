@@ -7,88 +7,77 @@ import {
 import { TRPCError } from '@trpc/server';
 import { eq, and, lte } from 'drizzle-orm';
 import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
+import { getCurrentWIBTime } from '../helpers/utils';
 
 export const assignmentRouter = createTRPCRouter({
   getDailyQuest: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User is not logged in',
+      });
+    }
+
     try {
-      if (!ctx.session || !ctx.session.user) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User is not logged in',
-        });
-      }
-
-      const userSubmissionQuery = ctx.db
-        .select()
-        .from(assignmentSubmissions)
-        .where(eq(assignmentSubmissions.userNim, ctx.session.user.nim))
-        .as('assignmentSubmissions');
-
       const dailyQuests = await ctx.db
         .select()
         .from(assignments)
         .leftJoin(
-          userSubmissionQuery,
-          eq(assignments.id, userSubmissionQuery.assignmentId),
+          assignmentSubmissions,
+          and(
+            eq(assignments.id, assignmentSubmissions.assignmentId),
+            eq(assignmentSubmissions.userNim, ctx.session.user.nim),
+          ),
         )
         .where(
           and(
-            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
-            lte(assignments.startTime, new Date()),
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]), // Daily Quest
+            lte(assignments.startTime, getCurrentWIBTime()),
           ),
         );
 
-      if (!dailyQuests) {
-        return [];
-      }
-
-      return dailyQuests;
+      return dailyQuests || [];
     } catch (e) {
+      console.error('Error fetching daily quests:', e);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Internal server error',
+        message: 'Failed to fetch daily quests',
       });
     }
   }),
 
   getSideQuest: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User is not logged in',
+      });
+    }
+
     try {
-      if (!ctx.session || !ctx.session.user) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User is not logged in',
-        });
-      }
-
-      const userSubmissionQuery = ctx.db
-        .select()
-        .from(assignmentSubmissions)
-        .where(eq(assignmentSubmissions.userNim, ctx.session.user.nim))
-        .as('assignmentSubmissions');
-
       const sideQuests = await ctx.db
         .select()
         .from(assignments)
         .leftJoin(
-          userSubmissionQuery,
-          eq(assignments.id, userSubmissionQuery.assignmentId),
+          assignmentSubmissions,
+          and(
+            eq(assignments.id, assignmentSubmissions.assignmentId),
+            eq(assignmentSubmissions.userNim, ctx.session.user.nim),
+          ),
         )
         .where(
           and(
-            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]),
-            lte(assignments.startTime, new Date()),
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]), // Side Quest
+            lte(assignments.startTime, getCurrentWIBTime()),
           ),
         );
 
-      if (!sideQuests) {
-        return [];
-      }
-
-      return sideQuests;
+      return sideQuests || [];
     } catch (e) {
+      console.error('Error fetching side quests:', e);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Internal server error',
+        message: 'Failed to fetch side quests',
       });
     }
   }),
@@ -96,20 +85,21 @@ export const assignmentRouter = createTRPCRouter({
   getQuestById: publicProcedure
     .input(getAssignmentByIdPayload)
     .query(async ({ ctx, input }) => {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
+      if (!input.id) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Assignment ID was not provided',
+        });
+      }
+
       try {
-        if (!ctx.session || !ctx.session.user) {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'User is not logged in',
-          });
-        }
-
-        if (!input.id)
-          throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'Assignment ID was not received',
-          });
-
         const assignment = await ctx.db
           .select()
           .from(assignments)
@@ -122,11 +112,20 @@ export const assignmentRouter = createTRPCRouter({
           )
           .where(eq(assignments.id, input.id))
           .then((result) => result[0]);
+
+        if (!assignment) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Assignment not found',
+          });
+        }
+
         return assignment;
       } catch (e) {
+        console.error('Error fetching assignment by ID:', e);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Internal server error',
+          message: 'Failed to fetch assignment',
         });
       }
     }),

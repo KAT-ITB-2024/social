@@ -1,5 +1,6 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import {
+  Assignment,
   assignmentSubmissions,
   assignmentTypeEnum,
   assignments,
@@ -7,7 +8,7 @@ import {
   users,
 } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import {
   putSubmissionPayload,
   submissionPayload,
@@ -17,129 +18,114 @@ export const submissionRouter = createTRPCRouter({
   postSubmission: publicProcedure
     .input(submissionPayload)
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
+      const sessionUser = ctx.session?.user;
+      if (!sessionUser) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User is not logged in',
         });
       }
-      const assignment = await ctx.db
-        .select({
-          assignmentId: assignments.id,
-          assignmentType: assignments.assignmentType,
-          point: assignments.point,
-          submissionId: assignmentSubmissions.id,
-        })
-        .from(assignments)
-        .leftJoin(
-          assignmentSubmissions,
-          and(
-            eq(assignments.id, assignmentSubmissions.assignmentId),
-            eq(assignmentSubmissions.userNim, ctx.session.user.nim),
-          ),
-        )
-        .where(eq(assignments.id, input.assignmentId))
-        .then((result) => result[0]);
 
-      if (!assignment) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Assignment not found',
-        });
-      } else if (assignment.submissionId) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'Submission already received, try updating',
-        });
-      }
-
-      if (assignment.assignmentType == assignmentTypeEnum.enumValues[0]) {
-        const user = await ctx.db
-          .select()
-          .from(users)
-          .where(eq(users.nim, ctx.session?.user.nim ?? ''))
+      try {
+        const assignment = await ctx.db
+          .select({
+            assignmentId: assignments.id,
+            assignmentType: assignments.assignmentType,
+            point: assignments.point,
+            submissionId: assignmentSubmissions.id,
+            startTime: assignments.startTime,
+          })
+          .from(assignments)
+          .leftJoin(
+            assignmentSubmissions,
+            and(
+              eq(assignments.id, assignmentSubmissions.assignmentId),
+              eq(assignmentSubmissions.userNim, sessionUser.nim),
+            ),
+          )
+          .where(eq(assignments.id, input.assignmentId))
           .then((result) => result[0]);
 
-        if (!user) {
+        if (!assignment) {
           throw new TRPCError({
             code: 'NOT_FOUND',
-            message: 'User not found',
+            message: 'Assignment not found',
+          });
+        } else if (assignment.submissionId) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'Submission already received, try updating',
           });
         }
 
-        await ctx.db
-          .insert(assignmentSubmissions)
-          .values({
-            assignmentId: input.assignmentId,
-            userNim: user.nim,
-            file: input.file,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          })
-          .returning({
-            id: assignmentSubmissions.id,
-          });
-      } else {
-        const usersInGroup = await ctx.db
-          .select({
-            name: profiles.name,
-            userid: profiles.userId,
-            point: profiles.point,
-          })
-          .from(profiles)
-          .where(eq(profiles.group, ctx.session.user.group));
+        if (assignment.assignmentType === assignmentTypeEnum.enumValues[0]) {
+          await ctx.db
+            .insert(assignmentSubmissions)
+            .values({
+              assignmentId: input.assignmentId,
+              userNim: sessionUser.nim,
+              downloadUrl: input.downloadUrl,
+              filename: input.filename,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              point: null,
+            })
+            .returning({
+              id: assignmentSubmissions.id,
+            });
+        } else {
+          const newPoint = calculateNewPoint(assignment);
 
-        if (!usersInGroup) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'No users found in the group',
-          });
-        }
+          const usersInGroup = await ctx.db
+            .select({
+              userid: profiles.userId,
+              point: profiles.point,
+            })
+            .from(profiles)
+            .where(eq(profiles.group, sessionUser.group));
 
-        const userIds = usersInGroup.map((element) => element.userid);
-        const userDetails = await ctx.db
-          .select()
-          .from(users)
-          .where(inArray(users.id, userIds));
-
-        const userDetailMap = new Map(
-          userDetails.map((user) => [user.id, user]),
-        );
-
-        const submissions = [];
-
-        for (const element of usersInGroup) {
-          const userDetail = userDetailMap.get(element.userid);
-
-          if (!userDetail) {
+          if (usersInGroup.length === 0) {
             throw new TRPCError({
               code: 'NOT_FOUND',
-              message: `User with name ${element.name} not found`,
+              message: 'No users found in the group',
             });
           }
 
-          submissions.push({
+          const userIds = usersInGroup.map((element) => element.userid);
+
+          const submissions = userIds.map((userid) => ({
             assignmentId: input.assignmentId,
-            userNim: userDetail.nim,
-            file: input.file,
+            userNim: userid,
+            downloadUrl: input.downloadUrl,
+            filename: input.filename,
+            point: newPoint,
             createdAt: new Date(),
             updatedAt: new Date(),
-          });
+          }));
+
+          await ctx.db
+            .insert(assignmentSubmissions)
+            .values(submissions)
+            .returning({
+              id: assignmentSubmissions.id,
+            });
+
+          await ctx.db
+            .update(profiles)
+            .set({
+              point: sql`${profiles.point} + ${newPoint}`,
+            })
+            .where(eq(profiles.group, sessionUser.group));
         }
-
-        await ctx.db
-          .insert(assignmentSubmissions)
-          .values(submissions)
-          .returning({
-            id: assignmentSubmissions.id,
-          });
-
-        await ctx.db
-          .update(profiles)
-          .set({
-            point: sql`${profiles.point} + ${assignment.point}`,
-          })
-          .where(eq(profiles.group, ctx.session.user.group));
+      } catch (e) {
+        console.log(e);
+        if (e instanceof TRPCError) {
+          throw e;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to submit assignment',
+        });
       }
 
       return { message: 'Assignment successfully submitted' };
@@ -148,42 +134,45 @@ export const submissionRouter = createTRPCRouter({
   putSubmission: publicProcedure
     .input(putSubmissionPayload)
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
+      const sessionUser = ctx.session?.user;
+      if (!sessionUser) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User is not logged in',
         });
       }
 
-      const assignment = await ctx.db
-        .select()
-        .from(assignments)
-        .leftJoin(
-          assignmentSubmissions,
+      const submission = await ctx.db
+        .select({
+          assignmentType: assignments.assignmentType,
+          submissionPoint: assignmentSubmissions.point,
+        })
+        .from(assignmentSubmissions)
+        .innerJoin(
+          assignments,
           eq(assignments.id, assignmentSubmissions.assignmentId),
         )
         .where(
           and(
             eq(assignmentSubmissions.id, input.submissionId),
-            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+            eq(assignmentSubmissions.userNim, sessionUser.nim),
           ),
         )
         .then((result) => result[0]);
 
-      if (!assignment) {
+      if (!submission) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: 'Assignment not found',
+          message: 'Submission not found',
         });
       } else if (
-        assignment?.assignments.assignmentType ==
-        assignmentTypeEnum.enumValues[1]
+        submission.assignmentType === assignmentTypeEnum.enumValues[1]
       ) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Cannot update sidequest',
         });
-      } else if (assignment?.assignmentSubmissions?.point !== null) {
+      } else if (submission.submissionPoint !== null) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Submission already scored, cannot be updated',
@@ -193,7 +182,8 @@ export const submissionRouter = createTRPCRouter({
       await ctx.db
         .update(assignmentSubmissions)
         .set({
-          file: input.file,
+          filename: input.filename,
+          downloadUrl: input.downloadUrl,
           updatedAt: new Date(),
         })
         .where(eq(assignmentSubmissions.id, input.submissionId));
@@ -201,3 +191,18 @@ export const submissionRouter = createTRPCRouter({
       return 'Submission successfully updated';
     }),
 });
+
+function calculateNewPoint(assignment: Partial<Assignment>) {
+  if (assignment.startTime != null && assignment.point != null) {
+    const lateHours = Math.min(
+      Math.floor(
+        (new Date().getTime() - assignment.startTime.getTime()) /
+          (1000 * 60 * 60),
+      ),
+      10,
+    );
+
+    return Math.round(assignment.point * (1 - lateHours * 0.05));
+  }
+  return null;
+}
