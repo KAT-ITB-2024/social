@@ -23,7 +23,7 @@ export const Chip = ({
   }
 
   return (
-    <Badge variant="kehadiran" className={cn}>
+    <Badge variant="chip" className={cn}>
       {label}
     </Badge>
   );
