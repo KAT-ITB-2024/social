@@ -11,7 +11,7 @@ interface Answer {
   point: Point;
 }
 
-type State = 'not started' | 'started' | 'finished';
+type State = 'not started' | 'started' | 'loading' | 'finished';
 
 const FirstSectionQuestions: string[] = [
   'Apa tipe kepribadianmu?',

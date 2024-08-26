@@ -6,14 +6,18 @@ import Landing from '~/components/mbti/Landing';
 import { Button } from '~/components/ui/button';
 import MbtiResult from '~/components/mbti/MbtiResult';
 import { type State } from '~/components/mbti/QnAData';
+import LoadingMBTI from '~/components/mbti/LoadingMBTI';
 
 export default function MbtiPage() {
-  const [state, setState] = useState<State>('not started');
+  const [state, setState] = useState<State>('loading');
   const [mostType, setMostType] = useState('');
 
   let bgImgUrl = "url('/images/mbti/bg-mbti-landing.png')";
   if (state === 'started') {
     bgImgUrl = `url('/images/mbti/bg-mbti-firstSection.png')`;
+  }
+  if (state === 'loading') {
+    bgImgUrl = `url('/images/mbti/bg-mbti-loading.png')`;
   }
   if (state === 'finished') {
     bgImgUrl = `url('/images/mbti/bg-mbti-${mostType}.png')`;
@@ -34,6 +38,7 @@ export default function MbtiPage() {
         {state == 'started' && (
           <FirstSection onFinished={setState} setMostType={setMostType} />
         )}
+        {state == 'loading' && <LoadingMBTI />}
         {state == 'finished' && <MbtiResult type={mostType} />}
       </div>
     </main>

@@ -10,7 +10,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
   const result = ResultsData.find((obj) => obj.type === type);
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
   return (
-    <div className="w-5/6 flex flex-col items-center mt-24">
+    <div className="px-9 flex flex-col items-center mt-24 overflow-y-auto no-scrollbar">
       <h2 className="text-center text-xl mt-4">
         Yeay! we finally have the result of your test, so your MBTI is...
       </h2>
@@ -27,13 +27,13 @@ export default function MbtiResult({ type }: MbtiResultProps) {
         Let&rsquo;s check out what personalities does your character has!
       </h3>
       <div
-        className="mt-3 bg-purple cursor-pointer bg-opacity-80 py-5 text-center rounded-xl flex flex-col 
-      items-center w-full overflow-y-auto h-44 no-scrollbar"
+        className="mt-3 bg-purple bg-opacity-75 py-5 px-6 text-center rounded-xl flex flex-col 
+      items-center w-full"
       >
         <h1 className="text-2xl text-yellow text-shadow-neutral-sm">
           Personalities
         </h1>
-        <p className=" text-white w-5/6 mt-1">{result!.personality}</p>
+        <p className="font-body flex text-white mt-1">{result!.personality}</p>
       </div>
       <Button className="mt-5 text-purple bg-yellow rounded-lg text-xl w-[40%] py-7 hover:bg-lightYellow font-medium shadow-orange-md">
         Save Result
