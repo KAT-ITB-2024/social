@@ -1138,20 +1138,6 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#master":
-  version "1.0.0"
-  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#4ae4e05911cecc0dc41e91de373930fc235e49e5"
-  dependencies:
-    "@paralleldrive/cuid2" "^2.2.2"
-    bcrypt "^5.1.1"
-    csv-parser "^3.0.0"
-    database-oskm "file:../../.cache/yarn/v6/npm-@katitb2024-database-1.0.0-4ae4e05911cecc0dc41e91de373930fc235e49e5/node_modules/@katitb2024/database"
-    drizzle-dbml-generator "^0.8.0"
-    drizzle-orm "^0.31.2"
-    postgres "^3.4.4"
-    tsup "^8.1.0"
-    tsx "^4.15.7"
-    typescript "^5.5.2"
 
 "@mapbox/node-pre-gyp@^1.0.11":
   version "1.0.11"
