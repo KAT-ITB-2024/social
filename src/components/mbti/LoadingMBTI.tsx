@@ -16,9 +16,9 @@ export default function LoadingMBTI({ onFinish }: LoadingProps) {
     return () => clearTimeout(timer);
   }, []);
   return (
-    <div className="flex flex-col mt-[450px] justify-center text-center items-center px-20">
+    <div className="flex flex-col justify-center text-center items-center px-20 h-full">
       <LoadingSpinnerCustom key={'ayam'} />
-      <h4 className="text-h4 text-[#FEFDA3] text-shadow-neutral-lg">
+      <h4 className="text-h4 text-[#FEFDA3] text-shadow-neutral-lg mt-6">
         Hold on, we&lsquo;re diving deeper to the deep sea
       </h4>
     </div>

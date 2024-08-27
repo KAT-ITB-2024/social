@@ -2,8 +2,8 @@ import Image from 'next/image';
 
 export const LoadingSpinnerCustom = () => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-[160px] h-[160px]">
+    <div className="flex items-center justify-center bg-opacity-50">
+      <div className="relative w-[200px] h-[200px]">
         <div
           className="absolute inset-0 rounded-full animate-spin p-[2px]"
           style={{
@@ -22,7 +22,7 @@ export const LoadingSpinnerCustom = () => {
         ></div>
 
         <div className="absolute inset-2 rounded-full flex items-center justify-center flex-col">
-          <div className="relative w-[100px] h-[100px] flex flex-col">
+          <div className="relative w-[175px] h-[175px] flex flex-col">
             <Image
               src="/images/loading/loading.gif"
               alt="Loading spinner"
