@@ -138,6 +138,10 @@ const config = {
           900: '#13542D',
         },
       },
+      backgroundImage: {
+        'blue-turquoise':
+          'linear-gradient(153deg, #0CEBCC -1.2%, #3678FF 100%)',
+      },
       fontFamily: {
         heading: ['Mogula', 'sans-serif'],
         subheading: ['REM', 'sans-serif'],
