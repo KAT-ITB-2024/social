@@ -1,25 +1,40 @@
-// components/FileUploader.tsx
+import React, {
+  type Dispatch,
+  type SetStateAction,
+  useRef,
+  useState,
+} from 'react';
+import { toast } from 'sonner';
+import { api } from '~/trpc/react';
+import { type FolderEnum } from '~/types/enums/storage';
+import { ErrorToast } from './ui/error-toast';
 
-import React, { useRef } from 'react';
 interface FileUploadProps {
   className: string;
-  onSubmitted: (fileName: string) => void;
+  setFile: Dispatch<SetStateAction<File | null>>;
+  setFilename: Dispatch<SetStateAction<string | null>>;
+  progress: number;
 }
+
 const FileUploader: React.FC<FileUploadProps> = ({
   className,
-  onSubmitted,
+  setFile,
+  setFilename,
+  progress,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
-    // Trigger file input click
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      onSubmitted(file.name);
+      setFile(file);
+      setFilename(file.name);
     }
   };
 
@@ -34,8 +49,20 @@ const FileUploader: React.FC<FileUploadProps> = ({
         ref={fileInputRef}
         onChange={handleFileChange}
         className="hidden"
-        accept=".pdf" // Change this if you want to allow different file types
+        accept=".pdf"
       />
+
+      {/* Progress Bar */}
+      {progress > 0 && (
+        <div className="w-full bg-gray-200 rounded-full mt-2">
+          <div
+            className="bg-blue-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+            style={{ width: `${progress}%` }}
+          >
+            {Math.round(progress)}%
+          </div>
+        </div>
+      )}
     </div>
   );
 };
