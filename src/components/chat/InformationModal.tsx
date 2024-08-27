@@ -18,12 +18,14 @@ const InformationModal = ({
   buttonLabel,
   isOpen = true,
   setIsOpen,
+  onClose,
 }: {
   title: string;
   description: string;
   buttonLabel: string;
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  onClose?: () => void;
 }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -36,10 +38,13 @@ const InformationModal = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <div className="flex flex-col items-center gap-y-4 space-y-4">
-            <AlertDialogCancel className="bg-pink-300 hover:bg-pink-400 border-white text-neutral-50 hover:text-neutral-100 rounded-[13px] font-body focus-visible:ring-transparent w-[192px] text-xl">
+            <AlertDialogCancel
+              className="bg-pink-300 hover:bg-pink-400 border-white text-neutral-50 hover:text-neutral-100 rounded-[13px] font-body focus-visible:ring-transparent w-[192px] text-xl"
+              onClick={onClose}
+            >
               {buttonLabel}
             </AlertDialogCancel>
-            <p>{description}</p>
+            <p className="text-center text-md px-8">{description}</p>
           </div>
         </AlertDialogFooter>
         <Image
