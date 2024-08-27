@@ -46,6 +46,8 @@ export default function MatchPage() {
 
   const checkEmit = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini match');
+      console.log(data.match);
       if (data.match !== undefined) {
         setIsLoading(false);
         void router.push(`/match/room`);
