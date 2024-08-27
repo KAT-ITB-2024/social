@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
-import { RevealStatusEvent } from '~/types/payloads/message';
+import { RevealStatusEvent } from '~/types/enums/message';
 import { socket } from '~/utils/socket';
 
 export default function MatchPage() {
@@ -25,6 +25,8 @@ export default function MatchPage() {
 
   const checkMatch = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini match');
+      console.log(data.match);
       if (data.match === undefined) {
         void router.push('/match');
       }
@@ -62,6 +64,7 @@ export default function MatchPage() {
     });
   }, []);
 
+  // saat nerima event message dari server
   // saat nerima event message dari server
   useSubscription('add', (post) => {
     if (post.userMatchId !== null) {
