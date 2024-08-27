@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import Image, { type StaticImageData } from 'next/image';
 import {
@@ -10,6 +11,15 @@ import {
   DialogClose,
 } from './ui/dialog-profile';
 import { Button } from './ui/button';
+import { LoadingSpinnerCustom } from './ui/loading-spinner';
+import { api } from '~/trpc/react';
+import { AllowableFileTypeEnum, FolderEnum } from '~/types/enums/storage';
+import { toast } from 'sonner';
+import { ErrorToast } from './ui/error-toast';
+import { uploadFile } from '~/lib/file';
+import { TRPCError } from '@trpc/server';
+import { SuccessToast } from './ui/success-toast';
+import { on } from 'events';
 
 export default function ModalProfile({
   triggerButton,
@@ -22,21 +32,30 @@ export default function ModalProfile({
   title: string;
   description: string;
   icon?: string;
-  onProfileImageChange: (newImage: StaticImageData) => void;
+  onProfileImageChange: (newImage: string) => void;
 }) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string>('No File Chosen');
   const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
-  const [selectedFile, setSelectedFile] = useState<StaticImageData | null>(
-    null,
-  );
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
+  const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
+  const updateProfilePicMutation = api.profile.updateProfileImg.useMutation();
+
+  const handleRemove = () => {
+    setFileName('No File Chosen');
+    setIsFileSelected(false);
+    setSelectedFile(null);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file) as unknown as StaticImageData;
-      setFileName('Selected File');
+      setFileName(file.name);
       setIsFileSelected(true);
-      setSelectedFile(imageUrl);
+      setSelectedFile(file);
+      onProfileImageChange(URL.createObjectURL(file));
     } else {
       setFileName('No File Chosen');
       setIsFileSelected(false);
@@ -44,11 +63,54 @@ export default function ModalProfile({
     }
   };
 
-  const handleSubmit = () => {
-    if (selectedFile) {
-      onProfileImageChange(selectedFile);
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+
+    if (!selectedFile) {
+      return;
+    }
+    const { type } = selectedFile;
+    if (!(type == 'image/jpeg' || type == 'image/png')) {
+      toast(<ErrorToast desc="File type not allowed" />);
+    }
+
+    const enumType =
+      type == 'image/jpeg'
+        ? AllowableFileTypeEnum.JPEG
+        : AllowableFileTypeEnum.PNG;
+
+    try {
+      const { url, filename } = await uploadFileMutation.mutateAsync({
+        filename: fileName,
+        folder: FolderEnum.PROFILE,
+        contentType: enumType,
+      });
+
+      const downloadUrl = await downloadFileMutation.mutateAsync({
+        filename: filename,
+        folder: FolderEnum.PROFILE,
+      });
+
+      const updateQuery = updateProfilePicMutation.mutateAsync({
+        profileImage: downloadUrl,
+      });
+      const uploadQuery = uploadFile(url, selectedFile, enumType);
+
+      await Promise.all([updateQuery, uploadQuery]);
+      onProfileImageChange(downloadUrl);
+      toast(<SuccessToast desc="Profile picture berhasil diubah" />);
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        toast(<ErrorToast desc={error.message} />);
+      } else toast(<ErrorToast desc="Silakan coba submit ulang!" />);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  if (isSubmitting) {
+    return <LoadingSpinnerCustom />;
+  }
 
   return (
     <Dialog>
@@ -66,6 +128,7 @@ export default function ModalProfile({
             width={24}
             height={24}
             className="cursor-pointer"
+            onClick={handleRemove}
           />
           <DialogClose asChild>
             <Image
@@ -93,6 +156,7 @@ export default function ModalProfile({
             <label className="relative w-full flex flex-col items-center ml-4">
               <input
                 type="file"
+                accept="image/png,image/jpeg"
                 className="opacity-0 absolute cursor-pointer"
                 onChange={handleFileChange}
               />
@@ -112,6 +176,7 @@ export default function ModalProfile({
           <Button
             className="bg-blue-600 text-white px-5 py-2 rounded text-center"
             onClick={handleSubmit}
+            disabled={!isFileSelected}
           >
             Submit
           </Button>

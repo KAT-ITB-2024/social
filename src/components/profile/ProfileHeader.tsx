@@ -1,16 +1,22 @@
 'use client';
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
 import { useState } from 'react';
-import PersonImage from 'public/images/profile/PersonImage.png';
 import CameraIcon from 'public/images/profile/CameraIcon.svg';
 import ModalProfile from '../modal-profile';
 import ModalPhoto from '../modal-photo';
 
-export default function ProfileHeader() {
-  const [profileImage, setProfileImage] =
-    useState<StaticImageData>(PersonImage);
+export default function ProfileHeader({
+  profilePic,
+}: {
+  profilePic: string | null;
+}) {
+  const [profileImage, setProfileImage] = useState<string>(
+    profilePic == null || profilePic == ''
+      ? '/images/profile/PersonImage.png'
+      : profilePic,
+  );
 
-  const handleProfileImageChange = (newImage: StaticImageData) => {
+  const handleProfileImageChange = (newImage: string) => {
     setProfileImage(newImage);
   };
 

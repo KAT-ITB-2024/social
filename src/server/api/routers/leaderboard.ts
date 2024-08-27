@@ -46,7 +46,7 @@ export const leaderboardRouter = createTRPCRouter({
         .offset(offset);
 
       const totalProfiles =
-        results.length > 0 ? results[0]?.totalProfiles ?? 0 : 0;
+        results.length > 0 ? (results[0]?.totalProfiles ?? 0) : 0;
       const leaderboard = results.map(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ({ totalProfiles, ...rest }) => rest,
@@ -156,7 +156,7 @@ export const leaderboardRouter = createTRPCRouter({
         .offset(offset);
 
       const totalGroups =
-        groupResults.length > 0 ? groupResults[0]?.totalGroups ?? 0 : 0;
+        groupResults.length > 0 ? (groupResults[0]?.totalGroups ?? 0) : 0;
       const groupLeaderboard = groupResults.map(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ({ totalGroups, ...rest }) => rest,

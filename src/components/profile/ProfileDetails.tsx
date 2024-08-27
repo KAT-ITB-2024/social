@@ -1,22 +1,57 @@
 'use client';
+import { TRPCError } from '@trpc/server';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { ErrorToast } from '../ui/error-toast';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '../ui/loading-spinner';
+import { SuccessToast } from '../ui/success-toast';
 
-export default function ProfileDetails() {
+interface ProfileDetailProps {
+  nama: string;
+  nim: string;
+  fakultas: string;
+  jenisKelamin: string;
+  bio: string | null;
+  instagram: string | null;
+  email: string | null;
+}
+
+const sanitizeValue = (value: string | null) => {
+  return value && value !== '' ? value : '-';
+};
+const isValidEmail = (email: string | null) => {
+  if (!email) return true; // Allow null or empty strings
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+export default function ProfileDetails({
+  nama,
+  nim,
+  fakultas,
+  jenisKelamin,
+  bio,
+  instagram,
+  email,
+}: ProfileDetailProps) {
   const initialProfile = {
-    nama: 'Tamara Mayranda Lubis',
-    nim: '18222026',
-    fakultas: 'STEI-K',
-    jenisKelamin: 'Perempuan',
-    bio: '“Ayo temenan!”',
-    instagram: '@oskm.itb',
-    email: 'tamaramayranda@gmail.com',
+    nama,
+    nim,
+    fakultas,
+    jenisKelamin,
+    bio,
+    instagram,
+    email,
   };
 
   const [profile, setProfile] = useState(initialProfile);
   const [editProfile, setEditProfile] = useState(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const updateProfileDataMutation = api.profile.updateProfileData.useMutation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditProfile({
@@ -29,15 +64,45 @@ export default function ProfileDetails() {
     setIsEditing(!isEditing);
   };
 
-  const handleSave = () => {
-    setProfile(editProfile);
-    setIsEditing(false);
+  const handleSave = async () => {
+    setIsSubmitting(true);
+    if (!isValidEmail(editProfile.email)) {
+      toast(<ErrorToast desc="Email tidak valid" />);
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const { email, bio, instagram } = editProfile;
+      await updateProfileDataMutation.mutateAsync({
+        email: email,
+        bio: bio,
+        instagram: instagram,
+      });
+      setProfile(editProfile);
+      setIsEditing(false);
+      toast(<SuccessToast desc="Profile berhasil diubah" />);
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        toast(<ErrorToast desc={'Error' + error.message} />);
+      } else {
+        toast(
+          <ErrorToast desc={'Gagal mengubah profil, silahkan coba lagi'} />,
+        );
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCancel = () => {
     setEditProfile(profile);
     setIsEditing(false);
   };
+
+  if (isSubmitting) {
+    return <LoadingSpinnerCustom />;
+  }
 
   return (
     <div className="text-center max-w-sm mx-auto mt-4">
@@ -46,30 +111,33 @@ export default function ProfileDetails() {
           <div>
             <p className="text-turquoise-400 text-b4 mb-1">Bio</p>
             <Input
-              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 text-opacity-50"
+              placeholder="Bio"
+              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 "
               type="text"
               name="bio"
-              value={editProfile.bio}
+              value={editProfile.bio ?? ''}
               onChange={handleInputChange}
             />
           </div>
           <div>
             <p className="text-turquoise-400 text-b4 mb-1">Instagram</p>
             <Input
-              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 text-opacity-50"
+              placeholder="Instagram"
+              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 "
               type="text"
               name="instagram"
-              value={editProfile.instagram}
+              value={editProfile.instagram ?? ''}
               onChange={handleInputChange}
             />
           </div>
           <div>
             <p className="text-turquoise-400 text-b4 mb-1">Email</p>
             <Input
-              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 text-opacity-50"
+              placeholder="Email"
+              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 "
               type="text"
               name="email"
-              value={editProfile.email}
+              value={editProfile.email ?? ''}
               onChange={handleInputChange}
             />
           </div>
@@ -118,19 +186,19 @@ export default function ProfileDetails() {
           <div>
             <p className="text-turquoise-400 text-b4">Bio</p>
             <p className="text-turquoise-400 text-sh4 font-bold mb-4">
-              {profile.bio}
+              {sanitizeValue(profile.bio)}
             </p>
           </div>
           <div>
             <p className="text-turquoise-400 text-b4">Instagram</p>
             <p className="text-turquoise-400 text-sh4 font-bold mb-4">
-              {profile.instagram}
+              {sanitizeValue(profile.instagram)}
             </p>
           </div>
           <div>
             <p className="text-turquoise-400 text-b4">Email</p>
             <p className="text-turquoise-400 text-sh4 font-bold">
-              {profile.email}
+              {sanitizeValue(profile.email)}
             </p>
           </div>
           <div className="flex justify-center">

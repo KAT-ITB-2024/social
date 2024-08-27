@@ -38,7 +38,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                 {[
                   { href: '#', src: '/icons/sidebar/home.svg', text: 'Home' },
                   {
-                    href: '#',
+                    href: '/assignment',
                     src: '/icons/sidebar/assignment.svg',
                     text: 'Assignment',
                   },
