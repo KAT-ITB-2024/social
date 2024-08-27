@@ -7,7 +7,13 @@ import Image from 'next/image';
 import PhotoProfile from 'public/images/chat/PhotoProfile.png';
 import Seaweed from 'public/images/chat/Seaweed.png';
 
-const ChatNavbar = () => {
+const ChatNavbar = ({
+  isTyping = false,
+  opponentId,
+}: {
+  opponentId?: string | null;
+  isTyping?: boolean;
+}) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleToggleSidebar = () => {
@@ -27,7 +33,12 @@ const ChatNavbar = () => {
             width={32}
             height={32}
           />
-          <h1 className="font-medium text-[20px]">Anonymous</h1>
+          <div className="flex flex-col">
+            <h1 className="font-medium text-[20px]">Anonymous</h1>
+            {isTyping && (
+              <p className="text-xs text-neutral-200">is typing...</p>
+            )}
+          </div>
         </div>
         <div className="relative bg-blue-600 w-[100px] py-[7px] flex items-center justify-center rounded-full overflow-hidden">
           <button
