@@ -11,7 +11,7 @@ export default function ModalPhoto({
   photo,
 }: {
   triggerButton: JSX.Element;
-  photo: StaticImageData;
+  photo: string;
 }) {
   return (
     <Dialog>
@@ -26,12 +26,15 @@ export default function ModalPhoto({
             className="cursor-pointer absolute top-4 left-4"
           />
         </DialogClose>
-        <div className="flex items-center justify-center">
-          <Image
-            src={photo}
-            alt="Profile"
-            className="object-contain max-w-full max-h-full"
-          />
+        <div className="flex items-center justify-center max-w-full max-h-[80vh] w-full h-full">
+          <div className="relative w-full h-full">
+            <Image
+              src={photo}
+              alt="Profile"
+              className="absolute object-contain max-w-full max-h-full"
+              fill
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
