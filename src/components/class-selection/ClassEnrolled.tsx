@@ -1,7 +1,6 @@
 'use client';
 
-import Image, { type StaticImageData } from 'next/image';
-import SeaSlug from 'public/images/class-selection/SeaSlug.png';
+import Image from 'next/image';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -11,14 +10,11 @@ import {
 import CloseIcon from 'public/icons/class-selection/CloseIcon.svg';
 import { cn } from '~/lib/utils';
 
-const ClassInfoModal = ({
+const ClassEnrolledModal = ({
   isOpen,
   setIsOpen,
   className,
 }: {
-  image: StaticImageData;
-  title: string;
-  description: string;
   isOpen: boolean;
   setIsOpen: (param: boolean) => void;
   className?: string;
@@ -27,7 +23,7 @@ const ClassInfoModal = ({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
         className={cn(
-          'w-[300px] px-4 py-14 bg-white rounded-[12px] shadow-pink-xl',
+          'w-[300px] px-4 py-14 bg-white rounded-[12px] shadow-black',
           className,
         )}
       >
@@ -38,17 +34,16 @@ const ClassInfoModal = ({
           <Image src={CloseIcon} alt="Close Icon" width={32} height={32} />
         </div>
         <AlertDialogTitle className="flex flex-col items-center gap-y-2">
-          <Image src={SeaSlug} alt="SeaSlug" height={200} width={200} />
-          <p className="text-center text-h3 font-normal text-orange-500">
-            Yeay!
+          <p className="text-center text-h2 font-normal text-error-500">
+            Maaf..
           </p>
         </AlertDialogTitle>
         <AlertDialogDescription className="text-pink-400 text-center">
-          Kamu berhasil terdaftar di kelas ini
+          Kamu sudah memilih kelas sebelumnya. Kelas hanya bisa dipilih satu kali.
         </AlertDialogDescription>
       </AlertDialogContent>
     </AlertDialog>
   );
 };
 
-export default ClassInfoModal;
+export default ClassEnrolledModal;

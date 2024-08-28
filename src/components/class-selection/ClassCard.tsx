@@ -7,9 +7,8 @@ import CoralCard from 'public/images/class-selection/coral-card.png';
 type CardVariant = 'default' | 'clicked';
 
 interface CustomCardProps {
-  title: string;
-  theme: string;
   topic: string;
+  title: string;
   quota: number;
   reserved: number;
   desc: string;
@@ -19,10 +18,9 @@ interface CustomCardProps {
 
 export const CustomCard: React.FC<CustomCardProps> = ({
   topic,
-  theme,
+  title,
   quota,
   reserved,
-  desc,
   variant,
   onClick,
 }) => {
@@ -52,7 +50,6 @@ export const CustomCard: React.FC<CustomCardProps> = ({
       : 'bg-gradient-to-r from-white via-white to-turquoise-100';
 
   const themeColor = variant === 'clicked' ? 'text-white' : 'text-orange-400';
-  const titleColor = variant === 'clicked' ? 'text-white' : 'text-orange-300';
 
   return (
     <Card
@@ -63,9 +60,9 @@ export const CustomCard: React.FC<CustomCardProps> = ({
         <CardTitle
           className={`text-h5 md:text-base font-subheading ${themeColor}`}
         >
-          {theme}: {topic}
+          {topic}
         </CardTitle>
-        <p className={`${themeColor} text-sm`}>{desc}</p>
+        <p className={`${themeColor} text-sm`}>{title}</p>
         <p
           className={`bg-white inline-block border ${borderColor} ${seatColor} ${bgroundColor} rounded-full px-4 py-1 text-sm w-fit mt-2`}
         >

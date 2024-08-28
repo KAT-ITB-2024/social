@@ -9,37 +9,48 @@ import Jellyfish2 from 'public/images/class-selection/sea-Creatures-2.png';
 import SeaSlug from 'public/images/class-selection/SeaSlug.png';
 
 import { useRouter, notFound } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ClassData, ClassDetails } from '../classData';
 import ClassConfirmationModal from '@/components/class-selection/ClassConfirmationModal';
 import ClassInfoModal from '@/components/class-selection/ClassInfoModal';
 import ClassFullModal from '@/components/class-selection/ClassFullModal';
+import ClassEnrolledModal from '@/components/class-selection/ClassEnrolled';
+import { api } from '~/trpc/react';
 
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [selectedClass, setSelectedClass] = useState<
-    ClassDetails | undefined
-  >();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isClassFullModalOpen, setIsClassFullModalOpen] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
 
-  useEffect(() => {
-    if (params.id) {
-      const foundClass = ClassData.find((cls) => cls.id === Number(params.id));
-      if (!foundClass) {
-        notFound();
-        return;
-      } else {
-        setSelectedClass(foundClass);
-      }
-    }
-  }, [params.id]);
+  const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
+  const [isEnrolledModalOpen, setIsEnrolledModalOpen] = useState(false);
+
+  const { data: selectedClass, isLoading, error } = api.class.getClassById.useQuery(params.id);
+  const { mutate: enrollClass } = api.class.enrollClass.useMutation({
+    onSuccess: () => {
+      localStorage.setItem('confirmedClassId', params.id);
+      closeConfirmationModal();
+      setIsInfoModalOpen(true);
+    },
+    onError: (err) => {
+      console.error(err.message);
+      setIsEnrolledModalOpen(true);
+    },
+  });
+
+  if (isLoading) return <p>Loading class details...</p>;
+  if (error ?? !selectedClass) {
+    notFound();
+    return notFound;
+  }
 
   const openConfirmationModal = () => {
-    if (selectedClass && selectedClass.reserved >= selectedClass.quota) {
+    const totalSeats = selectedClass?.totalSeats ?? 0;
+    const reservedSeats = selectedClass?.reservedSeats ?? 0;
+
+    if (selectedClass && (reservedSeats >= totalSeats)) {
       setIsClassFullModalOpen(true);
     } else {
       setIsConfirmationModalOpen(true);
@@ -51,11 +62,12 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   };
 
   const confirmSelection = () => {
-    if (selectedClass) {
-      localStorage.setItem('confirmedClassId', selectedClass.id.toString());
+    if (enrolledClass && enrolledClass.id !== selectedClass?.id) {
+      setIsEnrolledModalOpen(true);
+    } else {
+      const classId = selectedClass?.id ?? '';
+      enrollClass({ classId });
     }
-    closeConfirmationModal();
-    setIsInfoModalOpen(true);
   };
 
   const toggleText = () => {
@@ -69,17 +81,9 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
     return text;
   };
 
-  // const closeInfoModal = () => {
-  //   setIsInfoModalOpen(false);
-  //   router.push('/class-selection');
-  // };
-
-  if (!selectedClass) {
-    return notFound;
-  }
-
+  const totalSeats = selectedClass?.totalSeats ?? 0;
   const reservedPercentage =
-    (selectedClass.reserved / selectedClass.quota) * 100;
+    (selectedClass?.reservedSeats ?? 0 / totalSeats) * 100;
   let seatColor;
 
   if (reservedPercentage >= 100) {
@@ -89,6 +93,9 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   } else {
     seatColor = 'text-green-500';
   }
+
+  const description = selectedClass?.description ?? 'Tidak ada penjelasan'
+  
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-orange-900 z-0">
@@ -130,12 +137,12 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           </h3>
           <div className="mt-1">
             <p className="inline-block border-2 border-orange-500 text-orange-400 rounded-full px-4 py-1 text-sm">
-              {selectedClass.date}
+              {selectedClass.formattedDate}
             </p>
             <p
               className={`inline-block border-2 border-orange-500 ${seatColor} rounded-full px-4 py-1 text-sm ml-2`}
             >
-              {selectedClass.reserved} / {selectedClass.quota}
+              {selectedClass.reservedSeats} / {selectedClass.totalSeats}
             </p>
           </div>
         </div>
@@ -149,7 +156,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
             <p className="text-orange-400 text-left">
               {selectedClass.location}
             </p>
-            <p className="text-orange-400 text-left">{selectedClass.time}</p>
+            <p className="text-orange-400 text-left">{selectedClass.formattedTime} WIB</p>
           </div>
           <div className="mt-2 ml-2 mb-2">
             <b className="font-bold text-orange-400">DEPSKRIPSI</b>
@@ -158,9 +165,9 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
         <div className="container -mt-2 z-10 overflow-y-scroll mb-3 h-28">
           <div className="mt-2 ml-2">
             <p className="text-orange-400 text-left">
-              {truncatedText(selectedClass.desc, 100)}
+              {truncatedText(description, 100)}
             </p>
-            {selectedClass.desc.length > 50 && (
+            {description.length > 50 && (
               <button
                 onClick={toggleText}
                 className="text-orange-500 underline"
@@ -198,6 +205,11 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
         <ClassFullModal
           isOpen={isClassFullModalOpen}
           setIsOpen={setIsClassFullModalOpen}
+        />
+
+        <ClassEnrolledModal 
+          isOpen={isEnrolledModalOpen} 
+          setIsOpen={setIsEnrolledModalOpen} 
         />
       </div>
     </main>

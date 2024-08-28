@@ -54,8 +54,8 @@ const ClassConfirmationModal = ({
           </p>
         </AlertDialogTitle>
         <AlertDialogDescription className="text-pink-400 text-center font-normal ">
-          Apakah kamu yakin memilih <br />
-          kelas ini?
+          Apakah kamu yakin memilih kelas ini?<br />
+          Kelas hanya dapat dipilih satu kali.
         </AlertDialogDescription>
         <AlertDialogFooter>
           <AlertDialogAction

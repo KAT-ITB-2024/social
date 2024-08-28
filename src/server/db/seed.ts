@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
+import { ClassData } from './classData';
 
 export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
   const password = await bcrypt.hash('password', 10);
@@ -238,6 +239,28 @@ export async function seedNotifications(db: PostgresJsDatabase<typeof schema>) {
     });
   }
 }
+
+export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
+  for (const classDetails of ClassData) {
+    try {
+      await db.insert(schema.classes).values({
+        title: classDetails.title,
+        topic: `${classDetails.theme}: ${classDetails.topik}`,
+        description: classDetails.desc,
+        speaker: classDetails.speaker,
+        location: classDetails.location,
+        date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
+        totalSeats: classDetails.quota,
+        reservedSeats: classDetails.reserved,
+      });
+    } catch (error) {
+      console.error(`Error seeding class with title ${classDetails.title}:`, error);
+      continue; 
+    }
+  }
+  console.log('Done seeding classes!');
+}
+
 export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
@@ -262,8 +285,11 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding post test submission');
   await seedNotifications(db);
   console.log('Done seeding notifications!');
+  await seedClasses(db);
+  console.log('Done seeding classes!');
   await migrationClient.end();
 }
+
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;

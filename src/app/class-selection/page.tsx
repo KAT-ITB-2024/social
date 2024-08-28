@@ -7,23 +7,35 @@ import Coral2 from 'public/images/class-selection/coral-2.png';
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { ClassData } from './classData';
 import { CustomCard } from '@/components/class-selection/ClassCard';
+import { api } from '~/trpc/react';
 
 export default function ClassSelection() {
+
   const router = useRouter();
-  const [confirmedClassId, setConfirmedClassId] = useState<number | null>(null);
+  const { data: classes, isLoading, error } = api.class.getAllClasses.useQuery();
+  const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
+
+  const [confirmedClassId, setConfirmedClassId] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedClassId = localStorage.getItem('confirmedClassId');
-    if (savedClassId) {
-      setConfirmedClassId(Number(savedClassId));
+    if (enrolledClass) {
+      setConfirmedClassId(enrolledClass.id);
     }
-  }, []);
+  }, [enrolledClass]);
 
-  const handleCardClick = (id: number) => {
+  const handleCardClick = (id: string) => {
     router.push(`/class-selection/${id}`);
   };
+
+  if (isLoading) return <p>Loading classes...</p>;
+  if (error) return <p>Error loading classes: {error.message}</p>;
+
+  const sortedClasses = classes?.sort((a, b) => {
+    if (a.id === confirmedClassId) return -1;
+    if (b.id === confirmedClassId) return 1;
+    return 0;
+  });
 
   return (
     <main className="flex flex-col items-center justify-center bg-orange-900 max-h-screen">
@@ -40,15 +52,14 @@ export default function ClassSelection() {
         />
         <div className="z-10 w-full max-w-md overflow-y-scroll p-4 mt-20 scroll-container">
           <div className="grid gap-3">
-            {ClassData.filter((cls) => cls.reserved < cls.quota).map((cls) => (
+            {sortedClasses?.map((cls) => (
               <CustomCard
                 key={cls.id}
-                topic={cls.topic}
-                theme={cls.theme}
+                topic={cls.topic ?? 'Unknown Topic'}
                 title={cls.title}
-                quota={cls.quota}
-                reserved={cls.reserved}
-                desc={cls.title}
+                quota={cls.totalSeats}
+                reserved={cls.reservedSeats ?? 0}
+                desc={cls.description}
                 variant={cls.id === confirmedClassId ? 'clicked' : 'default'}
                 onClick={() => handleCardClick(cls.id)}
               />

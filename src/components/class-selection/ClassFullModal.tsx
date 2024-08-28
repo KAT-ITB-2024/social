@@ -1,6 +1,6 @@
 'use client';
 
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -39,8 +39,7 @@ const ClassFullModal = ({
           </p>
         </AlertDialogTitle>
         <AlertDialogDescription className="text-pink-400 text-center">
-          Too bad, this class is full. Let us find other classes for you to
-          join!
+          Sayangnya kelas ini sudah penuh.. Mari telusuri kelas lainnya!
         </AlertDialogDescription>
       </AlertDialogContent>
     </AlertDialog>

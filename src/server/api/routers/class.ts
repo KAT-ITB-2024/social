@@ -3,6 +3,8 @@ import { classes, profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { EnrollClassPayload } from '~/types/payloads/class';
+import { z } from 'zod';
+
 
 export const classRouter = createTRPCRouter({
   getEnrolledClass: publicProcedure.query(async ({ ctx }) => {
@@ -63,6 +65,61 @@ export const classRouter = createTRPCRouter({
     const allClasses = await ctx.db.select().from(classes).execute();
 
     return allClasses;
+  }),
+
+  getClassById: publicProcedure
+  .input(z.string().nonempty("Class ID cannot be empty"))
+  .query(async ({ input, ctx }) => {
+    const classId = input;
+
+    const selectedClass = await ctx.db
+      .select({
+        id: classes.id,
+        title: classes.title,
+        topic: classes.topic,
+        date: classes.date,
+        location: classes.location,
+        speaker: classes.speaker,
+        description: classes.description,
+        totalSeats: classes.totalSeats,
+        reservedSeats: classes.reservedSeats,
+      })
+      .from(classes)
+      .where(eq(classes.id, classId))
+      .limit(1)
+      .execute();
+
+    if (!selectedClass || selectedClass.length === 0) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Class not found',
+      });
+    }
+
+    const classData = selectedClass[0];
+
+    const formattedDate = classData?.date
+    ? new Date(classData.date).toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: '2-digit',
+      })
+    : 'Unknown Date';
+
+    const formattedTime = classData?.date
+    ? new Date(classData.date).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+    : 'Unknown Time';
+
+      return {
+        ...classData,
+        formattedDate,
+        formattedTime,
+      };
   }),
 
   enrollClass: publicProcedure
