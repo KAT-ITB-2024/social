@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Share } from '~/components/Share';
 
 interface wrappedProps {
   jumlah_match: number | string;
@@ -354,6 +355,58 @@ const WrappedStories = ({
               <p className="text-center font-subheading text-md text-turquoise-500">
                 Dedikasi yang luar biasa!
               </p>
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      content: () => {
+        return (
+          <>
+            <Image
+              src="/images/wrapped/background/Wrapped 1.png"
+              alt="Wrapped 1"
+              fill={true}
+              className="absolute"
+            />
+            <Image
+              src="/images/wrapped/svg/logo.svg"
+              alt="Logo"
+              width={96}
+              height={50}
+              className="absolute left-3 top-6"
+            />
+            <Image
+              src="/images/wrapped/svg/seahorse.svg"
+              alt="Seahorse"
+              width={250}
+              height={350}
+              className="absolute right-0 top-[-60px]"
+            />
+            <Image
+              src="/images/wrapped/svg/island.svg"
+              alt="Island"
+              width={500}
+              height={500}
+              className="absolute bottom-0"
+            />
+            <p className="absolute left-[13%] w-3/4 pt-3 text-center font-heading text-6xl text-orange-100 blur-md">
+              Share Your Wrapped!
+            </p>
+            <p className="absolute left-[12.5%] w-3/4 text-center font-heading text-6xl text-blue-500">
+              Share Your Wrapped!
+            </p>
+            <div className="absolute left-[12.5%] bottom-[35%] w-3/4 text-center font-heading z-[1000]">
+              <Share
+                shareData={{
+                  title: 'Share',
+                  text: 'Share message',
+                  url: 'https://www.brannen.dev',
+                }}
+              >
+                <span>Share</span>
+              </Share>
             </div>
           </>
         );

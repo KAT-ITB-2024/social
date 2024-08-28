@@ -1,7 +1,6 @@
 'use client';
 // import Stories from '@ryse/react-insta-stories';
 import Stories from 'react-insta-stories';
-import { WithSeeMore } from 'react-insta-stories';
 import { WrappedStories } from './Content';
 import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
