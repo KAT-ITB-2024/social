@@ -4,19 +4,17 @@ import { useSession } from 'next-auth/react';
 import { redirect, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
 import { RevealStatusEvent } from '~/types/enums/message';
 import { socket } from '~/utils/socket';
 
 export default function MatchPage() {
-  const { data: session } = useSession({ required: true });
+  const { data: session, status } = useSession();
 
-  if (!session) {
-    redirect('/login');
-  }
   // const queueEmit = useEmit('findMatch');
-  // socket.connect();
+  socket.connect();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [showRevealPopup, setShowRevealPopup] = useState(false);
@@ -106,6 +104,12 @@ export default function MatchPage() {
     setNewMessage(e.target.value);
     anonTypingEmit.mutate({});
   };
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
+  }
   return (
     <div className="py-24">
       Match page

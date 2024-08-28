@@ -8,14 +8,11 @@ import useSubscription from '~/hooks/useSubscription';
 import { socket } from '~/utils/socket';
 import { redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 export default function MatchPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (!session) {
-    redirect("/login")
-  }
-  
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
@@ -50,7 +47,7 @@ export default function MatchPage() {
       console.log(data.match);
       if (data.match !== undefined) {
         setIsLoading(false);
-        void router.push(`/match/room`);
+        void router.push(`/chat/room`);
       } else if (data.queue !== null) {
         queued.current = true;
       } else {
@@ -69,7 +66,7 @@ export default function MatchPage() {
 
   useSubscription('match', (_) => {
     queued.current = false;
-    void router.push(`/match/room`);
+    void router.push(`/chat/room`);
   });
 
   if (isLoading) {
@@ -82,6 +79,12 @@ export default function MatchPage() {
         </Button>
       </div>
     );
+  }
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
   }
   return (
     <div className="py-24">
