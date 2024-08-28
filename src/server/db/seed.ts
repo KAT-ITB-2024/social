@@ -184,7 +184,7 @@ export async function seedAssignmentSubmission(
       userNim: users[i]?.nim ?? '',
       filename: `Assignment ${i}`,
       downloadUrl: 'https://google.com/DownloadUrl',
-      point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
+      point: i % 3 == 0 ? null : (assignments[i % 4]?.point ?? 0),
       updatedAt: new Date(),
     });
   }
