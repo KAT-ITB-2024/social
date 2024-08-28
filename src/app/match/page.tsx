@@ -10,6 +10,7 @@ import NewChatForm from '~/components/chat/newchat/NewChat';
 import Image from 'next/image';
 import Coral from 'public/images/chat/newchat/coral.png';
 import AddIcon from 'public/icons/newchat/add-icon.svg';
+import { ChatTopic } from '~/types/enum/chat';
 
 export default function MatchPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +26,8 @@ export default function MatchPage() {
     if (!queued.current) {
       queueEmit.mutate({
         isAnonymous: false,
+        topic: ChatTopic.FILM,
+        isFindingFriend: false,
       });
       queued.current = true;
       setIsLoading(true);
@@ -55,7 +58,7 @@ export default function MatchPage() {
 
   const showChatForm = () => {
     setShowForm(true);
-  }
+  };
 
   useEffect(() => {
     checkEmit.mutate({});

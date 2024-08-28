@@ -92,6 +92,8 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
       assignmentType: 'Main',
       point: 10,
       updatedAt: new Date(),
+      filename: '',
+      downloadUrl: '',
     });
     dayCounter += 1;
   }
