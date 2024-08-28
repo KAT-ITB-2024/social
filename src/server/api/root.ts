@@ -7,7 +7,11 @@ import { assignmentRouter } from './routers/assignment';
 import { submissionRouter } from './routers/submission';
 import { postTestRouter } from './routers/postTest';
 import { classRouter } from './routers/class';
+import { messageRouter } from './routers/message';
 import { authRouter } from './routers/auth';
+import { leaderboardRouter } from './routers/leaderboard';
+import { storageRouter } from './routers/storage';
+import { attendanceRouter } from './routers/attendance';
 /**
  * This is the primary router for your server.
  *
@@ -19,10 +23,14 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   user: userRouter,
   assignment: assignmentRouter,
+  attendance: attendanceRouter,
   submission: submissionRouter,
   postTest: postTestRouter,
   class: classRouter,
+  message: messageRouter,
+  leaderboard: leaderboardRouter,
   auth: authRouter,
+  storage: storageRouter,
 });
 
 // export type definition of API
