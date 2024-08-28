@@ -8,6 +8,11 @@ import {
   LineIcon,
   TwitterIcon,
   WhatsappIcon,
+  XIcon,
+  FacebookShareButton,
+  FacebookIcon,
+  TelegramShareButton,
+  TelegramIcon,
 } from 'react-share';
 import { useState } from 'react';
 interface MbtiResultProps {
@@ -18,18 +23,22 @@ export default function MbtiResult({ type }: MbtiResultProps) {
   const [saved, setSaved] = useState(false);
   const result = ResultsData.find((obj) => obj.type === type);
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-
+  const share_url = 'app.oskmitb.com/personality';
+  const share_content = `Aku mendapatkan ${capitalizedType} di OSKM MBTI!\n${result?.desc_string}\nAyo coba cek personality kalian di\n`;
   function handleSave() {
     const link = document.createElement('a');
     link.href = `/images/mbti/${type}_download.png`;
     link.download = `oskm-mbti.png`;
     link.click();
     setSaved(true);
+    // setTimeout(() => {
+    //   window.location.href = 'https://www.instagram.com/';
+    // }, 1000);
   }
 
   return (
-    <div className="px-9 flex flex-col items-center mt-24">
-      <h2 className="text-center text-xl mt-4">
+    <div className="px-9 flex flex-col items-center mt-24 overflow-y-auto">
+      <h2 className="text-center text-xl mt-2">
         Yeay! we finally have the result of your test, so your MBTI is...
       </h2>
       <h1 className="text-pink-400 text-shadow-pink-md mt-6">
@@ -86,6 +95,23 @@ export default function MbtiResult({ type }: MbtiResultProps) {
             <h1 className="text-3xl text-success-600 mt-5">
               Successfully Saved!
             </h1>
+            <h3 className="mt-1 text-xl text-green-950">
+              Share to your socials!
+            </h3>
+            <div className="flex justify-center gap-3 items-center w-1/2">
+              <WhatsappShareButton url={share_url} title={share_content}>
+                <WhatsappIcon size={32} round />
+              </WhatsappShareButton>
+              <TwitterShareButton url={share_url} title={share_content}>
+                <XIcon size={32} round />
+              </TwitterShareButton>
+              <TelegramShareButton url={share_url} title={share_content}>
+                <TelegramIcon size={32} round />
+              </TelegramShareButton>
+              <LineShareButton url={share_url} title={share_content}>
+                <LineIcon size={32} round />
+              </LineShareButton>
+            </div>
           </div>
         </>
       )}
