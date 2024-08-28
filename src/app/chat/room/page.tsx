@@ -111,7 +111,7 @@ const Chat = () => {
 
   useEffect(() => {
     checkMatch.mutate({});
-  }, [checkMatch, checkMatch.mutate, endMatchEmit.mutate]);
+  }, [checkMatch.mutate, endMatchEmit.mutate]);
 
   // saat nerima event message dari server
   useSubscription('add', (post) => {
@@ -124,7 +124,11 @@ const Chat = () => {
   useSubscription('askReveal', (match, data) => {
     setRevealStatus(data);
     setOpponentId(match.secondUserId);
-    setShowRevealPopup(true);
+    if (data === RevealStatusEvent.ASK) {
+      setShowRevealPopup(true);
+    } else {
+      setRevealResponsePopup(true);
+    }
   });
 
   // saat nerima event endMatch dari server
@@ -188,7 +192,7 @@ const Chat = () => {
         <ChatNavbar isTyping={opponentTyping} opponentId={opponentId} />
         {/* Chat Room */}
         <div
-          className="flex-grow overflow-y-auto p-4 mt-20 no-scrollbar z-10"
+          className="flex-grow flex flex-col-reverse overflow-y-auto p-4 mt-20 no-scrollbar z-10"
           ref={chatContainerRef}
         >
           {messages.map((msg, index) => (
