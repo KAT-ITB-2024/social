@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { createEvent } from '../helper';
 import { and, eq, or } from 'drizzle-orm';
 import { messages, userMatches } from '@katitb2024/database';
-import { RevealStatusEvent } from '~/types/payloads/message';
+import { RevealStatusEvent } from '~/types/enums/message';
 export const messageEvent = createEvent(
   {
     name: 'message',

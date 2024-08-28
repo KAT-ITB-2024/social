@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { type ReactNode, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +17,7 @@ import DeleteIcon from 'public/images/modal-component/delete.svg';
 
 interface ConfirmationModalProps {
   triggerText?: string;
+  customTriggerButton?: ReactNode;
   image: StaticImageData;
   title: string;
   description: string;
@@ -29,6 +30,7 @@ interface ConfirmationModalProps {
 
 export function ConfirmationModal({
   triggerText,
+  customTriggerButton,
   image,
   title,
   description,
@@ -42,8 +44,13 @@ export function ConfirmationModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger asChild>
-        {triggerText ? (
+      <AlertDialogTrigger
+        asChild
+        className="flex items-center justify-center px-2"
+      >
+        {customTriggerButton ? (
+          <div onClick={() => setIsOpen(true)}>{customTriggerButton}</div>
+        ) : triggerText ? (
           <button className="btn" onClick={() => setIsOpen(true)}>
             {triggerText}
           </button>
@@ -68,7 +75,7 @@ export function ConfirmationModal({
           <AlertDialogFooter className="flex flex-col w-full mt-6">
             <AlertDialogAction
               onClick={action}
-              className={`${actionColor ?? 'bg-yellow'} w-full text-blue-500`}
+              className={`${actionColor ?? 'bg-yellow'} w-full text-blue-500 hover:bg-shade-200`}
             >
               {actionText}
             </AlertDialogAction>
