@@ -10,12 +10,15 @@ import { AttendanceCard } from '~/components/attendance/AttendanceCard';
 import { api } from '~/trpc/react';
 import { redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 export default function AttendancePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (!session) {
-    redirect("/login")
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
   }
 
   const getAllAttendancesQuery = api.attendance.getAllAttendances.useQuery();

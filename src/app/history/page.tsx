@@ -1,7 +1,11 @@
-import { profile } from 'console';
+'use client';
+
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { redirect } from 'next/navigation';
 import Coral from 'public/images/history/Coral.png';
 import { HistoryCard } from '~/components/history/HistoryCard';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const dummy = [
   {
@@ -79,6 +83,13 @@ const dummy = [
 ];
 
 const ChatHistory = () => {
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div
