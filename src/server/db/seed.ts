@@ -44,6 +44,7 @@ export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
         point: 0,
+        bata: `${i}`,
       });
     } catch (error) {}
   }
@@ -252,10 +253,14 @@ export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
         date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
         totalSeats: classDetails.quota,
         reservedSeats: classDetails.reserved,
+        type: classDetails.type,
       });
     } catch (error) {
-      console.error(`Error seeding class with title ${classDetails.title}:`, error);
-      continue; 
+      console.error(
+        `Error seeding class with title ${classDetails.title}:`,
+        error,
+      );
+      continue;
     }
   }
   console.log('Done seeding classes!');

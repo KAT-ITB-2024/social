@@ -11,9 +11,12 @@ import { CustomCard } from '@/components/class-selection/ClassCard';
 import { api } from '~/trpc/react';
 
 export default function ClassSelection() {
-
   const router = useRouter();
-  const { data: classes, isLoading, error } = api.class.getAllClasses.useQuery();
+  const {
+    data: classes,
+    isLoading,
+    error,
+  } = api.class.getAllClasses.useQuery();
   const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
 
   const [confirmedClassId, setConfirmedClassId] = useState<string | null>(null);

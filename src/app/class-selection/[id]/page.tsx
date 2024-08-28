@@ -27,7 +27,11 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
   const [isEnrolledModalOpen, setIsEnrolledModalOpen] = useState(false);
 
-  const { data: selectedClass, isLoading, error } = api.class.getClassById.useQuery(params.id);
+  const {
+    data: selectedClass,
+    isLoading,
+    error,
+  } = api.class.getClassById.useQuery(params.id);
   const { mutate: enrollClass } = api.class.enrollClass.useMutation({
     onSuccess: () => {
       localStorage.setItem('confirmedClassId', params.id);
@@ -50,7 +54,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
     const totalSeats = selectedClass?.totalSeats ?? 0;
     const reservedSeats = selectedClass?.reservedSeats ?? 0;
 
-    if (selectedClass && (reservedSeats >= totalSeats)) {
+    if (selectedClass && reservedSeats >= totalSeats) {
       setIsClassFullModalOpen(true);
     } else {
       setIsConfirmationModalOpen(true);
@@ -94,8 +98,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
     seatColor = 'text-green-500';
   }
 
-  const description = selectedClass?.description ?? 'Tidak ada penjelasan'
-  
+  const description = selectedClass?.description ?? 'Tidak ada penjelasan';
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-orange-900 z-0">
@@ -156,7 +159,9 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
             <p className="text-orange-400 text-left">
               {selectedClass.location}
             </p>
-            <p className="text-orange-400 text-left">{selectedClass.formattedTime} WIB</p>
+            <p className="text-orange-400 text-left">
+              {selectedClass.formattedTime} WIB
+            </p>
           </div>
           <div className="mt-2 ml-2 mb-2">
             <b className="font-bold text-orange-400">DEPSKRIPSI</b>
@@ -207,9 +212,9 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           setIsOpen={setIsClassFullModalOpen}
         />
 
-        <ClassEnrolledModal 
-          isOpen={isEnrolledModalOpen} 
-          setIsOpen={setIsEnrolledModalOpen} 
+        <ClassEnrolledModal
+          isOpen={isEnrolledModalOpen}
+          setIsOpen={setIsEnrolledModalOpen}
         />
       </div>
     </main>
