@@ -1,4 +1,4 @@
-export const successRevealTitle = 'Yay, Temen Kamu uda Reveal Nih!';
+export const successRevealTitle = 'Yay, Profile Berhasil di-Reveal!';
 export const failedRevealTitle = 'Yah, Teman kamu menolak Reveal :(';
 export const successRevealDescription =
   'Semoga kalian bisa semakin dekat ya :)';

@@ -33,21 +33,45 @@ const Chat = () => {
   socket.connect();
   const router = useRouter();
 
+  const [modals, setModals] = useState<Record<string, boolean>>({
+    isRulesModalOpen: false,
+    isEndConfirmationModalOpen: false,
+    showRevealPopup: false,
+    askRevealPopup: false,
+    revealResponsePopup: false,
+  });
+
+  const openModal = (modalName: string) => {
+    setModals((prevState) => {
+      const newState = { ...prevState };
+      for (const key in newState) {
+        newState[key] = key === modalName;
+      }
+      return newState;
+    });
+  };
+
+  const closeModal = () => {
+    setModals((prevState) => {
+      const newState = { ...prevState };
+      for (const key in newState) {
+        newState[key] = false;
+      }
+      return newState;
+    });
+  };
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [showRevealPopup, setShowRevealPopup] = useState(false);
-  const [askRevealPopup, setAskRevealPopup] = useState(false);
-  const [revealResponsePopup, setRevealResponsePopup] = useState(false);
   const [revealStatus, setRevealStatus] = useState<RevealStatusEvent | null>(
     null,
   );
+  const [isRevealed, setIsRevealed] = useState(false);
+
   const [opponentId, setOpponentId] = useState<string | null>(null);
   const [opponentTyping, setOpponentTyping] = useState(false);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
-  const [isEndConfirmationModalOpen, setIsEndConfirmationModalOpen] =
-    useState(false);
   const [isChatEndModalOpen, setIsChatEndModalOpen] = useState(false);
   const [chatEndTitle, setChatEndTitle] = useState(receiveChatEndTitle);
 
@@ -58,6 +82,10 @@ const Chat = () => {
       if (data.match === undefined) {
         // TODO: redirect to match page
         void router.push('/match');
+      }
+
+      if (data.match?.isRevealed && !isRevealed) {
+        setIsRevealed(true);
       }
     },
   });
@@ -73,7 +101,8 @@ const Chat = () => {
 
   const handleAskReveal = () => {
     askRevealEmit.mutate({ state: RevealStatusEvent.ASK });
-    setAskRevealPopup(true);
+    // setAskRevealPopup(true);
+    openModal('askRevealPopup');
   };
 
   const addMessages = useCallback((incoming?: Message[]) => {
@@ -94,7 +123,6 @@ const Chat = () => {
 
   const handleRevealResponse = (response: RevealStatusEvent) => {
     askRevealEmit.mutate({ state: response });
-    setShowRevealPopup(false);
   };
 
   const handleTyping = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -106,6 +134,10 @@ const Chat = () => {
     if (newMessage.trim()) {
       messageEmit.mutate({ message: newMessage.trim() });
       setNewMessage('');
+      const textarea = document.querySelector('textarea');
+      if (textarea) {
+        textarea.style.height = 'auto'; // Reset to initial height
+      }
     }
   };
 
@@ -125,9 +157,13 @@ const Chat = () => {
     setRevealStatus(data);
     setOpponentId(match.secondUserId);
     if (data === RevealStatusEvent.ASK) {
-      setShowRevealPopup(true);
+      // setShowRevealPopup(true);
+      openModal('showRevealPopup');
     } else {
-      setRevealResponsePopup(true);
+      if (data === RevealStatusEvent.ACCEPTED) {
+        setIsRevealed(true);
+      }
+      openModal('revealResponsePopup');
     }
   });
 
@@ -221,7 +257,7 @@ const Chat = () => {
             <ul className="flex flex-col gap-1">
               <li
                 className="flex flex-row justify-start gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
-                onClick={() => setIsEndConfirmationModalOpen(true)}
+                onClick={() => openModal('isEndConfirmationModalOpen')}
               >
                 <Image
                   src="/icons/chat/stop-icon.svg"
@@ -232,24 +268,28 @@ const Chat = () => {
                 <span>Stop Pembicaraan</span>
               </li>
               <div className="w-full bg-white flex h-[0.5px]" />
-              <li
-                className="flex flex-col gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
-                onClick={handleAskReveal}
-              >
-                <div className="flex flex-row justify-start gap-2">
-                  <Image
-                    src="/icons/chat/reveal-icon.svg"
-                    alt="Minta Reveal Profile"
-                    width={24}
-                    height={24}
-                  />
-                  <span>Minta Reveal Profile</span>
-                </div>
-              </li>
-              <div className="w-full bg-white flex h-[1px]" />
+              {!isRevealed && (
+                <>
+                  <li
+                    className="flex flex-col gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
+                    onClick={handleAskReveal}
+                  >
+                    <div className="flex flex-row justify-start gap-2">
+                      <Image
+                        src="/icons/chat/reveal-icon.svg"
+                        alt="Minta Reveal Profile"
+                        width={24}
+                        height={24}
+                      />
+                      <span>Minta Reveal Profile</span>
+                    </div>
+                  </li>
+                  <div className="w-full bg-white flex h-[1px]" />
+                </>
+              )}
               <li
                 className="flex flex-row justify-start gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
-                onClick={() => setIsRulesModalOpen(true)}
+                onClick={() => openModal('isRulesModalOpen')}
               >
                 <Image
                   src="/icons/chat/rules-icon.svg"
@@ -266,8 +306,8 @@ const Chat = () => {
         {/* Menu and text box container */}
         <div
           className={`flex flex-row items-center justify-between p-4 bg-blue-600 gap-2 shadow-orange-2xl
-            ${isMenuOpen ? '' : 'rounded-t-2xl'}
-          `}
+          ${isMenuOpen ? '' : 'rounded-t-2xl'}
+        `}
         >
           <div
             className="flex flex-row p-2 rounded-full bg-turquoise-300 text-neutral-50 gap-0.5 cursor-pointer"
@@ -286,7 +326,7 @@ const Chat = () => {
 
           <div className="flex-grow flex flex-row bg-neutral-50 rounded-2xl items-center pr-4 pl-2">
             <Textarea
-              className="w-full rounded-none px-2 my-1 h-full max-h-32 overflow-y-auto resize-y border-0 text-blue-400 placeholder:text-blue-200 bg-neutral-50 text-area-scrollbar"
+              className="w-full rounded-none px-2 my-1 h-full max-h-32 overflow-y-auto border-0 text-area-scrollbar placeholder:text-blue-200 bg-neutral-50 "
               rows={2}
               value={newMessage}
               onChange={handleTyping}
@@ -309,39 +349,45 @@ const Chat = () => {
         </div>
 
         {/* Modals */}
-        <RulesModal isOpen={isRulesModalOpen} setIsOpen={setIsRulesModalOpen} />
+        <RulesModal
+          isOpen={modals.isRulesModalOpen}
+          setIsOpen={() => closeModal()}
+        />
         {/* End Chat Modal */}
         <ConfirmationModal
-          isOpen={isEndConfirmationModalOpen}
-          setIsOpen={setIsEndConfirmationModalOpen}
+          isOpen={modals.isEndConfirmationModalOpen}
+          setIsOpen={() => closeModal()}
           title={'Kamu Yakin Mau End Chat-Nya?'}
           buttonLabelConfirm={'Yakin'}
           buttonLabelCancel={'Gajadi'}
           onConfirm={endMatch}
           description="Chat ini akan tersimpan di history chat kamu ya!"
         />
+
         {/* Show Reveal Modal */}
         <ConfirmationModal
-          isOpen={showRevealPopup}
-          setIsOpen={setShowRevealPopup}
+          isOpen={modals.showRevealPopup}
+          setIsOpen={() => closeModal()}
           title={'Kamu Diminta Reveal Profile Nih!'}
           buttonLabelConfirm={'Gas :D'}
           buttonLabelCancel={'Malu :('}
           onConfirm={() => handleRevealResponse(RevealStatusEvent.ACCEPTED)}
           onCancel={() => handleRevealResponse(RevealStatusEvent.REJECTED)}
         />
+
         {/* Success Request Ask Reveal */}
         <InformationModal
           title={'Berhasil Request Reveal Profile!'}
           description={'Semoga dia mau reveal profilenya ya :)'}
           buttonLabel={'Kembali'}
-          isOpen={askRevealPopup}
-          setIsOpen={setAskRevealPopup}
+          isOpen={modals.askRevealPopup}
+          setIsOpen={() => closeModal()}
         />
-        {/* Reveal Response */}
+
+        {/* Reveal Response Popup */}
         <InformationModal
-          isOpen={revealResponsePopup}
-          setIsOpen={setRevealResponsePopup}
+          isOpen={modals.revealResponsePopup}
+          setIsOpen={() => closeModal()}
           title={
             revealStatus === RevealStatusEvent.ACCEPTED
               ? successRevealTitle
@@ -354,10 +400,11 @@ const Chat = () => {
           }
           buttonLabel={'Kembali'}
         />
+
         {/* End Chat Response */}
         <InformationModal
           isOpen={isChatEndModalOpen}
-          setIsOpen={setIsChatEndModalOpen}
+          setIsOpen={() => closeModal()}
           title={chatEndTitle}
           description={'Chat ini sudah tersimpan di history chat kamu ya!'}
           buttonLabel={'Balik ke Menu'}
