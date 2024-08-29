@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import Sidebar from '~/components/Sidebar';
 import Image from 'next/image';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Navbar = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -9,12 +17,32 @@ const Navbar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
+  // DUMMY
+  const notifications = [
+    {
+      date: 'Yesterday, 14:32',
+      isRead: false,
+      description: 'Terdapat tugas baru yang harus kamu kerjakan!',
+    },
+    {
+      date: '2 days ago, 14:32',
+      isRead: false,
+      description:
+        'Berhasil Tandai Hadir untuk mata acara OPENING DAY 1 - OSKM ITB',
+    },
+    {
+      date: '17 Aug 2024, 14:32',
+      isRead: true,
+      description: 'Tugas Mengenal Diri Sendiri berhasil dikumpulkan!',
+    },
+  ];
+
   return (
     <div className="relative">
       {!isSidebarOpen && (
-        <div className="max-w-md w-full justify-center">
+        <div className="fixed max-w-md w-full justify-center z-20">
           <div
-            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm absolute top-4 z-20"
+            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm top-4"
             style={{
               backgroundImage: "url('/images/navbar/seaweed.png')",
               backgroundPosition: '95% 30%',
@@ -31,14 +59,61 @@ const Navbar = () => {
               />
             </div>
             <div className="flex items-center space-x-4">
-              <button className="bg-turquoise-100 p-1 rounded-lg border-2 border-blue-600 shadow-green-sm">
-                <Image
-                  src="/icons/notification-icon.svg"
-                  alt="Notification"
-                  width={24}
-                  height={24}
-                />
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="bg-turquoise-100 p-1 rounded-lg border-2 border-blue-600 shadow-green-sm">
+                    <Image
+                      src="/icons/notification-icon.svg"
+                      alt="Notification"
+                      width={24}
+                      height={24}
+                    />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-[70vw] md:w-[300px] max-w-[300px] bg-transparent shadow-blue-sm"
+                  side="bottom"
+                  sideOffset={1}
+                  align="end"
+                >
+                  {/* Mini triangle tip */}
+                  <div className="flex justify-end bg-transparent pr-[4px]">
+                    <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[14px] border-l-transparent border-r-transparent border-b-turquoise-100" />
+                  </div>
+                  <DropdownMenuGroup>
+                    {notifications.map((notification, index) => (
+                      <div key={index}>
+                        <DropdownMenuItem
+                          className={`bg-turquoise-100 ${index === 0 ? 'rounded-t-sm' : ''}`}
+                        >
+                          <div className="flex flex-row gap-3">
+                            {/* Indicator */}
+                            <div>
+                              <div
+                                className={`my-[8px] w-[8px] h-[8px] rounded-full ${notification.isRead ? 'bg-neutral-400' : 'bg-success-500'}`}
+                              />
+                            </div>
+                            {/* Content */}
+                            <div className="flex flex-col gap-3">
+                              <span className="text-b4">
+                                {notification.description}
+                              </span>
+                              <span className="text-b5 text-neutral-400">
+                                {notification.date}
+                              </span>
+                            </div>
+                          </div>
+                        </DropdownMenuItem>
+                        {index < notifications.length - 1 && (
+                          <div className="bg-turquoise-100 py-1">
+                            <DropdownMenuSeparator className="bg-turquoise-200" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <button
                 className="bg-turquoise-100 px-[7px] py-[10px] rounded-lg border-2 border-blue-600 shadow-green-sm"
                 onClick={handleToggleSidebar}
@@ -54,13 +129,15 @@ const Navbar = () => {
           </div>
         </div>
       )}
+      {/* Black Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10"
+          className="fixed inset-0 bg-black bg-opacity-80 z-30 w-screen h-screen"
           onClick={handleToggleSidebar}
-        ></div>
+        >
+          <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
+        </div>
       )}
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
     </div>
   );
 };

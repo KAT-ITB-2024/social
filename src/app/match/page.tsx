@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { LoadingSpinner } from '~/components/loading';
+import { LoadingSpinner } from '~/components/Loading';
 import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
@@ -38,6 +38,8 @@ export default function MatchPage() {
 
   const checkEmit = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini match');
+      console.log(data.match);
       if (data.match !== undefined) {
         setIsLoading(false);
         void router.push(`/match/room`);
@@ -64,7 +66,7 @@ export default function MatchPage() {
 
   if (isLoading) {
     return (
-      <div>
+      <div className="py-24">
         {/* To-Do : Ganti sama loading page dari FE */}
         <LoadingSpinner />
         <Button variant={'default'} onClick={cancelFindMatch}>
@@ -74,7 +76,7 @@ export default function MatchPage() {
     );
   }
   return (
-    <div>
+    <div className="py-24">
       {/* to do : design page ini sendiri, tpi tiru aja cari panggil logic BE nya */}
       Match page
       <Button variant={'default'} onClick={findMatch}>

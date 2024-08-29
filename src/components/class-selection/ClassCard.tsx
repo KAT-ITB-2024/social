@@ -1,25 +1,78 @@
-// widthnya nanti di w-96;
+import React from 'react';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 
-const Card = () => {
+import Image from 'next/image';
+import CoralCard from 'public/images/class-selection/coral-card.png';
+
+type CardVariant = 'default' | 'clicked';
+
+interface CustomCardProps {
+  topic: string;
+  title: string;
+  quota: number;
+  reserved: number;
+  desc: string;
+  variant: CardVariant;
+  onClick: () => void;
+}
+
+export const CustomCard: React.FC<CustomCardProps> = ({
+  topic,
+  title,
+  quota,
+  reserved,
+  variant,
+  onClick,
+}) => {
+  const reservedPercentage = (reserved / quota) * 100;
+
+  let borderColor;
+  let seatColor;
+  let bgroundColor;
+
+  if (reservedPercentage >= 100) {
+    bgroundColor = 'bg-red-200';
+    borderColor = 'border-red-500';
+    seatColor = 'text-red-500';
+  } else if (reservedPercentage >= 90) {
+    bgroundColor = 'white';
+    borderColor = 'border-warning-500';
+    seatColor = 'text-warning-500';
+  } else {
+    borderColor = 'border-green-500';
+    bgroundColor = 'white';
+    seatColor = 'text-green-500';
+  }
+
+  const backgroundGradient =
+    variant === 'clicked'
+      ? 'bg-gradient-to-r from-orange-400 via-orange-300 to-turquoise-100'
+      : 'bg-gradient-to-r from-white via-white to-turquoise-100';
+
+  const themeColor = variant === 'clicked' ? 'text-white' : 'text-orange-400';
+
   return (
-    <div className="border-solid border-2 border-[#F06B02] rounded-2xl w-96 shadow-lg shadow-orange-200/90 bg-gradient-to-r from-[#FD9417] to-[#FFFFFF]">
-      <div className="flex items-center justify-end">
-        <div className="flex flex-col">
-          <h1 className="text-xl text-white-100 text-wrap pl-6 mb-2">
-            Corporate Social <br />
-            Responsibility (CSR)
-          </h1>
-          <p className="text-xs text-balance pl-6">
-            Membangun Tanggung Jawab Sosial di Kalangan Mahasiswa
-          </p>
-        </div>
-        <img
-          src="/components/coralpensu.png"
-          className="w-30 h-auto object-cover"
-        />
+    <Card
+      className={`relative flex border-orange-400 shadow-orange-xl rounded-2xl pl-2 py-4 ${backgroundGradient} cursor-pointer overflow-hidden`}
+      onClick={onClick}
+    >
+      <CardContent className="flex flex-col justify-center pl-4 w-4/5 -mb-5 -ml-2">
+        <CardTitle
+          className={`text-sh5 md:text-base font-subheading ${themeColor}`}
+        >
+          {topic}
+        </CardTitle>
+        <p className={`${themeColor} text-sm mt-2`}>{title}</p>
+        <p
+          className={`bg-white inline-block border ${borderColor} ${seatColor} ${bgroundColor} rounded-full px-4 py-1 text-sm w-fit mt-2`}
+        >
+          {reserved} / {quota}
+        </p>
+      </CardContent>
+
+      <div className="absolute -bottom-14 -right-10 w-[50%]">
+        <Image src={CoralCard} alt="coral-1" className="object-cover h-full" />
       </div>
-    </div>
+    </Card>
   );
 };
-
-export default Card;

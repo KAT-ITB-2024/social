@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
+import { ClassData } from './classData';
 
 export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
   const password = await bcrypt.hash('password', 10);
@@ -38,10 +39,12 @@ export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
 }
 
 export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 6; i++) {
     try {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
+        point: 0,
+        bata: `${i}`,
       });
     } catch (error) {}
   }
@@ -59,7 +62,7 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
 
   for (let i = 0; i < userIds.length - 1; i++) {
     const user = userIds[i];
-    const group = groups[i % 9];
+    const group = groups[i % 6];
     if (!user || !group) {
       return;
     }
@@ -87,10 +90,28 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
     await db.insert(schema.assignments).values({
       title: `Assignment ${i}`,
       description: `Description buat assignment ke ${i}`,
-      startTime: new Date(`2023-07-${dayCounter}T00:00:00Z`), // Tanggal 25
+      startTime: new Date(`2024-08-${dayCounter}T00:00:00Z`), // Tanggal 25
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       assignmentType: 'Main',
       point: 10,
+      filename: `Assignment ${i}`,
+      downloadUrl: 'https://google.com/DownloadUrl',
+      updatedAt: new Date(),
+    });
+    dayCounter += 1;
+  }
+
+  dayCounter = 25;
+  for (let i = 0; i < 4; i++) {
+    await db.insert(schema.assignments).values({
+      title: `Side Quest ${i}`,
+      description: `Description buat Side Quest ke ${i}`,
+      startTime: new Date(`2024-08-${dayCounter}T00:00:00Z`),
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      assignmentType: 'Side',
+      point: 50,
+      filename: `Side Quest ${i}`,
+      downloadUrl: 'https://google.com/DownloadUrl',
       updatedAt: new Date(),
     });
     dayCounter += 1;
@@ -162,8 +183,9 @@ export async function seedAssignmentSubmission(
     await db.insert(schema.assignmentSubmissions).values({
       assignmentId: assignments[i % 4]?.id ?? '',
       userNim: users[i]?.nim ?? '',
-      file: 'file 1',
-      point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
+      filename: `Assignment ${i}`,
+      downloadUrl: 'https://google.com/DownloadUrl',
+      point: i % 3 == 0 ? null : (assignments[i % 4]?.point ?? 0),
       updatedAt: new Date(),
     });
   }
@@ -218,12 +240,38 @@ export async function seedNotifications(db: PostgresJsDatabase<typeof schema>) {
     });
   }
 }
+
+export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
+  for (const classDetails of ClassData) {
+    try {
+      await db.insert(schema.classes).values({
+        title: classDetails.title,
+        topic: `${classDetails.theme}: ${classDetails.topik}`,
+        description: classDetails.desc,
+        speaker: classDetails.speaker,
+        location: classDetails.location,
+        date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
+        totalSeats: classDetails.quota,
+        reservedSeats: classDetails.reserved,
+        type: classDetails.type,
+      });
+    } catch (error) {
+      console.error(
+        `Error seeding class with title ${classDetails.title}:`,
+        error,
+      );
+      continue;
+    }
+  }
+  console.log('Done seeding classes!');
+}
+
 export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
   const db = drizzle(migrationClient, { schema });
   await seedUser(db);
-  console.log('DOne seeding user');
+  console.log('Done seeding user');
   await seedGroup(db);
   console.log('Done seeding group!');
   await seedProfile(db);
@@ -242,8 +290,11 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding post test submission');
   await seedNotifications(db);
   console.log('Done seeding notifications!');
+  await seedClasses(db);
+  console.log('Done seeding classes!');
   await migrationClient.end();
 }
+
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;

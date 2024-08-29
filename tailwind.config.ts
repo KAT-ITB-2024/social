@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        classes:
+          "url('/images/class-selection/class-selection-background.png')",
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -97,7 +101,7 @@ const config = {
           400: '#F06B02',
           500: '#E84300',
         },
-        lightYellow: '##FEFDA3',
+        lightYellow: '#FEFDA3',
         yellow: '#FFE429',
         greenishYellow: '#D4F951',
         purple: '#470BBB',
@@ -166,6 +170,9 @@ const config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      dropShadow: {
+        'orange-shadow': '4px 4px 10px rgba(255, 191, 81, 0.50)',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
@@ -199,6 +206,24 @@ const config = {
         'blue-lg': '4px 4px 20px rgba(100, 177, 247, 0.75)',
         'blue-xl': '4px 4px 20px rgba(100, 177, 247, 1)',
         'blue-2xl': '4px 4px 50px rgba(100, 177, 247, 1)',
+        // Orange shadows
+        'orange-sm': '4px 4px 10px rgba(255, 191, 81, 0.5)',
+        'orange-md': '4px 4px 10px rgba(255, 191, 81, 0.75)',
+        'orange-lg': '4px 4px 20px rgba(255, 191, 81, 0.75)',
+        'orange-xl': '4px 4px 20px rgba(255, 191, 81, 1)',
+        'orange-2xl': '4px 4px 50px rgba(255, 191, 81, 1)',
+        // Neutral shadows
+        'neutral-sm': '4px 4px 10px rgba(56, 64, 83, 0.5)',
+        'neutral-md': '4px 4px 10px rgba(32, 41, 56, 0.75)',
+        'neutral-lg': '4px 4px 20px rgba(32, 41, 56, 0.75)',
+        'neutral-xl': '4px 4px 20px rgba(32, 41, 56, 1)',
+        'neutral-2xl': '4px 4px 50px rgba(32, 41, 56, 1)',
+        // White shadows
+        'white-sm': '0px 0px 10px rgba(255, 255, 255, 1)',
+        'white-md': '0px 0px 15px rgba(255, 255, 255, 1)',
+        'white-lg': '0px 0px 20px rgba(255, 255, 255, 1)',
+        'white-xl': '0px 0px 40px rgba(255, 255, 255, 1)',
+        'white-2xl': '0px 0px 60px rgba(255, 255, 255, 1)',
       },
     },
   },

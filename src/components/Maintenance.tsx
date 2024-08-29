@@ -7,14 +7,15 @@ export default function Maintenance() {
       <div
         className="fixed-width-container flex flex-col items-center justify-center"
         style={{
-          backgroundImage: "url('/components/bg-maintenance.png')",
+          backgroundImage: "url('/images/conditional/bg-maintenance.png')",
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
         }}
       >
         <Image
           className="-mb-12"
-          src="/components/maintenance.png"
+          src="/images/conditional/maintenance.png"
           alt="Maintenance"
           width={300}
           height={300}
