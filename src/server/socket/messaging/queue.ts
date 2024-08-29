@@ -13,7 +13,11 @@ const deserializeUserQueue = (raw: string) => {
 };
 
 const generateKey = (queue: UserQueue): string => {
-  const key = `QUEUE:${queue.topic}:${queue.isAnonymous ? 1 : 0}:${queue.isFindingFriend ? 1 : 0}:${queue.gender === GenderEnum.FEMALE ? GenderEnum.MALE : GenderEnum.FEMALE}`;
+  let key = `QUEUE:${queue.topic}:${queue.isAnonymous ? 1 : 0}`;
+  if (!queue.isFindingFriend) {
+    key +=
+      queue.gender === GenderEnum.FEMALE ? GenderEnum.MALE : GenderEnum.FEMALE;
+  }
   return key;
 };
 

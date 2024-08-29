@@ -87,8 +87,6 @@ export const checkMatchEvent = createEvent(
       generateQueueKey(ctx.client.data.session.user.id),
     );
 
-    console.log('masukk ');
-
     const result: {
       queue: null | UserQueue;
       match: undefined | UserMatch;
