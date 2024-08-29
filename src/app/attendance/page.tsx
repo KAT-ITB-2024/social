@@ -17,7 +17,7 @@ export default function AttendancePage() {
 
   if (status === 'loading') {
     return <LoadingSpinnerCustom />;
-  } else if (!session) {
+  } else if (!session || session.user.role !== 'Peserta') {
     redirect('/login');
   }
 

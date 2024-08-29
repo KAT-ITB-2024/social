@@ -4,9 +4,15 @@ interface BubbleChatProps {
   date: string;
   text: string;
   variant: 'sent' | 'received';
+  chatRef?: React.Ref<HTMLDivElement> | null;
 }
 
-const BubbleChat: React.FC<BubbleChatProps> = ({ date, text, variant }) => {
+const BubbleChat: React.FC<BubbleChatProps> = ({
+  date,
+  text,
+  variant,
+  chatRef,
+}) => {
   const bubbleClasses = `relative max-w-xs p-3 pb-2 rounded-xl text-sm ${
     variant === 'sent'
       ? 'bg-blue-300 text-white self-end'
@@ -16,6 +22,7 @@ const BubbleChat: React.FC<BubbleChatProps> = ({ date, text, variant }) => {
   return (
     <div
       className={`flex ${variant === 'sent' ? 'justify-end' : 'justify-start'} mb-2`}
+      ref={chatRef ?? null}
     >
       <div className={bubbleClasses}>
         <div className="pb-[10px] text-md break-words">{text}</div>

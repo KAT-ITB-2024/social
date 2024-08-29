@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import { type z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -15,21 +15,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { ResetPasswordPayload } from '~/types/payloads/auth';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { api } from '~/trpc/react';
 import { toast } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { TRPCError } from '@trpc/server';
-import { param } from 'drizzle-orm';
-import { useSession } from 'next-auth/react';
 
 const NewPasswordPage = () => {
-  const { data: session } = useSession();
-
-  if (!session) {
-    redirect('/login');
-  }
-
   type ResetPasswordPayloadSchema = z.infer<typeof ResetPasswordPayload>;
 
   const [showPassword, setShowPassword] = useState(false);

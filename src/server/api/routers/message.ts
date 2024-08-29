@@ -20,7 +20,7 @@ export const messageRouter = createTRPCRouter({
     .input(
       z.object({
         cursor: z.date().optional(),
-        take: z.number().min(1).max(50).default(25),
+        take: z.number().min(1).max(50).default(10),
         userMatchId: z.string(),
       }),
     )
@@ -162,12 +162,12 @@ export const messageRouter = createTRPCRouter({
           content: input.content,
         });
 
-        await ctx.db
-          .update(userMatches)
-          .set({
-            lastMessage: input.content,
-          })
-          .where(eq(userMatches.id, input.userMatchId));
+        // await ctx.db
+        //   .update(userMatches)
+        //   .set({
+        //     lastMessage: input.content,
+        //   })
+        //   .where(eq(userMatches.id, input.userMatchId));
 
         return {
           status: 200,
@@ -182,7 +182,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  chatHeader: publicProcedure
+  chatHeaders: publicProcedure
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
@@ -252,7 +252,7 @@ export const messageRouter = createTRPCRouter({
             isNotNull(userMatches.endedAt),
           ),
         )
-        .orderBy(desc(userMatches.createdAt))
+        .orderBy(desc(userMatches.endedAt))
         .limit(input.limit)
         .offset(input.limit * (input.cursor - 1));
 
@@ -292,6 +292,84 @@ export const messageRouter = createTRPCRouter({
         numberOfHeaders,
       };
     }),
+
+  chatHeadersAll: publicProcedure.query(async ({ ctx }) => {
+    if (ctx.session === null) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+    const userId = ctx.session.user.id;
+
+    // rename profile for table join
+    const profiles1 = alias(profiles, 'profiles1');
+    const profiles2 = alias(profiles, 'profiles2');
+
+    const chatHeaders: ChatHeaderData[] = await ctx.db
+      .select({
+        firstUser: {
+          id: userMatches.firstUserId,
+          name: profiles1.name,
+          profileImage: profiles1.profileImage,
+        },
+        secondUser: {
+          id: userMatches.secondUserId,
+          name: profiles2.name,
+          profileImage: profiles2.profileImage,
+        },
+        lastMessage: userMatches.lastMessage,
+        isRevealed: userMatches.isRevealed,
+        isAnonymous: userMatches.isAnonymous,
+        endedAt: userMatches.endedAt,
+      })
+      .from(userMatches)
+      .innerJoin(profiles1, eq(profiles1.userId, userMatches.firstUserId))
+      .innerJoin(profiles2, eq(profiles2.userId, userMatches.secondUserId))
+      .where(
+        and(
+          or(
+            eq(userMatches.firstUserId, userId),
+            eq(userMatches.secondUserId, userId),
+          ),
+          isNotNull(userMatches.endedAt),
+        ),
+      )
+      .orderBy(desc(userMatches.endedAt));
+
+    const data: ChatHeader[] = chatHeaders.map((chatHeader) => {
+      const otherUser =
+        chatHeader.firstUser.id === userId
+          ? chatHeader.secondUser
+          : chatHeader.firstUser;
+      if (!otherUser) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Other user profile not found',
+        });
+      }
+
+      return {
+        lastMessage: chatHeader.lastMessage,
+        user: {
+          id: otherUser.id,
+          name:
+            chatHeader.isAnonymous && !chatHeader.isRevealed
+              ? 'Anynomous'
+              : otherUser.name,
+          profileImage:
+            chatHeader.isAnonymous && !chatHeader.isRevealed
+              ? null
+              : otherUser.profileImage,
+        },
+        endedAt: chatHeader.endedAt,
+      };
+    });
+
+    return {
+      data,
+    };
+  }),
 
   // update visibility for anonymous chat
   updateVisibility: publicProcedure
@@ -366,6 +444,43 @@ export const messageRouter = createTRPCRouter({
             ),
             eq(messages.isRead, false),
           ),
+        );
+    }),
+
+  updateOneIsRead: publicProcedure
+    .input(
+      z.object({
+        messageId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session === null) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+        });
+      }
+
+      const message = await ctx.db
+        .select()
+        .from(messages)
+        .where(
+          and(eq(messages.id, input.messageId), eq(messages.isRead, false)),
+        );
+
+      if (!message) {
+        throw new TRPCError({
+          message: 'Message not found',
+          code: 'BAD_REQUEST',
+        });
+      }
+
+      await ctx.db
+        .update(messages)
+        .set({
+          isRead: true,
+        })
+        .where(
+          and(eq(messages.id, input.messageId), eq(messages.isRead, false)),
         );
     }),
 });

@@ -31,7 +31,6 @@ export default function MatchPage() {
   const router = useRouter();
   const queueEmit = useEmit('findMatch');
   const queued = useRef(false);
-  socket.connect();
 
   const findMatch = () => {
     console.log('Ini queued current', queued.current);
@@ -154,7 +153,7 @@ export default function MatchPage() {
 
   if (status === 'loading') {
     return <LoadingSpinnerCustom />;
-  } else if (!session) {
+  } else if (!session || session.user.role !== 'Peserta') {
     redirect('/login');
   }
   return (

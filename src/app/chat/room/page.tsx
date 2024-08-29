@@ -10,6 +10,9 @@ import { RevealStatusEvent } from '~/types/enums/message';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
 import { socket } from '~/utils/socket';
+import Messages from '~/components/chat/Messages';
+
+import { api } from '~/trpc/react';
 
 import { Textarea } from '~/components/ui/textarea';
 import BubbleChat from '~/components/chat/BubbleChat';
@@ -26,11 +29,11 @@ import {
   sendChatEndTitle,
   receiveChatEndTitle,
 } from './constants';
+import { ScanFace } from 'lucide-react';
 
 const Chat = () => {
   const { data: session, status } = useSession();
 
-  socket.connect();
   const router = useRouter();
 
   const [modals, setModals] = useState<Record<string, boolean>>({
@@ -90,6 +93,22 @@ const Chat = () => {
     },
   });
 
+  const userMatchId = checkMatch.data?.match?.id;
+
+  const messageQuery = api.message.getChat.useInfiniteQuery(
+    { userMatchId: userMatchId! },
+    {
+      getNextPageParam: (d) => d.nextCursor,
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+      enabled: !!userMatchId,
+    },
+  );
+  const updateMessageIsRead = api.message.updateIsReadCurrUser.useMutation();
+  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
+
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
+
   const endMatchEmit = useEmit('endMatch');
   const anonTypingEmit = useEmit('anonTyping');
   const askRevealEmit = useEmit('askReveal');
@@ -143,7 +162,7 @@ const Chat = () => {
 
   useEffect(() => {
     checkMatch.mutate({});
-  }, [checkMatch.mutate, endMatchEmit.mutate]);
+  }, []);
 
   // saat nerima event message dari server
   useSubscription('add', (post) => {
@@ -184,6 +203,11 @@ const Chat = () => {
   //   onLoadMore: fetchMoreMessages,
   //   rootMargin: '0px 0px 400px 0px',
   // });
+
+  useEffect(() => {
+    const msgs = messageQuery.data?.pages.map((page) => page.messages).flat();
+    addMessages(msgs);
+  }, [messageQuery.data?.pages, addMessages]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -227,7 +251,7 @@ const Chat = () => {
       >
         <ChatNavbar isTyping={opponentTyping} opponentId={opponentId} />
         {/* Chat Room */}
-        <div
+        {/* <div
           className="flex-grow flex flex-col-reverse overflow-y-auto p-4 mt-20 no-scrollbar z-10"
           ref={chatContainerRef}
         >
@@ -242,8 +266,13 @@ const Chat = () => {
               variant={msg.senderId === session?.user?.id ? 'sent' : 'received'}
             />
           ))}
-          {/* <div ref={sentryRef}></div> */}
-        </div>
+        </div> */}
+        <Messages
+          messages={messages ?? []}
+          hasNextPage={hasNextPage}
+          fetchNextPage={fetchNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+        />
 
         {/* Pop up menu */}
         {isMenuOpen && (

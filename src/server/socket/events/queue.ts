@@ -1,9 +1,14 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
 import { findMatch, generateQueueKey, cancelQueue } from '../messaging/queue';
-import { profiles, type UserMatch, userMatches } from '@katitb2024/database';
+import {
+  profiles,
+  messages,
+  type UserMatch,
+  userMatches,
+} from '@katitb2024/database';
 import { Redis } from '~/server/redis';
-import { and, eq, isNull, or } from 'drizzle-orm';
+import { eq, isNull, or, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { ChatTopic, GenderEnum } from '~/types/enum/chat';
 import { type UserQueue } from '~/types/payloads/message';
@@ -97,7 +102,7 @@ export const checkMatchEvent = createEvent(
 
     // Kasus kalau dia belum dapet match, jadi queue nya ga null
     if (userQueue) {
-      result.queue = JSON.parse(userQueue) as UserQueue;
+      result.queue = (await JSON.parse(userQueue)) as UserQueue;
       result.match = undefined;
       return result;
     }
@@ -125,6 +130,8 @@ export const checkMatchEvent = createEvent(
 
     ctx.client.data.matchQueue = null;
     result.match = ctx.client.data.match;
+    console.log('masuk check match');
+    console.log(ctx.client.data.match);
     return result;
   },
 );
@@ -150,6 +157,22 @@ export const endMatchEvent = createEvent(
     if (!match) {
       return;
     }
+
+    const msgs = await ctx.drizzle
+      .select()
+      .from(messages)
+      .where(eq(messages.userMatchId, currentMatch.id))
+      .orderBy(desc(messages.createdAt))
+      .limit(1);
+
+    const lastMessage = msgs[0];
+    if (lastMessage) {
+      await ctx.drizzle
+        .update(userMatches)
+        .set({ lastMessage: lastMessage.content })
+        .where(eq(userMatches.id, currentMatch.id));
+    }
+
     const sockets = await ctx.io
       .in([match.firstUserId, match.secondUserId])
       .fetchSockets();
