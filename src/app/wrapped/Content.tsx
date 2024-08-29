@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import { Share } from '~/components/share';
 import html2canvas from 'html2canvas';
 import { Button } from '~/components/ui/button';
 import { useState } from 'react';
+import { Share } from '~/components/share';
 
 interface wrappedProps {
   name: string;
@@ -10,6 +10,8 @@ interface wrappedProps {
   quest_num: number | string;
   fav_topics: string[];
   percent: number | string;
+  test: boolean;
+  character: string;
   mbti: string;
   mbti_desc: string;
   leaderboard_rank: number | string;
@@ -21,40 +23,43 @@ const WrappedStories = ({
   quest_num,
   fav_topics,
   percent,
+  test,
+  character,
   mbti,
   mbti_desc,
   leaderboard_rank,
 }: wrappedProps) => {
-  const [image, setImage] = useState<File[]>();
+  const [file, setFile] = useState<File[]>();
+
   const handleShare = async (download: boolean) => {
-    if (!image) {
-      const element = document.getElementById('wrapped-summary');
-      if (element) {
-        await html2canvas(element, {
-          allowTaint: true,
-          useCORS: true,
-          width: 448,
-          height: 966,
-          windowHeight: 966,
-          y: -483,
-        }).then((canvas) => {
-          if (download) {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('png');
-            link.download = 'Your Wrapped.png';
-            link.click();
-          } else {
-            canvas.toBlob((blob) => {
+    const element = document.getElementById('wrapped-summary');
+    if (element) {
+      await html2canvas(element, {
+        allowTaint: true,
+        useCORS: true,
+        width: 448,
+        height: 966,
+        windowHeight: 966,
+        y: -483,
+      }).then((canvas) => {
+        if (download) {
+          const link = document.createElement('a');
+          link.href = canvas.toDataURL('png');
+          link.download = 'Your Wrapped.png';
+          link.click();
+        } else {
+          canvas.toBlob((blob) => {
+            try {
               if (blob) {
-                const file = new File([blob], 'Your Wrapped.png', {
+                const img = new File([blob], 'Your Wrapped.png', {
                   type: blob.type,
                 });
-                setImage([file]);
+                setFile([img]);
               }
-            });
-          }
-        });
-      }
+            } catch (error) {}
+          });
+        }
+      });
     }
   };
   return [
@@ -333,16 +338,31 @@ const WrappedStories = ({
               height={350}
               className="absolute bottom-0 right-0"
             />
-            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
+            <div className="absolute left-[12.5%] flex w-3/4 flex-col items-center gap-2">
               <p className="text-center font-heading text-2xl text-pink-400">
-                MBTI kamu di OSKM adalah
+                {test ? (
+                  <>Kamu memiliki pribadi yang {mbti} seperti</>
+                ) : (
+                  <>Waduh! Kamu belum melakukan OSKM Personality Test :(</>
+                )}
               </p>
-              <p className="pb-0.5 text-center font-heading text-5xl text-purple">
-                {mbti}
-              </p>
+              {test ? (
+                <p className="pb-0.5 text-center font-heading text-5xl text-purple">
+                  {character}
+                </p>
+              ) : null}
               <p className="text-md text-center font-subheading text-pink-400">
-                {mbti_desc}
+                {test ? (
+                  <>{mbti_desc}</>
+                ) : (
+                  <>Kira-kira kamu akan mendapatkan karakter apa ya?👀</>
+                )}
               </p>
+              {test ? null : (
+                <Button className="mt-2 w-1/2 bg-pink-400">
+                  Periksa disini!
+                </Button>
+              )}
             </div>
           </>
         );
@@ -375,12 +395,22 @@ const WrappedStories = ({
             <div className="absolute top-0 flex size-full items-center justify-center">
               <div className="flex h-full w-5/6 flex-col items-center justify-center gap-4">
                 <p className="text-center font-heading text-xl text-blue-400">
-                  <span className="text-pink-400">{name}</span>, OSKM
-                  Personality-mu adalah
+                  {test ? (
+                    <>
+                      <span className="text-pink-400">{name}</span>, OSKM
+                      Personality-mu adalah
+                    </>
+                  ) : (
+                    <>Yuk, segera cek OSKM Personality-mu!</>
+                  )}
                 </p>
                 <Image
-                  src="/images/wrapped/svg/ray.svg"
-                  alt="Ray"
+                  src={
+                    test
+                      ? '/images/wrapped/svg/ray.svg'
+                      : '/images/wrapped/svg/cancer.svg'
+                  }
+                  alt={test ? 'Ray' : 'Cancer'}
                   width={250}
                   height={250}
                 />
@@ -433,7 +463,7 @@ const WrappedStories = ({
                 </div>
                 <div className="z-[1000] flex gap-2 pt-6">
                   <Button
-                    variant="link"
+                    variant="ghost"
                     size="icon"
                     onClick={() => handleShare(true)}
                   >
@@ -445,9 +475,9 @@ const WrappedStories = ({
                     />
                   </Button>
                   <Share
-                    variant="link"
+                    variant="ghost"
                     size="icon"
-                    shareData={{ files: image }}
+                    shareData={{ files: file }}
                     onInteraction={() => handleShare(false)}
                   >
                     <Image
@@ -458,9 +488,9 @@ const WrappedStories = ({
                     />
                   </Share>
                   <Share
-                    variant="link"
+                    variant="ghost"
                     size="icon"
-                    shareData={{ files: image }}
+                    shareData={{ files: file }}
                     onInteraction={() => handleShare(false)}
                   >
                     <Image
@@ -471,9 +501,9 @@ const WrappedStories = ({
                     />
                   </Share>
                   <Share
-                    variant="link"
+                    variant="ghost"
                     size="icon"
-                    shareData={{ files: image }}
+                    shareData={{ files: file }}
                     onInteraction={() => handleShare(false)}
                   >
                     <Image
@@ -484,9 +514,9 @@ const WrappedStories = ({
                     />
                   </Share>
                   <Share
-                    variant="link"
+                    variant="ghost"
                     size="icon"
-                    shareData={{ files: image }}
+                    shareData={{ files: file }}
                     onInteraction={() => handleShare(false)}
                   >
                     <Image
