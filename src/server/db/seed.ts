@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
+import { ClassData } from './classData';
 
 export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
   const password = await bcrypt.hash('password', 10);
@@ -42,29 +43,10 @@ export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
     try {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
-        bata: `Bata ${i}`,
         point: 0,
+        bata: `${i}`,
       });
     } catch (error) {}
-  }
-}
-
-export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
-  try {
-    await db.insert(schema.classes).values({
-      title: 'A',
-      topic: 'Introduction to ITB',
-      description: 'Introduction to ITB',
-      speaker: 'Pak John Doe',
-      location: 'Zoom',
-      date: new Date('2023-07-25T00:00:00Z'),
-      totalSeats: 100,
-      reservedSeats: 0,
-      type: 'Sesi 1',
-    });
-  } catch (error) {
-    console.error(`Error seeding classes`);
-    return;
   }
 }
 
@@ -77,12 +59,11 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
   if (!userIds) {
     return;
   }
-  const classes = await db.select().from(schema.classes);
 
   for (let i = 0; i < userIds.length - 1; i++) {
     const user = userIds[i];
     const group = groups[i % 6];
-    if (!user || !group || !classes[0]) {
+    if (!user || !group) {
       return;
     }
     try {
@@ -93,13 +74,10 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
         gender: i % 2 === 0 ? 'Male' : 'Female',
         profileImage: '',
         point: 0,
-        instagram: '',
-        chosenClass: classes[0].id,
         group: group.name,
         updatedAt: new Date(),
       });
     } catch (error) {
-      console.log(error);
       console.error(`Error seeding profile`);
       return;
     }
@@ -262,6 +240,32 @@ export async function seedNotifications(db: PostgresJsDatabase<typeof schema>) {
     });
   }
 }
+
+export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
+  for (const classDetails of ClassData) {
+    try {
+      await db.insert(schema.classes).values({
+        title: classDetails.title,
+        topic: `${classDetails.theme}: ${classDetails.topik}`,
+        description: classDetails.desc,
+        speaker: classDetails.speaker,
+        location: classDetails.location,
+        date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
+        totalSeats: classDetails.quota,
+        reservedSeats: classDetails.reserved,
+        type: classDetails.type,
+      });
+    } catch (error) {
+      console.error(
+        `Error seeding class with title ${classDetails.title}:`,
+        error,
+      );
+      continue;
+    }
+  }
+  console.log('Done seeding classes!');
+}
+
 export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
@@ -270,8 +274,6 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding user');
   await seedGroup(db);
   console.log('Done seeding group!');
-  await seedClasses(db);
-  console.log('Done seeding classes!');
   await seedProfile(db);
   console.log('Done seeding profile');
   await seedCharacter(db);
@@ -288,8 +290,11 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding post test submission');
   await seedNotifications(db);
   console.log('Done seeding notifications!');
+  await seedClasses(db);
+  console.log('Done seeding classes!');
   await migrationClient.end();
 }
+
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;
