@@ -19,14 +19,18 @@ import { Input } from '@/components/ui/input';
 import { RequestResetPasswordPayload } from '~/types/payloads/auth';
 
 // Image Import
-import Image from 'next/image';
 import Starfish from 'public/images/login/Starfish.png';
 
 // Component Import
-import CustomDialog from '~/components/custom-dialog';
+import InfoModal from '~/components/InfoModal';
 import { api } from '~/trpc/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const ForgotPasswordPage = () => {
+  const { data: session, status } = useSession();
+
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   type RequestResetPasswordPayloadSchema = z.infer<
@@ -51,6 +55,12 @@ const ForgotPasswordPage = () => {
       email,
     });
     setIsAlertOpen(true);
+  }
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
   }
 
   return (
@@ -102,7 +112,7 @@ const ForgotPasswordPage = () => {
             </Button>
           </div>
 
-          <CustomDialog
+          <InfoModal
             image={Starfish}
             title="Email Terkirim"
             description="Cek email mu Aqualings, untuk mengubah password!"

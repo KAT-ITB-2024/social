@@ -18,16 +18,15 @@ const topicLabels: Record<ChatTopic, string> = {
   [ChatTopic.MAKANAN]: 'Makanan',
 };
 
-
 const SecondQuestion = ({
   handlePageChange,
   setTopic,
 }: SecondQuestionProps) => {
   const [selectedButton, setSelectedButton] = useState<ChatTopic | null>(null);
 
-  const topics = ['General', 'ITB', 'Film', 'Game', 'Makanan', 'Olahraga'];
   const handleButtonClick = (value: ChatTopic) => {
     setSelectedButton(value);
+    setTopic(value);
   };
 
   return (
@@ -36,27 +35,27 @@ const SecondQuestion = ({
         PILIH TOPIK KUY!
       </p>
       <ScrollArea className="h-52 w-full rounded-md">
-      <div className="flex flex-col items-center justify-evenly gap-3 h-52 w-full">
-        {Object.entries(topicLabels).map(([key, label]) => {
-          const chatTopic = Number(key) as ChatTopic; 
-          return (
-            <BoxButton
-              key={key}
-              color={selectedButton === chatTopic ? 'lightblue' : 'blue'}
-              size="custom"
-              onClick={() => handleButtonClick(chatTopic)}
-            >
-              {label}
-            </BoxButton>
-          );
-        })}
-      </div>
-    </ScrollArea>
+        <div className="flex flex-col items-center justify-evenly gap-3 h-52 w-full">
+          {Object.entries(topicLabels).map(([key, label]) => {
+            const chatTopic = Number(key) as ChatTopic;
+            return (
+              <BoxButton
+                key={key}
+                color={selectedButton === chatTopic ? 'lightblue' : 'blue'}
+                size="custom"
+                onClick={() => handleButtonClick(chatTopic)}
+              >
+                {label}
+              </BoxButton>
+            );
+          })}
+        </div>
+      </ScrollArea>
       <BoxButton
         color="pink"
         size="default"
         onClick={() => handlePageChange(3)}
-        disabled={!selectedButton}
+        disabled={selectedButton === null}
       >
         Lanjut
       </BoxButton>

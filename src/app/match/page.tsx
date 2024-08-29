@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ChatTopic } from '~/types/enum/chat';
 import { socket } from '~/utils/socket';
@@ -14,8 +14,13 @@ import Match from 'public/images/chat/newchat/match.gif';
 import LoadingText from '~/components/chat/newchat/LoadingText';
 import BoxButton from '~/components/chat/newchat/BoxButton';
 import { Button } from '~/components/ui/button';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import NoMatchModal from '~/components/chat/newchat/NoMatchModal';
+import { useSession } from 'next-auth/react';
 
 export default function MatchPage() {
+  const { data: session, status } = useSession();
+
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState<number>(0);
   const [showForm, setShowForm] = useState<boolean>(false);
@@ -60,9 +65,11 @@ export default function MatchPage() {
 
   const checkEmit = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini match');
+      console.log(data.match);
       if (data.match !== undefined) {
         setIsLoading(false);
-        void router.push(`/match/room`);
+        void router.push(`/chat/room`);
       } else if (data.queue !== null) {
         queued.current = true;
       } else {
@@ -72,6 +79,10 @@ export default function MatchPage() {
 
   const showChatForm = () => {
     setShowForm(true);
+  };
+
+  const changeToGeneral = () => {
+    setTopic(ChatTopic.GENERAL);
   };
 
   useEffect(() => {
@@ -85,7 +96,7 @@ export default function MatchPage() {
 
   useSubscription('match', (_) => {
     queued.current = false;
-    void router.push(`/match/room`);
+    void router.push(`/chat/room`);
   });
 
   useEffect(() => {
@@ -109,13 +120,20 @@ export default function MatchPage() {
   if (noMatch) {
     return (
       <div className="flex flex-col items-center justify-center py-40">
-        <h2 className="text-red-500">NO MATCH FOUND</h2>
-        <Button
-          className="bg-pink-300 rounded-full px-6 shadow-pink-md hover:bg-pink-400"
-          onClick={() => setNoMatch(false)} // 
-        >
-          Try Again
-        </Button>
+        <NoMatchModal
+          title="MATCH NOT FOUND!"
+          description="Tenang Aqualings kami akan carikan teman yang cocok, silakan pilih aksi berikutnya!"
+          buttonLabelConfirm="Kembali ke Menu"
+          buttonLabelCancel="Ganti topik General"
+          onConfirm={() => {
+            setNoMatch(false);
+            setShowForm(false);
+          }}
+          onCancel={() => {
+            changeToGeneral();
+            findMatch();
+          }}
+        />
       </div>
     );
   }
@@ -132,6 +150,12 @@ export default function MatchPage() {
         </div>
       </div>
     );
+  }
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
   }
   return (
     <div className="flex flex-col items-center justify-center py-40">

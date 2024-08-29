@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { type UserQueue } from '~/types/payloads/message';
 import { findMatch, generateQueueKey, cancelQueue } from '../messaging/queue';
 import { profiles, type UserMatch, userMatches } from '@katitb2024/database';
 import { Redis } from '~/server/redis';
-import { eq, or } from 'drizzle-orm';
+import { and, eq, isNull, or } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { ChatTopic, GenderEnum } from '~/types/enum/chat';
+import { type UserQueue } from '~/types/payloads/message';
 
 export const findMatchEvent = createEvent(
   {
@@ -82,6 +82,7 @@ export const checkMatchEvent = createEvent(
     input: undefined,
   },
   async ({ ctx }) => {
+    console.log('masuk check match');
     const userQueue = await Redis.getClient().get(
       generateQueueKey(ctx.client.data.session.user.id),
     );
@@ -101,20 +102,29 @@ export const checkMatchEvent = createEvent(
       return result;
     }
 
-    if (ctx.client.data.match) {
+    if (!ctx.client.data.match) {
       const userId = ctx.client.data.session.user.id;
-      const userMatch = await ctx.drizzle.query.userMatches.findFirst({
-        where: or(
-          eq(userMatches.firstUserId, userId),
-          eq(userMatches.secondUserId, userId),
-        ),
-      });
-      result.match = userMatch;
-    } else {
-      result.match = undefined;
+      console.log(userId);
+      const userMatch = await ctx.drizzle
+        .select()
+        .from(userMatches)
+        .where(
+          and(
+            or(
+              eq(userMatches.firstUserId, userId),
+              eq(userMatches.secondUserId, userId),
+            ),
+            isNull(userMatches.endedAt),
+          ),
+        )
+        .execute();
+
+      console.log(userMatch);
+      ctx.client.data.match = userMatch[0];
     }
 
     ctx.client.data.matchQueue = null;
+    result.match = ctx.client.data.match;
     return result;
   },
 );
