@@ -42,31 +42,9 @@ export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
     try {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
-        bata: `Bata ${i}`,
         point: 0,
       });
     } catch (error) {}
-  }
-}
-
-export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
-  for (let i = 0; i < 6; i++) {
-    try {
-      await db.insert(schema.classes).values({
-        title: `Kelas ${i}`,
-        topic: `Topic Kelas ${i}`,
-        description: `Description Kelas ${i}`,
-        speaker: 'Pak John Doe',
-        location: 'Zoom',
-        date: new Date('2023-07-25T00:00:00Z'),
-        totalSeats: 100,
-        reservedSeats: 0,
-        type: `${i % 2 === 0 ? 'Sesi 1' : 'Sesi 2'}`,
-      });
-    } catch (error) {
-      console.error(`Error seeding classes`);
-      return;
-    }
   }
 }
 
@@ -79,12 +57,11 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
   if (!userIds) {
     return;
   }
-  const classes = await db.select().from(schema.classes);
 
   for (let i = 0; i < userIds.length - 1; i++) {
     const user = userIds[i];
     const group = groups[i % 6];
-    if (!user || !group || !classes[0]) {
+    if (!user || !group) {
       return;
     }
     try {
@@ -95,13 +72,10 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
         gender: i % 2 === 0 ? 'Male' : 'Female',
         profileImage: '',
         point: 0,
-        instagram: '',
-        chosenClass: classes[0].id,
         group: group.name,
         updatedAt: new Date(),
       });
     } catch (error) {
-      console.log(error);
       console.error(`Error seeding profile`);
       return;
     }
@@ -272,8 +246,6 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding user');
   await seedGroup(db);
   console.log('Done seeding group!');
-  await seedClasses(db);
-  console.log('Done seeding classes!');
   await seedProfile(db);
   console.log('Done seeding profile');
   await seedCharacter(db);
