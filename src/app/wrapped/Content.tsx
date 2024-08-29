@@ -1,25 +1,62 @@
 import Image from 'next/image';
-import { Share } from '~/components/Share';
+import { Share } from '~/components/share';
+import html2canvas from 'html2canvas';
+import { Button } from '~/components/ui/button';
+import { useState } from 'react';
 
 interface wrappedProps {
+  name: string;
   jumlah_match: number | string;
   quest_num: number | string;
-  fav_topic: string;
+  fav_topics: string[];
   percent: number | string;
   mbti: string;
   mbti_desc: string;
-  jam: number | string;
+  leaderboard_rank: number | string;
 }
 
 const WrappedStories = ({
+  name,
   jumlah_match,
   quest_num,
-  fav_topic,
+  fav_topics,
   percent,
   mbti,
   mbti_desc,
-  jam,
+  leaderboard_rank,
 }: wrappedProps) => {
+  const [image, setImage] = useState<File[]>();
+  const handleShare = async (download: boolean) => {
+    if (!image) {
+      const element = document.getElementById('wrapped-summary');
+      if (element) {
+        await html2canvas(element, {
+          allowTaint: true,
+          useCORS: true,
+          width: 448,
+          height: 966,
+          windowHeight: 966,
+          y: -483,
+        }).then((canvas) => {
+          if (download) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('png');
+            link.download = 'Your Wrapped.png';
+            link.click();
+          } else {
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const file = new File([blob], 'Your Wrapped.png', {
+                  type: blob.type,
+                });
+                setImage([file]);
+              }
+            });
+          }
+        });
+      }
+    }
+  };
   return [
     {
       content: () => {
@@ -93,17 +130,17 @@ const WrappedStories = ({
               height={500}
               className="absolute bottom-0"
             />
-            <div className="flex flex-col absolute w-3/4 left-[12.5%] gap-2">
+            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
               <p className="text-center font-heading text-2xl text-lightYellow">
                 Kamu udah matching sebanyak
               </p>
-              <p className="text-center font-heading text-5xl text-blue-500 pb-0.5">
+              <p className="pb-0.5 text-center font-heading text-5xl text-blue-500">
                 {jumlah_match}
               </p>
               <p className="text-center font-heading text-2xl text-lightYellow">
                 kali lho, selama OSKM!
               </p>
-              <p className="text-center font-subheading text-md text-lightYellow">
+              <p className="text-md text-center font-subheading text-lightYellow">
                 Banyak banget koneksi yang tercipta, keren!
               </p>
             </div>
@@ -149,17 +186,17 @@ const WrappedStories = ({
               height={500}
               className="absolute bottom-0"
             />
-            <div className="flex flex-col absolute w-3/4 left-[12.5%] gap-2">
+            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
               <p className="text-center font-heading text-2xl text-purple">
                 Selamat! Kamu telah berhasil menyelesaikan
               </p>
-              <p className="text-center font-heading text-5xl text-pink-400 pb-0.5">
+              <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
                 {quest_num}
               </p>
               <p className="text-center font-heading text-2xl text-purple">
                 quest!
               </p>
-              <p className="text-center font-subheading text-md text-lightYellow">
+              <p className="text-md text-center font-subheading text-lightYellow">
                 Petualangan menantimu, dan kamu berhasil menaklukkannya!
               </p>
             </div>
@@ -198,18 +235,18 @@ const WrappedStories = ({
               height={50}
               className="absolute left-3 top-6"
             />
-            <div className="flex flex-col absolute w-3/4 left-[12.5%] gap-2">
+            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
               <p className="text-center font-heading text-2xl text-turquoise-400">
                 Kamu sering banget ngobrolin
               </p>
-              <p className="text-center font-heading text-5xl text-orange-400 pb-0.5">
-                {fav_topic}
+              <p className="pb-0.5 text-center font-heading text-5xl text-orange-400">
+                {fav_topics[0]}
               </p>
               <p className="text-center font-heading text-2xl text-turquoise-400">
                 sama temanmu.
               </p>
-              <p className="text-center font-subheading text-md text-turquoise-400">
-                Kayaknya kamu cinta {fav_topic} banget, nih!
+              <p className="text-md text-center font-subheading text-turquoise-400">
+                Kayaknya kamu cinta {fav_topics[0]} banget, nih!
               </p>
             </div>
           </>
@@ -247,17 +284,17 @@ const WrappedStories = ({
               height={500}
               className="absolute bottom-0"
             />
-            <div className="flex flex-col absolute w-3/4 left-[12.5%] gap-2">
+            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
               <p className="text-center font-heading text-2xl text-blue-500">
                 Kamu masuk top
               </p>
-              <p className="text-center font-heading text-5xl text-pink-400 pb-0.5">
+              <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
                 {percent}%
               </p>
               <p className="text-center font-heading text-2xl text-blue-500">
                 peserta!
               </p>
-              <p className="text-center font-subheading text-md text-blue-500">
+              <p className="text-md text-center font-subheading text-blue-500">
                 Juara sejati diantara teman-temanmu!
               </p>
             </div>
@@ -296,14 +333,14 @@ const WrappedStories = ({
               height={350}
               className="absolute bottom-0 right-0"
             />
-            <div className="flex flex-col absolute w-3/4 left-[12.5%] gap-2">
+            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
               <p className="text-center font-heading text-2xl text-pink-400">
                 MBTI kamu di OSKM adalah
               </p>
-              <p className="text-center font-heading text-5xl text-purple pb-0.5">
+              <p className="pb-0.5 text-center font-heading text-5xl text-purple">
                 {mbti}
               </p>
-              <p className="text-center font-subheading text-md text-pink-400">
+              <p className="text-md text-center font-subheading text-pink-400">
                 {mbti_desc}
               </p>
             </div>
@@ -314,7 +351,7 @@ const WrappedStories = ({
     {
       content: () => {
         return (
-          <>
+          <div id="wrapped-summary">
             <Image
               src="/images/wrapped/background/Wrapped 7.png"
               alt="Wrapped 7"
@@ -322,53 +359,11 @@ const WrappedStories = ({
               className="absolute"
             />
             <Image
-              src="/images/wrapped/svg/logo.svg"
-              alt="Logo"
-              width={96}
-              height={50}
-              className="absolute left-3 top-6"
-            />
-            <Image
-              src="/images/wrapped/svg/cancer.svg"
-              alt="Cancer"
-              width={500}
-              height={500}
-              className="absolute bottom-0"
-            />
-            <Image
               src="/images/wrapped/svg/bubble.svg"
               alt="Bubble"
               width={500}
               height={500}
-              className="absolute self-center bottom-35"
-            />
-            <div className="flex flex-col absolute w-3/4 left-[12.5%] gap-2">
-              <p className="text-center font-heading text-2xl text-turquoise-500">
-                Tanpa disadari, kamu telah menghabiskan
-              </p>
-              <p className="text-center font-heading text-5xl text-error-600 pb-0.5">
-                {jam}
-              </p>
-              <p className="text-center font-heading text-2xl text-turquoise-500">
-                jam di website OSKM, lho!
-              </p>
-              <p className="text-center font-subheading text-md text-turquoise-500">
-                Dedikasi yang luar biasa!
-              </p>
-            </div>
-          </>
-        );
-      },
-    },
-    {
-      content: () => {
-        return (
-          <>
-            <Image
-              src="/images/wrapped/background/Wrapped 1.png"
-              alt="Wrapped 1"
-              fill={true}
-              className="absolute"
+              className="absolute bottom-0"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
@@ -377,38 +372,134 @@ const WrappedStories = ({
               height={50}
               className="absolute left-3 top-6"
             />
-            <Image
-              src="/images/wrapped/svg/seahorse.svg"
-              alt="Seahorse"
-              width={250}
-              height={350}
-              className="absolute right-0 top-[-60px]"
-            />
-            <Image
-              src="/images/wrapped/svg/island.svg"
-              alt="Island"
-              width={500}
-              height={500}
-              className="absolute bottom-0"
-            />
-            <p className="absolute left-[13%] w-3/4 pt-3 text-center font-heading text-6xl text-orange-100 blur-md">
-              Share Your Wrapped!
-            </p>
-            <p className="absolute left-[12.5%] w-3/4 text-center font-heading text-6xl text-blue-500">
-              Share Your Wrapped!
-            </p>
-            <div className="absolute left-[12.5%] bottom-[35%] w-3/4 text-center font-heading z-[1000]">
-              <Share
-                shareData={{
-                  title: 'Share',
-                  text: 'Share message',
-                  url: 'https://www.brannen.dev',
-                }}
-              >
-                <span>Share</span>
-              </Share>
+            <div className="absolute top-0 flex size-full items-center justify-center">
+              <div className="flex h-full w-5/6 flex-col items-center justify-center gap-4">
+                <p className="text-center font-heading text-xl text-blue-400">
+                  <span className="text-pink-400">{name}</span>, OSKM
+                  Personality-mu adalah
+                </p>
+                <Image
+                  src="/images/wrapped/svg/ray.svg"
+                  alt="Ray"
+                  width={250}
+                  height={250}
+                />
+                <p className="pb-0.5 text-center font-heading text-3xl text-error-600">
+                  Sylas
+                </p>
+                <div className="items-between flex w-4/5 flex-col gap-4">
+                  <div className="flex w-full gap-4">
+                    <div className="flex w-3/5 flex-col">
+                      <p className="font-heading text-lg leading-5 text-blue-400">
+                        Top Topics
+                      </p>
+                      <p className="font-subheading text-xl font-bold text-blue-500">
+                        1.&ensp;{fav_topics[0]}
+                      </p>
+                      <p className="font-subheading text-xl font-bold text-blue-500">
+                        2. {fav_topics[1]}
+                      </p>
+                      <p className="font-subheading text-xl font-bold text-blue-500">
+                        3. {fav_topics[2]}
+                      </p>
+                    </div>
+                    <div className="flex w-2/5 flex-col">
+                      <p className="font-heading text-lg leading-5 text-blue-400">
+                        Leaderboard Position
+                      </p>
+                      <p className="font-subheading text-xl font-bold text-blue-500">
+                        Rank {leaderboard_rank}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex w-full gap-4">
+                    <div className="flex w-3/5 flex-col">
+                      <p className="font-heading text-lg leading-5 text-blue-400">
+                        Matched Chat
+                      </p>
+                      <p className="font-subheading text-xl font-bold text-blue-500">
+                        {jumlah_match} times
+                      </p>
+                    </div>
+                    <div className="flex w-2/5 flex-col">
+                      <p className="font-heading text-lg leading-5 text-blue-400">
+                        Quest Done
+                      </p>
+                      <p className="font-subheading text-xl font-bold text-blue-500">
+                        {quest_num} tasks
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="z-[1000] flex gap-2 pt-6">
+                  <Button
+                    variant="link"
+                    size="icon"
+                    onClick={() => handleShare(true)}
+                  >
+                    <Image
+                      src="/icons/download.svg"
+                      alt="Instagram"
+                      width={32}
+                      height={32}
+                    />
+                  </Button>
+                  <Share
+                    variant="link"
+                    size="icon"
+                    shareData={{ files: image }}
+                    onInteraction={() => handleShare(false)}
+                  >
+                    <Image
+                      src="/images/wrapped/svg/instagram.svg"
+                      alt="Instagram"
+                      width={32}
+                      height={32}
+                    />
+                  </Share>
+                  <Share
+                    variant="link"
+                    size="icon"
+                    shareData={{ files: image }}
+                    onInteraction={() => handleShare(false)}
+                  >
+                    <Image
+                      src="/images/wrapped/svg/whatsapp.svg"
+                      alt="Whatsapp"
+                      width={32}
+                      height={32}
+                    />
+                  </Share>
+                  <Share
+                    variant="link"
+                    size="icon"
+                    shareData={{ files: image }}
+                    onInteraction={() => handleShare(false)}
+                  >
+                    <Image
+                      src="/images/wrapped/svg/line.svg"
+                      alt="Line"
+                      width={32}
+                      height={32}
+                    />
+                  </Share>
+                  <Share
+                    variant="link"
+                    size="icon"
+                    shareData={{ files: image }}
+                    onInteraction={() => handleShare(false)}
+                  >
+                    <Image
+                      src="/images/wrapped/svg/twitter.svg"
+                      alt="Twitter (X)"
+                      width={32}
+                      height={32}
+                    />
+                  </Share>
+                </div>
+              </div>
             </div>
-          </>
+          </div>
         );
       },
     },

@@ -3,27 +3,31 @@
 import Stories from 'react-insta-stories';
 import { WrappedStories } from './Content';
 import { useRouter } from 'next/navigation';
+// import { api } from '~/trpc/react';
 import { Button } from '~/components/ui/button';
 import { X } from 'lucide-react';
 
 const inputWrapped = {
+  name: '',
   jumlah_match: 250,
   quest_num: 30,
-  fav_topic: 'Skibidi Toilet & Twice Jihyo',
+  fav_topics: ['Skibidi Toilet', 'Twice Jihyo', 'iShowSpeed'],
   percent: 200,
   mbti: 'MLYT',
   mbti_desc: 'kamu sepertinya sering meleyot ya :D',
-  jam: 24000,
+  leaderboard_rank: 69,
 };
 
 function Wrapped() {
+  // const getUserStats = api.profile.getUserProfile.useQuery();
+  // console.log(getUserStats)
   const router = useRouter();
   return (
     <>
       <div className="min-h-screen overflow-hidden bg-black">
         <Stories
           stories={WrappedStories(inputWrapped)}
-          defaultInterval={15000}
+          defaultInterval={10000}
           width={'100%'}
           height={'100vh'}
           // onAllStoriesEnd={() => router.push('/')}
@@ -32,7 +36,7 @@ function Wrapped() {
         <Button
           variant="link"
           size="icon"
-          className="absolute top-7 right-5 z-[1000]"
+          className="absolute right-5 top-7 z-[1000]"
           onClick={() => router.push('/')}
         >
           <X className="size-10" color="#fff" />
