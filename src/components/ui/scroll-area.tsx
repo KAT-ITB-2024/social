@@ -11,6 +11,7 @@ const ScrollArea = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     className={cn('relative overflow-hidden', className)}
     {...props}
   >
@@ -36,6 +37,7 @@ const ScrollBar = React.forwardRef<
         'h-full w-2.5 border-l border-l-transparent p-[1px]',
       orientation === 'horizontal' &&
         'h-2.5 flex-col border-t border-t-transparent p-[1px]',
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       className,
     )}
     {...props}

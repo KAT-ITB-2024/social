@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import BoxComponent from './Box';
 import FirstQuestion from './FirstQuestion';
 import SecondQuestion from './SecondQuestion';
@@ -11,13 +11,18 @@ import { findMatch } from '~/server/socket/messaging/queue';
 
 interface NewChatFormProps {
   findMatch: () => void;
+  setAnonymous: Dispatch<SetStateAction<boolean>>;
+  setTopic: Dispatch<SetStateAction<string>>;
+  setJodoh: Dispatch<SetStateAction<boolean>>;
 }
 
-const NewChatForm = ({ findMatch }: NewChatFormProps) => {
+const NewChatForm = ({
+  findMatch,
+  setAnonymous,
+  setTopic,
+  setJodoh,
+}: NewChatFormProps) => {
   const [page, setPage] = useState<number>(1);
-  const [anonymous, setAnonymous] = useState<boolean>(false);
-  const [topic, setTopic] = useState<string>('General');
-  const [jodoh, setJodoh] = useState<boolean>(false);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
