@@ -26,8 +26,9 @@ export const LoadingSpinnerCustom = () => {
             <Image
               src="/images/loading/loading.gif"
               alt="Loading spinner"
-              layout="fill"
-              objectFit="contain"
+              fill
+              style={{ objectFit: 'contain' }}
+              unoptimized
             />
           </div>
           <p className="text-center text-white text-sm -mt-4">
