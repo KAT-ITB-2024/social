@@ -3,14 +3,14 @@ import React, { ReactNode } from 'react';
 interface BoxButtonProps {
   onClick?: () => void;
   children: ReactNode;
-  color: 'pink' | 'white' | 'blue' | 'lightblue';
+  color: 'pink' | 'white' | 'blue' | 'lightblue'|'orange';
   size: 'default' | 'large' | 'custom';
   disabled?: boolean;
 }
 
 const getButtonStyles = (
   size: 'default' | 'large' | 'custom',
-  color: 'pink' | 'white' | 'blue' | 'lightblue',
+  color: 'pink' | 'white' | 'blue' | 'lightblue'| 'orange',
   disabled?: boolean,
 ) => {
   const sizeStyle = {
@@ -22,9 +22,10 @@ const getButtonStyles = (
   const colorStyle = {
     pink: 'bg-pink-300 text-neutral-50 border-[1.5px] border-neutral-50 hover:bg-pink-400',
     white:
-      'bg-neutral-50 text-blue-600 border-[1.5px] border-blue-200 hover:bg-neutral-200',
+    'bg-neutral-50 text-blue-600 border-[1.5px] border-blue-200 hover:bg-neutral-200',
     blue: 'bg-blue-400 text-neutral-50 border-[1.5px] border-neutral-50 hover:bg-blue-300',
     lightblue: 'bg-blue-300 text-neutral-50 border-[1.5px] border-neutral-50',
+    orange: 'bg-error-500 text-neutral-50 border-[1.5px] border-neutral-50 hover:bg-error-600',
   };
 
   const disabledStyle = 'opacity-50 cursor-not-allowed';

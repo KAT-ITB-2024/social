@@ -1,20 +1,25 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { LoadingSpinner } from '~/components/loading';
-import { Button } from '~/components/ui/button';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
 import { socket } from '~/utils/socket';
 import NewChatForm from '~/components/chat/newchat/NewChat';
 import Image from 'next/image';
+import { Button } from '~/components/ui/button';
 import Coral from 'public/images/chat/newchat/coral.png';
 import AddIcon from 'public/icons/newchat/add-icon.svg';
+import Match from 'public/images/chat/newchat/match.gif';
+import LoadingText from '~/components/chat/newchat/LoadingText';
+import BoxButton from '~/components/chat/newchat/BoxButton';
 
 export default function MatchPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [showForm, setShowForm] = useState(false);
+  const [anonymous, setAnonymous] = useState<boolean>(false);
+  const [topic, setTopic] = useState<string>('');
+  const [jodoh, setJodoh] = useState<boolean>(false);
   const router = useRouter();
   const queueEmit = useEmit('findMatch');
   const queued = useRef(false);
@@ -22,6 +27,9 @@ export default function MatchPage() {
 
   const findMatch = () => {
     console.log('Ini queued current', queued.current);
+    console.log('Anonymous:', anonymous);
+    console.log('Topic:', topic);
+    console.log('Jodoh:', jodoh);
     if (!queued.current) {
       queueEmit.mutate({
         isAnonymous: false,
@@ -55,7 +63,7 @@ export default function MatchPage() {
 
   const showChatForm = () => {
     setShowForm(true);
-  }
+  };
 
   useEffect(() => {
     checkEmit.mutate({});
@@ -73,19 +81,26 @@ export default function MatchPage() {
 
   if (isLoading) {
     return (
-      <div className="py-24">
-        {/* To-Do : Ganti sama loading page dari FE */}
-        <LoadingSpinner />
-        <Button variant={'default'} onClick={cancelFindMatch}>
-          Cancel
-        </Button>
+      <div className="flex flex-col items-center justify-center py-40">
+        <Image src={Match} alt="match" width={300} height={300} />
+        <div className="flex flex-col items-center justify-center gap-5">
+          <LoadingText text="MATCHING UP..." />
+          <BoxButton color="orange" size="custom" onClick={cancelFindMatch}>
+            Cancel
+          </BoxButton>
+        </div>
       </div>
     );
   }
   return (
     <div className="flex flex-col items-center justify-center py-40">
       {showForm ? (
-        <NewChatForm findMatch={findMatch} />
+        <NewChatForm
+          findMatch={findMatch}
+          setAnonymous={setAnonymous}
+          setTopic={setTopic}
+          setJodoh={setJodoh}
+        />
       ) : (
         <div className="flex flex-col items-center justify-evenly">
           <Image src={Coral} alt="coral" width={300} height={300} />
