@@ -4,6 +4,7 @@
 // import { Button } from '@/components/ui/button';
 import { MenuButton } from '../components/home/MenuButton';
 import Image from 'next/image';
+import Journey from '~/components/home/Journey';
 
 export default async function Home() {
   return (
@@ -38,6 +39,7 @@ export default async function Home() {
           </h5>
         </div>
       </div>
+      <Journey />
     </main>
   );
 }
