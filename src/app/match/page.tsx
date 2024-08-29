@@ -42,7 +42,7 @@ export default function MatchPage() {
       queued.current = true;
       setIsLoading(true);
       setNoMatch(false);
-      setCountdown(10);
+      setCountdown(20);
     }
   };
 
@@ -51,6 +51,7 @@ export default function MatchPage() {
       cancelEmit.mutate({});
       setIsLoading(false);
       setNoMatch(false);
+      setCountdown(0);
       queued.current = false;
     }
   };
@@ -88,19 +89,22 @@ export default function MatchPage() {
   });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev === 1) {
-          cancelFindMatch();
-          setNoMatch(true);
-          return 0;
-        }
-        return prev ? prev - 1 : 0;
-      });
-    },1000);
+    if (isLoading) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          console.log('Current Countdown:', prev);
+          if (prev === 1) {
+            cancelFindMatch();
+            setNoMatch(true);
+            return 0;
+          }
+          return prev ? prev - 1 : 0;
+        });
+      }, 1000);
 
-    return () => clearInterval(timer);
-  },[isLoading,countdown]);
+      return () => clearInterval(timer);
+    }
+  }, [isLoading]);
 
   if (noMatch) {
     return (
@@ -108,14 +112,14 @@ export default function MatchPage() {
         <h2 className="text-red-500">NO MATCH FOUND</h2>
         <Button
           className="bg-pink-300 rounded-full px-6 shadow-pink-md hover:bg-pink-400"
-          onClick={() => setNoMatch(false)} // Reset noMatch state
+          onClick={() => setNoMatch(false)} // 
         >
           Try Again
         </Button>
       </div>
     );
   }
-  
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-40">

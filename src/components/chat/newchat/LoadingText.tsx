@@ -5,7 +5,7 @@ interface LoadingTextProps {
   interval?: number;
 }
 
-const LoadingText = ({ text, interval = 50 }: LoadingTextProps) => {
+const LoadingText = ({ text, interval = 100 }: LoadingTextProps) => {
   const [displayText, setDisplayText] = useState<string>('');
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
