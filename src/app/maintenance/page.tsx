@@ -7,26 +7,24 @@ export default function Maintenance() {
       <div
         className="fixed-width-container flex flex-col items-center justify-center"
         style={{
-          backgroundImage: "url('/components/bg-maintenance.png')",
+          backgroundImage: "url('/components/bg-maintenance.svg')",
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
         }}
       >
         <Image
           className="-mb-12"
-          src="/components/maintenance.png"
+          src="/components/maintenance1.svg"
           alt="Maintenance"
           width={300}
           height={300}
         />
         <h2 className="text-blue-600 text-center px-10">UNDER MAINTENANCE</h2>
         <p className="text-blue-600 text-center text-xl px-20">
-          {' '}
-          Bersiaplah Aqualings!{' '}
+          Bersiaplah Aqualings!
         </p>
         <p className="text-blue-600 text-center text-xl px-10">
-          {' '}
-          Sesuatu yang menakjubkan sedang dipersiapkan.{' '}
+          Sesuatu yang menakjubkan sedang dipersiapkan.
         </p>
       </div>
     </main>

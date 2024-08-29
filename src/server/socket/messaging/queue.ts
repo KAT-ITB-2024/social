@@ -1,5 +1,5 @@
 import { Redis } from '~/server/redis';
-import { type UserQueue } from '~/types/enums/message';
+import { type UserQueue } from '~/types/payloads/message';
 
 const serializeUserQueue = (queue: UserQueue) => {
   return `${queue.userId}`;

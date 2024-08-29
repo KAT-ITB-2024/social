@@ -5,86 +5,12 @@ import {
   assignments,
 } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
-import { eq, and, lte } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
-import { getCurrentWIBTime } from '../helpers/utils';
 
 export const assignmentRouter = createTRPCRouter({
   getDailyQuest: publicProcedure.query(async ({ ctx }) => {
-    if (!ctx.session || !ctx.session.user) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'User is not logged in',
-      });
-    }
-
     try {
-      const dailyQuests = await ctx.db
-        .select()
-        .from(assignments)
-        .leftJoin(
-          assignmentSubmissions,
-          and(
-            eq(assignments.id, assignmentSubmissions.assignmentId),
-            eq(assignmentSubmissions.userNim, ctx.session.user.nim),
-          ),
-        )
-        .where(
-          and(
-            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]), // Daily Quest
-            lte(assignments.startTime, getCurrentWIBTime()),
-          ),
-        );
-
-      return dailyQuests || [];
-    } catch (e) {
-      console.error('Error fetching daily quests:', e);
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to fetch daily quests',
-      });
-    }
-  }),
-
-  getSideQuest: publicProcedure.query(async ({ ctx }) => {
-    if (!ctx.session || !ctx.session.user) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'User is not logged in',
-      });
-    }
-
-    try {
-      const sideQuests = await ctx.db
-        .select()
-        .from(assignments)
-        .leftJoin(
-          assignmentSubmissions,
-          and(
-            eq(assignments.id, assignmentSubmissions.assignmentId),
-            eq(assignmentSubmissions.userNim, ctx.session.user.nim),
-          ),
-        )
-        .where(
-          and(
-            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]), // Side Quest
-            lte(assignments.startTime, getCurrentWIBTime()),
-          ),
-        );
-
-      return sideQuests || [];
-    } catch (e) {
-      console.error('Error fetching side quests:', e);
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to fetch side quests',
-      });
-    }
-  }),
-
-  getQuestById: publicProcedure
-    .input(getAssignmentByIdPayload)
-    .query(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
@@ -92,40 +18,112 @@ export const assignmentRouter = createTRPCRouter({
         });
       }
 
-      if (!input.id) {
+      const dailyQuests = await ctx.db
+        .select()
+        .from(assignments)
+        .leftJoin(
+          assignmentSubmissions,
+          eq(assignments.id, assignmentSubmissions.assignmentId),
+        )
+        .where(
+          and(
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
+            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+          ),
+        );
+
+      if (!dailyQuests) {
+        return [];
+      }
+
+      return dailyQuests;
+    } catch (e) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Internal server error',
+      });
+    }
+  }),
+
+  getSideQuest: publicProcedure.query(async ({ ctx }) => {
+    try {
+      if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Assignment ID was not provided',
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
         });
       }
 
+      const sideQuests = await ctx.db
+        .select()
+        .from(assignments)
+        .leftJoin(
+          assignmentSubmissions,
+          eq(assignments.id, assignmentSubmissions.assignmentId),
+        )
+        .where(
+          and(
+            eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]),
+            eq(assignmentSubmissions.userNim, ctx.session?.user.nim),
+          ),
+        );
+
+      if (!sideQuests) {
+        return [];
+      }
+
+      return sideQuests;
+    } catch (e) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Internal server error',
+      });
+    }
+  }),
+
+  getQuestById: publicProcedure
+    .input(getAssignmentByIdPayload)
+    .query(async ({ ctx, input }) => {
       try {
-        const assignment = await ctx.db
+        if (!ctx.session || !ctx.session.user) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'User is not logged in',
+          });
+        }
+
+        if (!input.id)
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Assignment ID was not received',
+          });
+
+        const quest = await ctx.db
           .select()
           .from(assignments)
           .leftJoin(
             assignmentSubmissions,
+            eq(assignments.id, assignmentSubmissions.assignmentId),
+          )
+          .where(
             and(
-              eq(assignments.id, assignmentSubmissions.assignmentId),
+              eq(assignments.id, input.id),
               eq(assignmentSubmissions.userNim, ctx.session.user.nim),
             ),
           )
-          .where(eq(assignments.id, input.id))
           .then((result) => result[0]);
 
-        if (!assignment) {
+        if (!quest)
           throw new TRPCError({
             code: 'NOT_FOUND',
-            message: 'Assignment not found',
+            message: 'Quest not found',
           });
-        }
 
-        return assignment;
+        return quest;
       } catch (e) {
-        console.error('Error fetching assignment by ID:', e);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch assignment',
+          message: 'Internal server error',
         });
       }
     }),

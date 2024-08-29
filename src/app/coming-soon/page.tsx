@@ -7,32 +7,29 @@ export default function ComingSoon() {
       <div
         className="fixed-width-container flex flex-col items-center justify-center"
         style={{
-          backgroundImage: "url('/components/bg-comingsoon.png')",
+          backgroundImage: "url('/components/bg-comingsoon.svg')",
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
         }}
       >
         <Image
-          src="/components/comingsoon.png"
+          src="/components/comingsoon.svg"
           alt="Maintenance"
           width={350}
           height={350}
         />
         <div>
           <p className="-mt-2.5 text-pink-400 text-center text-xl px-10">
-            {' '}
-            Kapal selam kami sedang{' '}
+            Kapal selam kami sedang
           </p>
           <p className="text-pink-400 text-center text-xl px-10">
-            {' '}
-            menjelajahi samudera{' '}
+            menjelajahi samudera
           </p>
           <p className="text-pink-400 text-center text-xl px-10">
-            {' '}
             selanjutnya....
           </p>
         </div>
-        <p className="mt-64"></p>
+        <p className="mt-40"></p>
       </div>
     </main>
   );

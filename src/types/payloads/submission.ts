@@ -2,14 +2,12 @@ import { z } from 'zod';
 
 export const submissionPayload = z.object({
   assignmentId: z.string(),
-  filename: z.string(),
-  downloadUrl: z.string(),
+  file: z.string(),
 });
 
 export const putSubmissionPayload = z.object({
   submissionId: z.string(),
-  filename: z.string(),
-  downloadUrl: z.string(),
+  file: z.string().max(255).max(2),
 });
 export const getSubmissionByNIMPayload = z.object({
   userNim: z.string(),
