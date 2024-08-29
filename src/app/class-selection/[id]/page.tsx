@@ -115,8 +115,8 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const description = selectedClass?.description ?? 'Tidak ada penjelasan';
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-orange-900 z-0">
-      <div className="fixed-width-container bg-classes bg-center bg-no-repeat bg-cover p-6 pt-32 flex flex-col items-center min-h-screen">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-turquoise-100 z-0">
+      <div className="fixed-width-container bg-classes bg-center bg-no-repeat bg-cover p-6 pt-32 flex flex-col items-center min-h-screen overflow-y-auto no-scrollbar">
         <Image
           src={Jellyfish2}
           alt="jellyfish-2"
@@ -152,7 +152,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           <h3 className="text-orange-500 text-left -mt-1">
             {selectedClass.title}
           </h3>
-          <div className="mt-1">
+          <div className="mt-[10px]">
             <p className="inline-block border-2 border-orange-500 text-orange-400 rounded-full px-4 py-1 text-sm">
               {selectedClass.formattedDate}
             </p>
@@ -163,43 +163,45 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
             </p>
           </div>
         </div>
-        <div className="container">
-          <div className="mt-2 ml-2">
-            <b className="font-bold text-orange-400">PEMBICARA</b>
-            <p className="text-orange-400 text-left">{selectedClass.speaker}</p>
-          </div>
-          <div className="mt-2 ml-2">
-            <b className="font-bold text-orange-400">LOKASI & WAKTU</b>
-            <p className="text-orange-400 text-left">
-              {selectedClass.location}
-            </p>
-            <p className="text-orange-400 text-left">
-              {selectedClass.formattedTime} WIB
-            </p>
-          </div>
-          <div className="mt-2 ml-2 mb-2">
-            <b className="font-bold text-orange-400">DEPSKRIPSI</b>
-          </div>
-        </div>
-        <div className="container -mt-2 z-10 overflow-y-scroll mb-3 h-28">
-          <div className="mt-2 ml-2">
-            <p className="text-orange-400 text-left">
-              {truncatedText(description, 100)}
-            </p>
-            {description.length > 50 && (
-              <button
-                onClick={toggleText}
-                className="text-orange-500 underline"
-              >
-                {showFullText ? 'Show less' : 'Show more'}
-              </button>
-            )}
+        <div className="container z-10 my-4">
+          <div className="bg-white rounded-sm border-2 border-orange-500">
+            <div className="mt-2 ml-2">
+              <b className="font-bold text-orange-400">PEMBICARA</b>
+              <p className="text-orange-400 text-left">
+                {selectedClass.speaker}
+              </p>
+            </div>
+            <div className="mt-2 ml-2">
+              <b className="font-bold text-orange-400">LOKASI & WAKTU</b>
+              <p className="text-orange-400 text-left">
+                {selectedClass.location}
+              </p>
+              <p className="text-orange-400 text-left">
+                {selectedClass.formattedTime} WIB
+              </p>
+            </div>
+            <div className="mt-2 ml-2">
+              <b className="font-bold text-orange-400">DESKRIPSI</b>
+              <div className="z-10 overflow-y-scroll mb-3 h-28">
+                <p className="text-orange-400 text-left">
+                  {truncatedText(String(description), 100)}
+                </p>
+                {description.length > 50 && (
+                  <button
+                    onClick={toggleText}
+                    className="text-orange-500 underline"
+                  >
+                    {showFullText ? 'Show less' : 'Show more'}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
         {!enrolledClass || enrolledClass.id !== selectedClass?.id ? (
           <Button
-            className="mb-32 w- bg-pink-400 z-0"
+            className="mb-8 bg-pink-400 z-0"
             onClick={openConfirmationModal}
           >
             Daftar
@@ -212,16 +214,12 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           title="Pilih Kelas"
           description="Apakah kamu yakin memilih kelas ini?"
           onConfirm={confirmSelection}
-          className=""
         />
 
         <ClassInfoModal
           isOpen={isInfoModalOpen}
           setIsOpen={setIsInfoModalOpen}
-          title="Yeay!"
-          description="Kamu berhasil terdaftar di kelas ini"
           image={SeaSlug}
-          className=""
         />
 
         <ClassFullModal

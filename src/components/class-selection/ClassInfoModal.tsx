@@ -17,8 +17,6 @@ const ClassInfoModal = ({
   className,
 }: {
   image: StaticImageData;
-  title: string;
-  description: string;
   isOpen: boolean;
   setIsOpen: (param: boolean) => void;
   className?: string;

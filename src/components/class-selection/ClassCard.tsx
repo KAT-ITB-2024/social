@@ -53,16 +53,16 @@ export const CustomCard: React.FC<CustomCardProps> = ({
 
   return (
     <Card
-      className={`relative flex border-orange-400 shadow-orange-xl rounded-lg p-2 ${backgroundGradient} cursor-pointer overflow-hidden`}
+      className={`relative flex border-orange-400 shadow-orange-xl rounded-2xl pl-2 py-4 ${backgroundGradient} cursor-pointer overflow-hidden`}
       onClick={onClick}
     >
       <CardContent className="flex flex-col justify-center pl-4 w-4/5 -mb-5 -ml-2">
         <CardTitle
-          className={`text-h5 md:text-base font-subheading ${themeColor}`}
+          className={`text-sh5 md:text-base font-subheading ${themeColor}`}
         >
           {topic}
         </CardTitle>
-        <p className={`${themeColor} text-sm`}>{title}</p>
+        <p className={`${themeColor} text-sm mt-2`}>{title}</p>
         <p
           className={`bg-white inline-block border ${borderColor} ${seatColor} ${bgroundColor} rounded-full px-4 py-1 text-sm w-fit mt-2`}
         >

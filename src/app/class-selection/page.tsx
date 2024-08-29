@@ -64,7 +64,7 @@ export default function ClassSelection() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center bg-orange-900 max-h-screen">
+    <main className="flex flex-col items-center justify-center  bg-turquoise-100 max-h-screen">
       <div className="fixed-width-container bg-classes bg-center bg-no-repeat bg-cover p-6 pt-32 flex flex-col items-center min-h-screen z-0">
         <Image
           src={Coral1}
@@ -76,7 +76,7 @@ export default function ClassSelection() {
           alt="coral-2"
           className="absolute bottom-0 left-0 w-[23%] z-0"
         />
-        <div className="z-10 w-full max-w-md overflow-y-scroll p-4 mt-20 scroll-container">
+        <div className="z-10 w-full max-w-md overflow-y-scroll py-4 px-6 mt-20 scroll-container md:no-scrollbar">
           <div className="grid gap-5">
             {allClasses?.map((cls) => (
               <CustomCard
@@ -87,7 +87,7 @@ export default function ClassSelection() {
                 reserved={cls.reservedSeats ?? 0}
                 desc={cls.description}
                 variant={cls.id === confirmedClassId ? 'clicked' : 'default'}
-                onClick={() => handleCardClick(cls.id)}
+                onClick={() => handleCardClick(String(cls.id))}
               />
             ))}
           </div>
