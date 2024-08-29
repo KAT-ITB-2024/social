@@ -18,6 +18,10 @@ const config = {
       },
     },
     extend: {
+      backgroundImage: {
+        classes:
+          "url('/images/class-selection/class-selection-background.png')",
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -205,7 +209,7 @@ const config = {
         // Orange shadows
         'orange-sm': '4px 4px 10px rgba(255, 191, 81, 0.5)',
         'orange-md': '4px 4px 10px rgba(255, 191, 81, 0.75)',
-        'orange-lg': '4px 4px 20px rgba(255, 191, 81, 1)',
+        'orange-lg': '4px 4px 20px rgba(255, 191, 81, 0.75)',
         'orange-xl': '4px 4px 20px rgba(255, 191, 81, 1)',
         'orange-2xl': '4px 4px 50px rgba(255, 191, 81, 1)',
         // Neutral shadows
