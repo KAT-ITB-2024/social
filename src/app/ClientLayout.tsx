@@ -21,6 +21,7 @@ export default function ClientLayout({
       '/login',
       '/forgot-password',
       '/reset-password',
+      '/chat/room',
     ],
     [],
   );

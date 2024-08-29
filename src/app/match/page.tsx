@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
@@ -13,8 +13,12 @@ import { ChatTopic } from '~/types/enum/chat';
 import Match from 'public/images/chat/newchat/match.gif';
 import LoadingText from '~/components/chat/newchat/LoadingText';
 import BoxButton from '~/components/chat/newchat/BoxButton';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { useSession } from 'next-auth/react';
 
 export default function MatchPage() {
+  const { data: session, status } = useSession();
+
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [showForm, setShowForm] = useState(false);
@@ -54,9 +58,11 @@ export default function MatchPage() {
 
   const checkEmit = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini match');
+      console.log(data.match);
       if (data.match !== undefined) {
         setIsLoading(false);
-        void router.push(`/match/room`);
+        void router.push(`/chat/room`);
       } else if (data.queue !== null) {
         queued.current = true;
       } else {
@@ -79,7 +85,7 @@ export default function MatchPage() {
 
   useSubscription('match', (_) => {
     queued.current = false;
-    void router.push(`/match/room`);
+    void router.push(`/chat/room`);
   });
 
   if (isLoading) {
@@ -94,6 +100,12 @@ export default function MatchPage() {
         </div>
       </div>
     );
+  }
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
   }
   return (
     <div className="flex flex-col items-center justify-center py-40">

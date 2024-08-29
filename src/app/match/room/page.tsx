@@ -1,18 +1,20 @@
 'use client';
 import { type Message } from '@katitb2024/database';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/ui/button';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
-import { RevealStatusEvent } from '~/types/payloads/message';
+import { RevealStatusEvent } from '~/types/enums/message';
 import { socket } from '~/utils/socket';
 
 export default function MatchPage() {
+  const { data: session, status } = useSession();
+
   // const queueEmit = useEmit('findMatch');
-  // socket.connect();
-  const { data: session } = useSession({ required: true });
+  socket.connect();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [showRevealPopup, setShowRevealPopup] = useState(false);
@@ -25,6 +27,8 @@ export default function MatchPage() {
 
   const checkMatch = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini match');
+      console.log(data.match);
       if (data.match === undefined) {
         void router.push('/match');
       }
@@ -63,6 +67,7 @@ export default function MatchPage() {
   }, []);
 
   // saat nerima event message dari server
+  // saat nerima event message dari server
   useSubscription('add', (post) => {
     if (post.userMatchId !== null) {
       addMessages([post]);
@@ -99,6 +104,12 @@ export default function MatchPage() {
     setNewMessage(e.target.value);
     anonTypingEmit.mutate({});
   };
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session) {
+    redirect('/login');
+  }
   return (
     <div className="py-24">
       Match page
