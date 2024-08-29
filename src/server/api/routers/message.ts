@@ -20,7 +20,7 @@ export const messageRouter = createTRPCRouter({
     .input(
       z.object({
         cursor: z.date().optional(),
-        take: z.number().min(1).max(50).default(25),
+        take: z.number().min(1).max(50).default(10),
         userMatchId: z.string(),
       }),
     )
@@ -162,12 +162,12 @@ export const messageRouter = createTRPCRouter({
           content: input.content,
         });
 
-        await ctx.db
-          .update(userMatches)
-          .set({
-            lastMessage: input.content,
-          })
-          .where(eq(userMatches.id, input.userMatchId));
+        // await ctx.db
+        //   .update(userMatches)
+        //   .set({
+        //     lastMessage: input.content,
+        //   })
+        //   .where(eq(userMatches.id, input.userMatchId));
 
         return {
           status: 200,
@@ -444,6 +444,43 @@ export const messageRouter = createTRPCRouter({
             ),
             eq(messages.isRead, false),
           ),
+        );
+    }),
+
+  updateOneIsRead: publicProcedure
+    .input(
+      z.object({
+        messageId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session === null) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+        });
+      }
+
+      const message = await ctx.db
+        .select()
+        .from(messages)
+        .where(
+          and(eq(messages.id, input.messageId), eq(messages.isRead, false)),
+        );
+
+      if (!message) {
+        throw new TRPCError({
+          message: 'Message not found',
+          code: 'BAD_REQUEST',
+        });
+      }
+
+      await ctx.db
+        .update(messages)
+        .set({
+          isRead: true,
+        })
+        .where(
+          and(eq(messages.id, input.messageId), eq(messages.isRead, false)),
         );
     }),
 });
