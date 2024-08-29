@@ -34,7 +34,6 @@ import { ScanFace } from 'lucide-react';
 const Chat = () => {
   const { data: session, status } = useSession();
 
-  socket.connect();
   const router = useRouter();
 
   const [modals, setModals] = useState<Record<string, boolean>>({

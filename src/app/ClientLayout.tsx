@@ -3,12 +3,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from '~/components/Navbar';
+import { useSession } from 'next-auth/react';
+import { socket } from '~/utils/socket';
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { status } = useSession();
   const pathname = usePathname();
   const [shouldShowNavbar, setShouldShowNavbar] = useState(true);
 
@@ -25,6 +28,14 @@ export default function ClientLayout({
     ],
     [],
   );
+
+  useEffect(() => {
+    if (status === 'authenticated' && !socket.connected) {
+      socket.connect();
+    } else if (status === 'unauthenticated' && socket.connected) {
+      socket.disconnect();
+    }
+  }, [status]);
 
   useEffect(() => {
     if (routes.includes(pathname)) {

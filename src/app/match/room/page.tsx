@@ -14,7 +14,6 @@ export default function MatchPage() {
   const { data: session, status } = useSession();
 
   // const queueEmit = useEmit('findMatch');
-  socket.connect();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [showRevealPopup, setShowRevealPopup] = useState(false);
