@@ -3,12 +3,10 @@ import { type Message } from '@katitb2024/database';
 import { useSession } from 'next-auth/react';
 import { redirect, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from '~/components/ui/button';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
 import { RevealStatusEvent } from '~/types/enums/message';
-import { socket } from '~/utils/socket';
 
 export default function MatchPage() {
   const { data: session, status } = useSession();

@@ -18,10 +18,8 @@ export default function MatchPage() {
   const router = useRouter();
   const queueEmit = useEmit('findMatch');
   const queued = useRef(false);
-  socket.connect();
 
   const findMatch = () => {
-    console.log('Ini queued current', queued.current);
     if (!queued.current) {
       queueEmit.mutate({
         isAnonymous: false,

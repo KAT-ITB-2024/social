@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
