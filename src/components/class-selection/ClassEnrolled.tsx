@@ -39,7 +39,8 @@ const ClassEnrolledModal = ({
           </p>
         </AlertDialogTitle>
         <AlertDialogDescription className="text-pink-400 text-center">
-          Kamu sudah memilih kelas sebelumnya. Kelas hanya bisa dipilih satu kali.
+          Kamu sudah memilih kelas sebelumnya. Kelas hanya bisa dipilih satu
+          kali.
         </AlertDialogDescription>
       </AlertDialogContent>
     </AlertDialog>
