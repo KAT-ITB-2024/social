@@ -16,6 +16,11 @@ import ClassInfoModal from '@/components/class-selection/ClassInfoModal';
 import ClassFullModal from '@/components/class-selection/ClassFullModal';
 import ClassEnrolledModal from '@/components/class-selection/ClassEnrolled';
 import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { toast } from 'sonner';
+import { SuccessToast } from '~/components/ui/success-toast';
+import { ErrorToast } from '~/components/ui/error-toast';
+
 
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -23,28 +28,35 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isClassFullModalOpen, setIsClassFullModalOpen] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
-
-  const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
   const [isEnrolledModalOpen, setIsEnrolledModalOpen] = useState(false);
 
+  const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
+  
   const {
     data: selectedClass,
     isLoading,
     error,
   } = api.class.getClassById.useQuery(params.id);
+  
   const { mutate: enrollClass } = api.class.enrollClass.useMutation({
     onSuccess: () => {
       localStorage.setItem('confirmedClassId', params.id);
       closeConfirmationModal();
       setIsInfoModalOpen(true);
+      toast(
+        <SuccessToast title="Enrollment success!" desc="You have successfully enrolled in the class." />
+      );
     },
     onError: (err) => {
       console.error(err.message);
       setIsEnrolledModalOpen(true);
+      toast(<ErrorToast desc={`Enrollment failed: ${err.message}`} />);
     },
   });
 
-  if (isLoading) return <p>Loading class details...</p>;
+  if (isLoading) {
+    return <LoadingSpinnerCustom />
+  }
   if (error ?? !selectedClass) {
     notFound();
     return notFound;
@@ -182,12 +194,15 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
             )}
           </div>
         </div>
-        <Button
-          className="mb-32 w- bg-pink-400 z-0"
-          onClick={openConfirmationModal}
-        >
-          Daftar
-        </Button>
+
+        {!enrolledClass ?? enrolledClass.id !== selectedClass?.id ? (
+          <Button
+            className="mb-32 w- bg-pink-400 z-0"
+            onClick={openConfirmationModal}
+          >
+            Daftar
+          </Button>
+        ) : null}
 
         <ClassConfirmationModal
           isOpen={isConfirmationModalOpen}

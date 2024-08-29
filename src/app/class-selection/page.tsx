@@ -1,25 +1,32 @@
 'use client';
 
 import Image from 'next/image';
-
-import Coral1 from 'public/images/class-selection/coral-1.png';
-import Coral2 from 'public/images/class-selection/coral-2.png';
-
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CustomCard } from '@/components/class-selection/ClassCard';
 import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { toast } from 'sonner';
+import { ErrorToast } from '~/components/ui/error-toast';
+
+import Coral1 from 'public/images/class-selection/coral-1.png';
+import Coral2 from 'public/images/class-selection/coral-2.png';
 
 export default function ClassSelection() {
   const router = useRouter();
+  const [confirmedClassId, setConfirmedClassId] = useState<string | null>(null);
+
   const {
     data: classes,
-    isLoading,
-    error,
+    isLoading: classesLoading,
+    error: classesError,
   } = api.class.getAllClasses.useQuery();
-  const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
 
-  const [confirmedClassId, setConfirmedClassId] = useState<string | null>(null);
+  const {
+    data: enrolledClass,
+    isLoading: enrolledClassLoading,
+    error: enrolledClassError,
+  } = api.class.getEnrolledClass.useQuery();
 
   useEffect(() => {
     if (enrolledClass) {
@@ -27,12 +34,19 @@ export default function ClassSelection() {
     }
   }, [enrolledClass]);
 
+  useEffect(() => {
+    if (classesError ?? enrolledClassError) {
+      toast(<ErrorToast desc="Failed to load classes. Please try again later." />);
+    }
+  }, [classesError, enrolledClassError]);
+
   const handleCardClick = (id: string) => {
     router.push(`/class-selection/${id}`);
   };
 
-  if (isLoading) return <p>Loading classes...</p>;
-  if (error) return <p>Error loading classes: {error.message}</p>;
+  if (classesLoading ?? enrolledClassLoading) {
+    return <LoadingSpinnerCustom />;
+  }
 
   const sortedClasses = classes?.sort((a, b) => {
     if (a.id === confirmedClassId) return -1;
@@ -54,7 +68,7 @@ export default function ClassSelection() {
           className="absolute bottom-0 left-0 w-[23%] z-0"
         />
         <div className="z-10 w-full max-w-md overflow-y-scroll p-4 mt-20 scroll-container">
-          <div className="grid gap-3">
+          <div className="grid gap-5">
             {sortedClasses?.map((cls) => (
               <CustomCard
                 key={cls.id}

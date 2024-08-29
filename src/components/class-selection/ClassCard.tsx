@@ -53,7 +53,7 @@ export const CustomCard: React.FC<CustomCardProps> = ({
 
   return (
     <Card
-      className={`relative flex border-orange-400 shadow-orange-xl rounded-lg p-4 ${backgroundGradient} cursor-pointer overflow-hidden`}
+      className={`relative flex border-orange-400 shadow-orange-xl rounded-lg p-2 ${backgroundGradient} cursor-pointer overflow-hidden`}
       onClick={onClick}
     >
       <CardContent className="flex flex-col justify-center pl-4 w-4/5 -mb-5 -ml-2">
