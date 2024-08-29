@@ -7,12 +7,12 @@ import ProgressBar from './ProgressBar';
 import BackButton from './BackButton';
 import BackButtonIcon from 'public/icons/newchat/backbutton.png';
 import BackButtonHoverIcon from 'public/icons/newchat/backbutton-hover.png';
-import { findMatch } from '~/server/socket/messaging/queue';
+import { ChatTopic } from '~/types/enum/chat';
 
 interface NewChatFormProps {
   findMatch: () => void;
   setAnonymous: Dispatch<SetStateAction<boolean>>;
-  setTopic: Dispatch<SetStateAction<string>>;
+  setTopic: Dispatch<SetStateAction<ChatTopic>>;
   setJodoh: Dispatch<SetStateAction<boolean>>;
 }
 

@@ -2,20 +2,31 @@ import React, { useState } from 'react';
 import BoxButton from './BoxButton';
 import { ScrollArea } from '~/components/ui/scroll-area';
 import type { Dispatch, SetStateAction } from 'react';
+import { ChatTopic } from '~/types/enum/chat';
 
 type SecondQuestionProps = {
   handlePageChange: (page: number) => void;
-  setTopic: Dispatch<SetStateAction<string>>;
+  setTopic: Dispatch<SetStateAction<ChatTopic>>;
 };
+
+const topicLabels: Record<ChatTopic, string> = {
+  [ChatTopic.GENERAL]: 'General',
+  [ChatTopic.ITB]: 'ITB',
+  [ChatTopic.FILM]: 'Film',
+  [ChatTopic.GAME]: 'Game',
+  [ChatTopic.OLAHRAGA]: 'Olahraga',
+  [ChatTopic.MAKANAN]: 'Makanan',
+};
+
 
 const SecondQuestion = ({
   handlePageChange,
   setTopic,
 }: SecondQuestionProps) => {
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [selectedButton, setSelectedButton] = useState<ChatTopic | null>(null);
 
   const topics = ['General', 'ITB', 'Film', 'Game', 'Makanan', 'Olahraga'];
-  const handleButtonClick = (value: string) => {
+  const handleButtonClick = (value: ChatTopic) => {
     setSelectedButton(value);
   };
 
@@ -25,22 +36,22 @@ const SecondQuestion = ({
         PILIH TOPIK KUY!
       </p>
       <ScrollArea className="h-52 w-full rounded-md">
-        <div className="flex flex-col items-center justify-evenly gap-3 h-52 w-full">
-          {topics.map((value) => (
+      <div className="flex flex-col items-center justify-evenly gap-3 h-52 w-full">
+        {Object.entries(topicLabels).map(([key, label]) => {
+          const chatTopic = Number(key) as ChatTopic; 
+          return (
             <BoxButton
-              key={value}
-              color={selectedButton === value ? 'lightblue' : 'blue'}
+              key={key}
+              color={selectedButton === chatTopic ? 'lightblue' : 'blue'}
               size="custom"
-              onClick={() => {
-                handleButtonClick(value);
-                setTopic(value);
-              }}
+              onClick={() => handleButtonClick(chatTopic)}
             >
-              {value}
+              {label}
             </BoxButton>
-          ))}
-        </div>
-      </ScrollArea>
+          );
+        })}
+      </div>
+    </ScrollArea>
       <BoxButton
         color="pink"
         size="default"
