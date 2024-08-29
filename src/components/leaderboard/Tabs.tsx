@@ -3,12 +3,14 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { cn } from '~/lib/utils';
 
 interface TabsProps {
   leftTrigger: string;
   rightTrigger: string;
   leftContent: React.ReactNode;
   rightContent: React.ReactNode;
+  classname?: string;
 }
 
 export const TabsAssignment = ({
@@ -16,6 +18,7 @@ export const TabsAssignment = ({
   rightTrigger,
   leftContent,
   rightContent,
+  classname,
 }: TabsProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,7 +40,10 @@ export const TabsAssignment = ({
     <Tabs
       defaultValue={currentContent}
       onValueChange={handleValueChange}
-      className="flex flex-col items-center justify-center w-full"
+      className={cn(
+        'flex flex-col items-center justify-center w-full',
+        classname,
+      )}
     >
       <TabsList className="flex justify-center items-center rounded-full p-0 bg-lightYellow shadow-orange-sm w-full max-w-[400px]">
         <TabsTrigger

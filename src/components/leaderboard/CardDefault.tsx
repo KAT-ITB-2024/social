@@ -44,7 +44,9 @@ export default function CardDefault({
               height={40}
             />
             <div className="flex flex-col justify-between">
-              <p className="font-subheading font-bold">{name}</p>
+              <p className="font-subheading font-bold break-all line-clamp-1">
+                {name}
+              </p>
               <p className="font-body text-sm font-normal">{nim}</p>
             </div>
           </>
@@ -53,7 +55,7 @@ export default function CardDefault({
             <span className="w-10 flex items-center justify-center h-10 rounded-full bg-[#FEFDA3] font-heading font-normal text-xl">
               {name.split('-')[1]}
             </span>
-            <p className="font-subheading font-bold">{`${name}`}</p>
+            <p className="font-subheading font-bold break-all line-clamp-1">{`${name}`}</p>
           </>
         )}
       </div>

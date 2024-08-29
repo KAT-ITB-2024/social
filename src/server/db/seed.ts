@@ -38,12 +38,33 @@ export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
 }
 
 export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 6; i++) {
     try {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
+        bata: `Bata ${i}`,
+        point: 0,
       });
     } catch (error) {}
+  }
+}
+
+export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
+  try {
+    await db.insert(schema.classes).values({
+      title: 'A',
+      topic: 'Introduction to ITB',
+      description: 'Introduction to ITB',
+      speaker: 'Pak John Doe',
+      location: 'Zoom',
+      date: new Date('2023-07-25T00:00:00Z'),
+      totalSeats: 100,
+      reservedSeats: 0,
+      type: 'Sesi 1',
+    });
+  } catch (error) {
+    console.error(`Error seeding classes`);
+    return;
   }
 }
 
@@ -56,11 +77,12 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
   if (!userIds) {
     return;
   }
+  const classes = await db.select().from(schema.classes);
 
   for (let i = 0; i < userIds.length - 1; i++) {
     const user = userIds[i];
-    const group = groups[i % 9];
-    if (!user || !group) {
+    const group = groups[i % 6];
+    if (!user || !group || !classes[0]) {
       return;
     }
     try {
@@ -71,10 +93,13 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
         gender: i % 2 === 0 ? 'Male' : 'Female',
         profileImage: '',
         point: 0,
+        instagram: '',
+        chosenClass: classes[0].id,
         group: group.name,
         updatedAt: new Date(),
       });
     } catch (error) {
+      console.log(error);
       console.error(`Error seeding profile`);
       return;
     }
@@ -87,10 +112,28 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
     await db.insert(schema.assignments).values({
       title: `Assignment ${i}`,
       description: `Description buat assignment ke ${i}`,
-      startTime: new Date(`2023-07-${dayCounter}T00:00:00Z`), // Tanggal 25
+      startTime: new Date(`2024-08-${dayCounter}T00:00:00Z`), // Tanggal 25
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       assignmentType: 'Main',
       point: 10,
+      filename: `Assignment ${i}`,
+      downloadUrl: 'https://google.com/DownloadUrl',
+      updatedAt: new Date(),
+    });
+    dayCounter += 1;
+  }
+
+  dayCounter = 25;
+  for (let i = 0; i < 4; i++) {
+    await db.insert(schema.assignments).values({
+      title: `Side Quest ${i}`,
+      description: `Description buat Side Quest ke ${i}`,
+      startTime: new Date(`2024-08-${dayCounter}T00:00:00Z`),
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      assignmentType: 'Side',
+      point: 50,
+      filename: `Side Quest ${i}`,
+      downloadUrl: 'https://google.com/DownloadUrl',
       updatedAt: new Date(),
     });
     dayCounter += 1;
@@ -162,8 +205,9 @@ export async function seedAssignmentSubmission(
     await db.insert(schema.assignmentSubmissions).values({
       assignmentId: assignments[i % 4]?.id ?? '',
       userNim: users[i]?.nim ?? '',
-      file: 'file 1',
-      point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
+      filename: `Assignment ${i}`,
+      downloadUrl: 'https://google.com/DownloadUrl',
+      point: i % 3 == 0 ? null : (assignments[i % 4]?.point ?? 0),
       updatedAt: new Date(),
     });
   }
@@ -223,9 +267,11 @@ export async function seed(dbUrl: string) {
 
   const db = drizzle(migrationClient, { schema });
   await seedUser(db);
-  console.log('DOne seeding user');
+  console.log('Done seeding user');
   await seedGroup(db);
   console.log('Done seeding group!');
+  await seedClasses(db);
+  console.log('Done seeding classes!');
   await seedProfile(db);
   console.log('Done seeding profile');
   await seedCharacter(db);

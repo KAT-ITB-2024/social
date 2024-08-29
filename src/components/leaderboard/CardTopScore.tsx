@@ -49,12 +49,16 @@ export default function CardTopScore({
       {/* Identity */}
       {isIndividual && nim ? (
         <>
-          <p className="font-subheading font-bold text-center">{name}</p>
+          <p className="font-subheading font-bold text-center break-all line-clamp-2">
+            {name}
+          </p>
           <p className="font-body text-sm font-normal text-center">{nim}</p>
         </>
       ) : (
         <>
-          <p className="font-subheading font-bold text-center">{name}</p>
+          <p className="font-subheading font-bold text-center break-all line-clamp-2">
+            {name}
+          </p>
         </>
       )}
 

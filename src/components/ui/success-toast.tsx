@@ -11,14 +11,14 @@ export const SuccessToast = ({
   return (
     <div className="relative bg-white text-success-500 w-[450px] h-[70px] flex items-center">
       <div className="flex flex-row border-l-4 border-success-600 ml-2 h-[60px] pl-4">
-        <div className="flex flex-row flex items-center justify-center gap-x-4">
+        <div className="flex flex-row items-center justify-center gap-x-4">
           <Image
             src={'/images/toast/check_circle.png'}
             width={28}
             height={28}
             alt="check box"
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col w-3/4">
             <p className="text-b2 text-neutral-700 font-bold">{title}</p>
             <p className="text-h6 text-neutral-400">{desc}</p>
           </div>
