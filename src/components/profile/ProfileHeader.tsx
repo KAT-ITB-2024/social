@@ -22,7 +22,9 @@ export default function ProfileHeader({
 
   return (
     <div className="relative flex flex-col items-center pt-24 px-4">
-      <h3 className="text-h3 mb-3 text-turquoise-400 items-center">Profile</h3>
+      <h3 className="text-h3 mb-3 text-turquoise-400 items-center text-shadow-orange-lg">
+        Profile
+      </h3>
 
       <div className="relative">
         <ModalPhoto
