@@ -1,18 +1,25 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { type UserQueue } from '~/types/enums/message';
 import { findMatch, generateQueueKey, cancelQueue } from '../messaging/queue';
-import { messages, type UserMatch, userMatches } from '@katitb2024/database';
+import {
+  profiles,
+  messages,
+  type UserMatch,
+  userMatches,
+} from '@katitb2024/database';
 import { Redis } from '~/server/redis';
-import { generateKey } from 'crypto';
-import { eq, isNull, ne, or, and, desc } from 'drizzle-orm';
+import { eq, isNull, or, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
+import { ChatTopic, GenderEnum } from '~/types/enum/chat';
+import { type UserQueue } from '~/types/payloads/message';
 
 export const findMatchEvent = createEvent(
   {
     name: 'findMatch',
     input: z.object({
       isAnonymous: z.boolean(),
+      topic: z.nativeEnum(ChatTopic),
+      isFindingFriend: z.boolean(),
     }),
     authRequired: true,
   },
@@ -21,8 +28,22 @@ export const findMatchEvent = createEvent(
       return;
     }
     const userSession = ctx.client.data.session;
+    const profile = await ctx.drizzle
+      .select({ gender: profiles.gender })
+      .from(profiles)
+      .where(eq(profiles.userId, userSession.user.id));
+    if (!profile[0]) {
+      return new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Profile not found',
+      });
+    }
+
     const userQueue: UserQueue = {
       userId: userSession.user.id,
+      ...input,
+      gender:
+        profile[0].gender === 'Male' ? GenderEnum.MALE : GenderEnum.FEMALE,
     };
 
     const matchResult = await findMatch(userQueue);
@@ -70,8 +91,6 @@ export const checkMatchEvent = createEvent(
     const userQueue = await Redis.getClient().get(
       generateQueueKey(ctx.client.data.session.user.id),
     );
-
-    console.log('masukk ');
 
     const result: {
       queue: null | UserQueue;

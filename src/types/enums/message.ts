@@ -1,9 +1,5 @@
 import { z } from 'zod';
 
-export type UserQueue = {
-  userId: string;
-};
-
 export type RoomChat = {
   id: string;
   firstUserId: string;

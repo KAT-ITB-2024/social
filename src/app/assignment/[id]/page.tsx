@@ -128,10 +128,13 @@ export default function DetailPage({ params }: { params: { id: string } }) {
           filename,
           downloadUrl,
         });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         await uploadFile(url, file, AllowableFileTypeEnum.PDF);
         setProgress(0);
         setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setDownloadUrl(downloadUrl);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setFilename(filename);
         setShowInfoModal(true);
       } catch (error) {

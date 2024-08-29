@@ -21,6 +21,8 @@ const config = {
       backgroundImage: {
         classes:
           "url('/images/class-selection/class-selection-background.png')",
+        'blue-turquoise':
+          'linear-gradient(153deg, #0CEBCC -1.2%, #3678FF 100%)',
       },
       colors: {
         border: 'hsl(var(--border))',

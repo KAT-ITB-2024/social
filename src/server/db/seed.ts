@@ -110,9 +110,9 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       assignmentType: 'Side',
       point: 50,
-      filename: `Side Quest ${i}`,
-      downloadUrl: 'https://google.com/DownloadUrl',
       updatedAt: new Date(),
+      filename: '',
+      downloadUrl: '',
     });
     dayCounter += 1;
   }
