@@ -11,10 +11,12 @@ import { ErrorToast } from '~/components/ui/error-toast';
 
 import Coral1 from 'public/images/class-selection/coral-1.png';
 import Coral2 from 'public/images/class-selection/coral-2.png';
+import { type Class } from '@katitb2024/database';
 
 export default function ClassSelection() {
   const router = useRouter();
   const [confirmedClassId, setConfirmedClassId] = useState<string | null>(null);
+  const [allClasses, setAllClasses] = useState<Class[]>([]);
 
   const {
     data: classes,
@@ -35,8 +37,21 @@ export default function ClassSelection() {
   }, [enrolledClass]);
 
   useEffect(() => {
+    if (classes) {
+      const sortedClasses = (classes ?? []).sort((a, b) => {
+        if (a.id === confirmedClassId) return -1;
+        if (b.id === confirmedClassId) return 1;
+        return 0;
+      });
+      setAllClasses(sortedClasses);
+    }
+  }, [classes]);
+
+  useEffect(() => {
     if (classesError ?? enrolledClassError) {
-      toast(<ErrorToast desc="Failed to load classes. Please try again later." />);
+      toast(
+        <ErrorToast desc="Failed to load classes. Please try again later." />,
+      );
     }
   }, [classesError, enrolledClassError]);
 
@@ -47,12 +62,6 @@ export default function ClassSelection() {
   if (classesLoading ?? enrolledClassLoading) {
     return <LoadingSpinnerCustom />;
   }
-
-  const sortedClasses = classes?.sort((a, b) => {
-    if (a.id === confirmedClassId) return -1;
-    if (b.id === confirmedClassId) return 1;
-    return 0;
-  });
 
   return (
     <main className="flex flex-col items-center justify-center bg-orange-900 max-h-screen">
@@ -69,7 +78,7 @@ export default function ClassSelection() {
         />
         <div className="z-10 w-full max-w-md overflow-y-scroll p-4 mt-20 scroll-container">
           <div className="grid gap-5">
-            {sortedClasses?.map((cls) => (
+            {allClasses?.map((cls) => (
               <CustomCard
                 key={cls.id}
                 topic={cls.topic ?? 'Unknown Topic'}

@@ -21,7 +21,6 @@ import { toast } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { ErrorToast } from '~/components/ui/error-toast';
 
-
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -31,20 +30,23 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const [isEnrolledModalOpen, setIsEnrolledModalOpen] = useState(false);
 
   const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
-  
+
   const {
     data: selectedClass,
     isLoading,
     error,
   } = api.class.getClassById.useQuery(params.id);
-  
+
   const { mutate: enrollClass } = api.class.enrollClass.useMutation({
     onSuccess: () => {
       localStorage.setItem('confirmedClassId', params.id);
       closeConfirmationModal();
       setIsInfoModalOpen(true);
       toast(
-        <SuccessToast title="Enrollment success!" desc="You have successfully enrolled in the class." />
+        <SuccessToast
+          title="Enrollment success!"
+          desc="You have successfully enrolled in the class."
+        />,
       );
     },
     onError: (err) => {
@@ -55,7 +57,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   });
 
   if (isLoading) {
-    return <LoadingSpinnerCustom />
+    return <LoadingSpinnerCustom />;
   }
   if (error ?? !selectedClass) {
     notFound();
@@ -195,7 +197,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {!enrolledClass ?? enrolledClass.id !== selectedClass?.id ? (
+        {!enrolledClass || enrolledClass.id !== selectedClass?.id ? (
           <Button
             className="mb-32 w- bg-pink-400 z-0"
             onClick={openConfirmationModal}
