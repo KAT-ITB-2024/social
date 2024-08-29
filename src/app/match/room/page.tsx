@@ -74,7 +74,11 @@ export default function MatchPage() {
   // saat nerima event askReveal dari server
   useSubscription('askReveal', (match, data) => {
     setRevealStatus(data);
-    setOpponentId(match.secondUserId);
+    const receiverId =
+      match.firstUserId === session?.user.id
+        ? match.secondUserId
+        : match.firstUserId;
+    setOpponentId(receiverId);
     setShowRevealPopup(true);
   });
 
