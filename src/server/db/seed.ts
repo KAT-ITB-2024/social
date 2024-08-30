@@ -139,8 +139,8 @@ export async function seedEvent(db: PostgresJsDatabase<typeof schema>) {
   }
 
   await db.insert(schema.events).values({
-    day: 'Day 1',
-    eventDate: new Date('2023-07-25T00:00:00Z'),
+    day: 'Day 3',
+    eventDate: new Date('2024-08-31T00:00:00Z'),
     openingOpenPresenceTime: '09:00:00',
     openingClosePresenceTime: '10:00:00',
     closingOpenPresenceTime: '17:00:00',
@@ -153,8 +153,8 @@ export async function seedEvent(db: PostgresJsDatabase<typeof schema>) {
   });
 
   await db.insert(schema.events).values({
-    day: 'Day 2',
-    eventDate: new Date('2023-07-28T00:00:00Z'),
+    day: 'Day 4',
+    eventDate: new Date('2024-09-01T00:00:00Z'),
     openingOpenPresenceTime: '09:00:00',
     openingClosePresenceTime: '10:00:00',
     closingOpenPresenceTime: '17:00:00',
@@ -270,27 +270,27 @@ export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
   const db = drizzle(migrationClient, { schema });
-  await seedUser(db);
+  // await seedUser(db);
   console.log('Done seeding user');
-  await seedGroup(db);
+  // await seedGroup(db);
   console.log('Done seeding group!');
-  await seedProfile(db);
+  // await seedProfile(db);
   console.log('Done seeding profile');
-  await seedCharacter(db);
+  // await seedCharacter(db);
   console.log('Done seeding character');
   await seedEvent(db);
   console.log('Done seeding event');
-  await seedAssignment(db);
+  // await seedAssignment(db);
   console.log('Done seeding assignment');
-  await seedAssignmentSubmission(db);
+  // await seedAssignmentSubmission(db);
   console.log('Done seeding assignment submission');
-  await seedPostTest(db);
+  // await seedPostTest(db);
   console.log('Done seeding post test');
-  await seedPostTestSubmission(db);
+  // await seedPostTestSubmission(db);
   console.log('Done seeding post test submission');
-  await seedNotifications(db);
+  // await seedNotifications(db);
   console.log('Done seeding notifications!');
-  await seedClasses(db);
+  // await seedClasses(db);
   console.log('Done seeding classes!');
   await migrationClient.end();
 }
