@@ -18,6 +18,7 @@ interface Props {
     | null
     | undefined;
   size?: 'default' | 'sm' | 'lg' | 'icon' | null | undefined;
+  className?: string;
 }
 
 export default function Share({
@@ -29,6 +30,7 @@ export default function Share({
   disabled,
   variant,
   size,
+  className,
 }: Props) {
   return (
     <>
@@ -40,6 +42,7 @@ export default function Share({
         disabled={disabled}
         variant={variant}
         size={size}
+        className={className}
       >
         {children}
       </ShareController>

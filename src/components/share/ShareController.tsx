@@ -18,6 +18,7 @@ interface Props {
     | null
     | undefined;
   size?: 'default' | 'sm' | 'lg' | 'icon' | null | undefined;
+  className?: string;
 }
 
 export default function ShareController({
@@ -29,6 +30,7 @@ export default function ShareController({
   disabled,
   variant,
   size,
+  className,
 }: Props) {
   const handleOnClick = async () => {
     onInteraction?.();
@@ -48,6 +50,7 @@ export default function ShareController({
       disabled={disabled}
       variant={variant}
       size={size}
+      className={className}
     >
       {children}
     </Button>

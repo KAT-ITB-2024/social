@@ -2,7 +2,9 @@ import Image from 'next/image';
 import html2canvas from 'html2canvas';
 import { Button } from '~/components/ui/button';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Share } from '~/components/share';
+import { Share2, Download } from 'lucide-react';
 
 interface wrappedProps {
   name: string;
@@ -29,6 +31,7 @@ const WrappedStories = ({
   mbti_desc,
   leaderboard_rank,
 }: wrappedProps) => {
+  const router = useRouter();
   const [file, setFile] = useState<File[]>();
 
   const handleShare = async (download: boolean) => {
@@ -62,6 +65,7 @@ const WrappedStories = ({
       });
     }
   };
+
   return [
     {
       content: () => {
@@ -69,29 +73,33 @@ const WrappedStories = ({
           <>
             <Image
               src="/images/wrapped/background/Wrapped 1.png"
-              alt="Wrapped 1"
+              alt="Wrapped 2"
               fill={true}
               className="absolute"
+              loading="eager"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
               alt="Logo"
               width={96}
               height={50}
-              className="absolute left-3 top-6"
+              loading="eager"
+              className="absolute left-3 top-6 h-auto"
             />
             <Image
               src="/images/wrapped/svg/seahorse.svg"
               alt="Seahorse"
               width={250}
               height={350}
-              className="absolute right-0 top-[-60px]"
+              loading="eager"
+              className="absolute right-0 top-[-60px] w-auto"
             />
             <Image
               src="/images/wrapped/svg/island.svg"
               alt="Island"
               width={500}
               height={500}
+              loading="eager"
               className="absolute bottom-0"
             />
             <p className="absolute left-[13%] w-3/4 pt-3 text-center font-heading text-7xl text-orange-100 blur-md">
@@ -113,12 +121,14 @@ const WrappedStories = ({
               alt="Wrapped 2"
               fill={true}
               className="absolute"
+              loading="eager"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
               alt="Logo"
               width={96}
               height={50}
+              loading="eager"
               className="absolute left-3 top-6"
             />
             <Image
@@ -126,6 +136,7 @@ const WrappedStories = ({
               alt="Blue Jellyfish"
               width={250}
               height={350}
+              loading="eager"
               className="absolute right-0 top-[-60px]"
             />
             <Image
@@ -133,6 +144,7 @@ const WrappedStories = ({
               alt="Blue Reefs"
               width={500}
               height={500}
+              loading="eager"
               className="absolute bottom-0"
             />
             <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
@@ -162,12 +174,14 @@ const WrappedStories = ({
               alt="Wrapped 3"
               fill={true}
               className="absolute"
+              loading="eager"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
               alt="Logo"
               width={96}
               height={50}
+              loading="eager"
               className="absolute left-3 top-6"
             />
             <Image
@@ -175,6 +189,7 @@ const WrappedStories = ({
               alt="Algae"
               width={350}
               height={350}
+              loading="eager"
               className="absolute right-0 top-[-30px]"
             />
             <Image
@@ -182,6 +197,7 @@ const WrappedStories = ({
               alt="Pink Reef"
               width={340}
               height={340}
+              loading="eager"
               className="absolute bottom-0 right-0"
             />
             <Image
@@ -189,6 +205,7 @@ const WrappedStories = ({
               alt="Small Pink Reefs"
               width={500}
               height={500}
+              loading="eager"
               className="absolute bottom-0"
             />
             <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
@@ -218,12 +235,14 @@ const WrappedStories = ({
               alt="Wrapped 4"
               fill={true}
               className="absolute"
+              loading="eager"
             />
             <Image
               src="/images/wrapped/svg/michael-angelo.svg"
               alt="Sea Turtle"
               width={400}
               height={400}
+              loading="eager"
               className="absolute left-0 top-[-60px]"
             />
             <Image
@@ -231,6 +250,7 @@ const WrappedStories = ({
               alt="Yellow Reefs"
               width={350}
               height={350}
+              loading="eager"
               className="absolute bottom-0 right-0"
             />
             <Image
@@ -238,6 +258,7 @@ const WrappedStories = ({
               alt="Logo"
               width={96}
               height={50}
+              loading="eager"
               className="absolute left-3 top-6"
             />
             <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
@@ -267,12 +288,14 @@ const WrappedStories = ({
               alt="Wrapped 5"
               fill={true}
               className="absolute"
+              loading="eager"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
               alt="Logo"
               width={96}
               height={50}
+              loading="eager"
               className="absolute left-3 top-6"
             />
             <Image
@@ -280,6 +303,7 @@ const WrappedStories = ({
               alt="Top Wave"
               width={500}
               height={500}
+              loading="eager"
               className="absolute right-0 top-[-60px]"
             />
             <Image
@@ -287,6 +311,7 @@ const WrappedStories = ({
               alt="Bottom Wave"
               width={500}
               height={500}
+              loading="eager"
               className="absolute bottom-0"
             />
             <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
@@ -316,12 +341,14 @@ const WrappedStories = ({
               alt="Wrapped 6"
               fill={true}
               className="absolute"
+              loading="eager"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
               alt="Logo"
               width={96}
               height={50}
+              loading="eager"
               className="absolute left-3 top-6"
             />
             <Image
@@ -329,6 +356,7 @@ const WrappedStories = ({
               alt="Thin Jellyfish"
               width={350}
               height={350}
+              loading="eager"
               className="absolute right-0 top-[-70px]"
             />
             <Image
@@ -336,6 +364,7 @@ const WrappedStories = ({
               alt="Sea Anemone"
               width={350}
               height={350}
+              loading="eager"
               className="absolute bottom-0 right-0"
             />
             <div className="absolute left-[12.5%] flex w-3/4 flex-col items-center gap-2">
@@ -359,7 +388,10 @@ const WrappedStories = ({
                 )}
               </p>
               {test ? null : (
-                <Button className="mt-2 w-1/2 bg-pink-400">
+                <Button
+                  className="z-[1000] mt-2 w-1/2 bg-pink-400"
+                  onClick={() => router.push('/personality')}
+                >
                   Periksa disini!
                 </Button>
               )}
@@ -375,18 +407,21 @@ const WrappedStories = ({
             <Image
               src="/images/wrapped/background/Wrapped 7.png"
               alt="Wrapped 7"
+              loading="eager"
               fill={true}
               className="absolute"
             />
             <Image
               src="/images/wrapped/svg/bubble.svg"
+              loading="eager"
               alt="Bubble"
-              width={500}
-              height={500}
-              className="absolute bottom-0"
+              width={0}
+              height={0}
+              className="absolute bottom-0 h-auto w-full"
             />
             <Image
               src="/images/wrapped/svg/logo.svg"
+              loading="eager"
               alt="Logo"
               width={96}
               height={50}
@@ -413,10 +448,13 @@ const WrappedStories = ({
                   alt={test ? 'Ray' : 'Cancer'}
                   width={250}
                   height={250}
+                  loading="eager"
                 />
-                <p className="pb-0.5 text-center font-heading text-3xl text-error-600">
-                  Sylas
-                </p>
+                {test ? (
+                  <p className="pb-0.5 text-center font-heading text-3xl text-blue-500">
+                    Sylas
+                  </p>
+                ) : null}
                 <div className="items-between flex w-4/5 flex-col gap-4">
                   <div className="flex w-full gap-4">
                     <div className="flex w-3/5 flex-col">
@@ -461,70 +499,21 @@ const WrappedStories = ({
                     </div>
                   </div>
                 </div>
-                <div className="z-[1000] flex gap-2 pt-6">
+                <div className="z-[1000] flex gap-2 pt-6 font-heading text-white">
                   <Button
-                    variant="ghost"
-                    size="icon"
                     onClick={() => handleShare(true)}
+                    className="bg-blue-300"
                   >
-                    <Image
-                      src="/icons/download.svg"
-                      alt="Instagram"
-                      width={32}
-                      height={32}
-                    />
+                    <Download color="#fff" strokeWidth={3} className="pr-2" />
+                    Download
                   </Button>
                   <Share
-                    variant="ghost"
-                    size="icon"
                     shareData={{ files: file }}
                     onInteraction={() => handleShare(false)}
+                    className="bg-blue-300"
                   >
-                    <Image
-                      src="/images/wrapped/svg/instagram.svg"
-                      alt="Instagram"
-                      width={32}
-                      height={32}
-                    />
-                  </Share>
-                  <Share
-                    variant="ghost"
-                    size="icon"
-                    shareData={{ files: file }}
-                    onInteraction={() => handleShare(false)}
-                  >
-                    <Image
-                      src="/images/wrapped/svg/whatsapp.svg"
-                      alt="Whatsapp"
-                      width={32}
-                      height={32}
-                    />
-                  </Share>
-                  <Share
-                    variant="ghost"
-                    size="icon"
-                    shareData={{ files: file }}
-                    onInteraction={() => handleShare(false)}
-                  >
-                    <Image
-                      src="/images/wrapped/svg/line.svg"
-                      alt="Line"
-                      width={32}
-                      height={32}
-                    />
-                  </Share>
-                  <Share
-                    variant="ghost"
-                    size="icon"
-                    shareData={{ files: file }}
-                    onInteraction={() => handleShare(false)}
-                  >
-                    <Image
-                      src="/images/wrapped/svg/twitter.svg"
-                      alt="Twitter (X)"
-                      width={32}
-                      height={32}
-                    />
+                    <Share2 color="#fff" strokeWidth={3} className="pr-2" />
+                    Share
                   </Share>
                 </div>
               </div>

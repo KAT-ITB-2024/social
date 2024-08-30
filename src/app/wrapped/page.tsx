@@ -1,11 +1,11 @@
 'use client';
-// import Stories from '@ryse/react-insta-stories';
+
 import Stories from 'react-insta-stories';
 import { WrappedStories } from './Content';
 import { useRouter } from 'next/navigation';
-// import { api } from '~/trpc/react';
 import { Button } from '~/components/ui/button';
 import { X } from 'lucide-react';
+import { useState } from 'react';
 
 const inputWrapped = {
   name: 'Lomba Sihir',
@@ -21,21 +21,32 @@ const inputWrapped = {
 };
 
 function Wrapped() {
-  // const getUserStats = api.profile.getUserProfile.useQuery();
-  // console.log(getUserStats)
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const loading = () => {
+    setIsLoading(true);
+    setTimeout(() => setIsLoading(false), 500);
+  };
+
   return (
     <>
-      <div className="min-h-screen overflow-hidden bg-black">
-        <Stories
-          stories={WrappedStories(inputWrapped)}
-          defaultInterval={10000}
-          width={'100%'}
-          height={'100svh'}
-          // onAllStoriesEnd={() => router.push('/')}
-          preloadCount={3}
-          keyboardNavigation={true}
-        />
+      <div className="min-h-screen overflow-hidden">
+        <div
+          className={
+            isLoading ? 'blur-md' : 'blur-none transition duration-500'
+          }
+        >
+          <Stories
+            stories={WrappedStories(inputWrapped)}
+            defaultInterval={10000}
+            width={'100%'}
+            height={'100vh'}
+            onStoryStart={loading}
+            // onAllStoriesEnd={() => router.push('/')}
+            keyboardNavigation={true}
+          />
+        </div>
         <Button
           variant="link"
           size="icon"
