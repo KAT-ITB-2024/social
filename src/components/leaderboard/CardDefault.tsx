@@ -8,6 +8,7 @@ interface CardDefaultProps {
   point: number;
   isUser?: boolean;
   isIndividual?: boolean;
+  onClick?: () => void;
 }
 
 export default function CardDefault({
@@ -18,14 +19,16 @@ export default function CardDefault({
   point,
   isUser = false,
   isIndividual = true,
+  onClick,
 }: CardDefaultProps) {
   return (
-    <div
+    <button
       className={`flex flex-row w-[345px] items-center p-2 rounded-[12px] border-[2px] border-[#05A798] gap-2 text-[#006E6F] shadow-[4px_4px_10px_0_#FFBF5180] bg-gradient-to-br ${
         isUser
           ? 'from-[#0CEBCC99] to-[#05A798]'
           : 'from-[#C5FFF3B2] to-[#99E0FFB2]'
       }`}
+      onClick={onClick}
     >
       {/* Rank */}
       <span className="font-heading w-[46px] text-center text-wrap font-normal">
@@ -43,7 +46,7 @@ export default function CardDefault({
               width={40}
               height={40}
             />
-            <div className="flex flex-col justify-between">
+            <div className="flex flex-col justify-between text-left">
               <p className="font-subheading font-bold break-all line-clamp-1">
                 {name}
               </p>
@@ -64,6 +67,6 @@ export default function CardDefault({
       <span className="rounded-full px-2 text-wrap font-heading font-normal bg-[#FEFDA3]">
         {point}&nbsp;pts
       </span>
-    </div>
+    </button>
   );
 }

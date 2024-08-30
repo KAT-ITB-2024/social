@@ -1,15 +1,23 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { CustomPagination } from '~/components/leaderboard/Pagination';
 import CardDefault from '~/components/leaderboard/CardDefault';
 import TopThreeContainer from '~/components/leaderboard/TopThreeContainer';
 import { TabsAssignment } from '~/components/leaderboard/Tabs';
-import { api } from '~/trpc/react';
 import { useSearchParams } from 'next/navigation';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { api } from '~/trpc/react';
+// import { api as serverApi } from '~/trpc/server';
+
+import ProfileFriendModal, {
+  type ProfileDetailProps,
+} from '~/components/profile/ModalProfileFriend';
 
 function LeaderBoardContent() {
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const searchParams = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
@@ -27,6 +35,12 @@ function LeaderBoardContent() {
     { page: currentPage },
     { enabled: currentContent === 'Kelompok' },
   );
+
+  const handleCardClick = (userId: string) => {
+    setSelectedUserId(userId);
+    setIsModalOpen(true);
+    console.log('masuk');
+  };
 
   if (
     leaderboardData.isLoading ||
@@ -146,6 +160,7 @@ function LeaderBoardContent() {
                                 ? item.profileImage
                                 : '/images/leaderboard/no-profile.png'
                             }
+                            onClick={() => handleCardClick(item.id)}
                           />
                         ))}
                     </div>
@@ -201,6 +216,12 @@ function LeaderBoardContent() {
             />
           </div>
         </div>
+
+        <ProfileFriendModal
+          userId={selectedUserId!}
+          isDialogOpen={isModalOpen}
+          setIsDialogOpen={setIsModalOpen}
+        />
       </div>
     </main>
   );
