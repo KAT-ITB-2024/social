@@ -22,7 +22,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
   const result = ResultsData.find((obj) => obj.type === type);
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
   const share_url = 'app.oskmitb.com/personality';
-  const share_content = `Aku mendapatkan ${capitalizedType} di Tes MBTI OSKM! Kalau kalian dapat apa?\nAyo coba cek personality kalian di\n`;
+  const share_content = `Aku mendapatkan ${capitalizedType} di Tes Kepribadian OSKM! Kalau kalian dapat apa?\nAyo coba cek personality kalian di\n`;
   function handleSave() {
     const link = document.createElement('a');
     link.href = `/images/mbti/${type}_download.png`;
