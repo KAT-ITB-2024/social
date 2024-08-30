@@ -1,16 +1,14 @@
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { ResultsData } from './ResultsData';
+import Link from 'next/link';
 import {
   LineShareButton,
   TwitterShareButton,
   WhatsappShareButton,
   LineIcon,
-  TwitterIcon,
   WhatsappIcon,
   XIcon,
-  FacebookShareButton,
-  FacebookIcon,
   TelegramShareButton,
   TelegramIcon,
 } from 'react-share';
@@ -24,20 +22,17 @@ export default function MbtiResult({ type }: MbtiResultProps) {
   const result = ResultsData.find((obj) => obj.type === type);
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
   const share_url = 'app.oskmitb.com/personality';
-  const share_content = `Aku mendapatkan ${capitalizedType} di OSKM MBTI!\n${result?.desc_string}\nAyo coba cek personality kalian di\n`;
+  const share_content = `Aku mendapatkan ${capitalizedType} di Tes MBTI OSKM! Kalau kalian dapat apa?\nAyo coba cek personality kalian di\n`;
   function handleSave() {
     const link = document.createElement('a');
     link.href = `/images/mbti/${type}_download.png`;
     link.download = `oskm-mbti.png`;
     link.click();
     setSaved(true);
-    // setTimeout(() => {
-    //   window.location.href = 'https://www.instagram.com/';
-    // }, 1000);
   }
 
   return (
-    <div className="px-9 flex flex-col items-center mt-24 overflow-y-auto">
+    <div className="px-9 flex flex-col items-center mt-24 overflow-y-auto no-scrollbar">
       <h2 className="text-center text-xl mt-2">
         Yeay! we finally have the result of your test, so your MBTI is...
       </h2>
@@ -55,7 +50,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
       </h3>
       <div
         className="mt-3 bg-purple bg-opacity-75 py-5 px-6 text-center rounded-xl flex flex-col 
-      items-center w-full overflow-y-auto h-44 no-scrollbar"
+      items-center w-full"
       >
         <h1 className="text-2xl text-yellow text-shadow-neutral-sm">
           Personalities
@@ -63,7 +58,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
         {result!.personality}
       </div>
       <Button
-        className="mt-5 text-purple bg-yellow rounded-lg text-xl w-[40%] py-7 font-medium shadow-orange-md"
+        className="my-5 text-purple bg-yellow rounded-lg text-xl w-[40%] py-7 font-medium shadow-orange-md"
         onClick={handleSave}
       >
         Save Result
@@ -99,6 +94,14 @@ export default function MbtiResult({ type }: MbtiResultProps) {
               Share to your socials!
             </h3>
             <div className="flex justify-center gap-3 items-center w-1/2">
+              <Link href={'https://www.instagram.com/'}>
+                <Image
+                  src={'/images/mbti/instagram.png'}
+                  width={32}
+                  height={32}
+                  alt="instagram-icon"
+                />
+              </Link>
               <WhatsappShareButton url={share_url} title={share_content}>
                 <WhatsappIcon size={32} round />
               </WhatsappShareButton>

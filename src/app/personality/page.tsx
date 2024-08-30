@@ -1,12 +1,10 @@
 'use client';
-import Image from 'next/image';
 import { useState } from 'react';
-import FirstSection from '~/components/mbti/FirstSection';
-import Landing from '~/components/mbti/Landing';
-import { Button } from '~/components/ui/button';
-import MbtiResult from '~/components/mbti/MbtiResult';
-import { type State } from '~/components/mbti/QnAData';
-import LoadingMBTI from '~/components/mbti/LoadingMBTI';
+import FirstSection from '~/components/personality/FirstSection';
+import Landing from '~/components/personality/Landing';
+import MbtiResult from '~/components/personality/MbtiResult';
+import { type State } from '~/components/personality/QnAData';
+import LoadingMBTI from '~/components/personality/LoadingMBTI';
 
 export default function MbtiPage() {
   const [state, setState] = useState<State>('not started');
