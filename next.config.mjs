@@ -7,6 +7,16 @@ await import('./src/env.js');
 /** @type {import("next").NextConfig} */
 const config = {
   output: 'standalone',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'oskm-itb-staging.nyc3.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**/*',
+      },
+    ],
+  },
 };
 
 export default config;
