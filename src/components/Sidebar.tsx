@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                   },
                   { href: '#', src: '/icons/sidebar/chat.svg', text: 'Chat' },
                   {
-                    href: '#',
+                    href: '/leaderboard',
                     src: '/icons/sidebar/leaderboard.svg',
                     text: 'Leaderboard',
                   },
