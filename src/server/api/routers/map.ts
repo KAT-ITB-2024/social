@@ -5,7 +5,7 @@ import { lte } from 'drizzle-orm';
 import { getCurrentWIBTime, getPreviousWIBTime } from '../helpers/utils';
 
 export const mapRouter = createTRPCRouter({
-  getDays: pesertaProcedure.mutation(async ({ ctx }) => {
+  getDays: pesertaProcedure.query(async ({ ctx }) => {
     const user = ctx.session.user;
     if (!user) {
       throw new TRPCError({

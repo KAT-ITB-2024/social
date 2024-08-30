@@ -7,7 +7,13 @@ export const MenuButton = ({
   variant,
 }: {
   label: string;
-  variant: 'Chat' | 'Leaderboard' | 'OSKM MBTI' | 'Class Selection';
+  variant:
+    | 'Assignment'
+    | 'Attendance'
+    | 'Chat'
+    | 'Leaderboard'
+    | 'OSKM MBTI'
+    | 'Class Selection';
 }) => {
   const router = useRouter();
 
@@ -16,29 +22,29 @@ export const MenuButton = ({
   let routePath = '';
 
   switch (variant) {
+    case 'Assignment':
+      cn =
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-3';
+      imgSrc = '/images/home/navigation/assignment.png';
+      routePath = '/assignment';
+      break;
+    case 'Attendance':
+      cn =
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-3';
+      imgSrc = '/images/home/navigation/attendance.png';
+      routePath = '/attendance';
+      break;
     case 'Chat':
       cn =
         'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-3';
-      imgSrc = '/components/icon-chat.png';
+      imgSrc = '/images/home/navigation/chat.png';
       routePath = '/chat';
       break;
     case 'Leaderboard':
       cn =
         'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-5';
-      imgSrc = '/components/icon-leaderboard.png';
+      imgSrc = '/images/home/navigation/leaderboard.png';
       routePath = '/leaderboard';
-      break;
-    case 'OSKM MBTI':
-      cn =
-        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-5';
-      imgSrc = '/components/icon-mbti.png';
-      routePath = '/oskm mbti';
-      break;
-    case 'Class Selection':
-      cn =
-        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-5 mr-3';
-      imgSrc = '/components/icon-class.png';
-      routePath = '/class-selection';
       break;
   }
 

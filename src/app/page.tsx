@@ -9,20 +9,12 @@ import { Button } from '@/components/ui/button';
 
 export default async function Home() {
   return (
-    <main
-      className="flex min-h-screen flex-col bg-blue-100"
-      style={{
-        backgroundImage: "url('/components/bg-home.png')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/Background.png')] bg-center bg-no-repeat bg-cover">
       <div className="flex flex-row mb-5 w-full justify-center">
+        <MenuButton label="Assignment" variant="Assignment" />
+        <MenuButton label="Attendance" variant="Attendance" />
         <MenuButton label="Chat" variant="Chat" />
         <MenuButton label="Leaderboard" variant="Leaderboard" />
-        <MenuButton label="OSKM MBTI" variant="OSKM MBTI" />
-        <MenuButton label="Class Selection" variant="Class Selection" />
       </div>
 
       <div className="flex container border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50 bg-turquoise-100 rounded-xl w-96 p-1">
