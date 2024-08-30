@@ -1,16 +1,20 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import ProfileFriend from '~/components/profile/ProfileFriend';
+import ModalProfileFriend from '~/components/profile/ModalProfileFriend';
 import { api } from '~/trpc/server';
 interface Params {
   userId: string;
 }
-export default async function FriendPage({ params }: { params: Params }) {
-  const { userId } = params;
-  const userProfile = await api.profile.getFriendProfile({ userId });
-  if (!userProfile) {
-    return notFound;
-  }
+export default async function FriendPage(
+  {
+    /*{ params }: { params: Params */
+  },
+) {
+  // const { userId } = params;
+  // const userProfile = await api.profile.getFriendProfile({ userId });
+  // if (!userProfile) {
+  //   return notFound;
+  // }
   return (
     <div
       style={{
@@ -43,7 +47,7 @@ export default async function FriendPage({ params }: { params: Params }) {
         className="absolute top-96 right-0 z-0"
       />
       <div className="relative z-1">
-        <ProfileFriend {...userProfile} />
+        {/* <ModalProfileFriend {...userProfile} /> */}
       </div>
     </div>
   );

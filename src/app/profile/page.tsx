@@ -3,6 +3,7 @@ import ProfileHeader from '~/components/profile/ProfileHeader';
 import Image from 'next/image';
 import { api } from '~/trpc/server';
 import { notFound } from 'next/navigation';
+// import ModalProfileFriend from '~/components/profile/ModalProfileFriend';
 
 export default async function ProfilePage() {
   const userProfile = await api.profile.getUserProfile();
@@ -47,6 +48,25 @@ export default async function ProfilePage() {
         <ProfileHeader profilePic={profilePic} />
         <ProfileDetails {...userProfile} />
       </div>
+
+      {/* <div className='relative' >
+        <ModalProfileFriend 
+          profile={{
+            nama: "Angelica Kierra",
+            nim: "13522048",
+            fakultas: "STEI-K",
+            jenisKelamin: "Perempuan",
+            bio: "Hi!",
+            instagram: "@oskm.itb",
+            email: "angelicakierra@gmail.com",
+          }}
+          triggerButton={
+            <div className='flex justify-center'>
+              <button className="bg-blue-600 text-white px-4 py-2 rounded">Friend Profile</button>
+            </div>
+          }
+        />
+      </div> */}
     </div>
   );
 }
