@@ -33,13 +33,11 @@ declare module 'next-auth' {
   interface User extends DefaultUser {
     nim: string;
     role: UserRole;
-    group: string;
   }
 
   interface JWT extends DefaultJWT {
     nim: string;
     role: UserRole;
-    group: string;
   }
 }
 
@@ -62,7 +60,6 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.nim = user.nim;
         token.role = user.role;
-        token.group = user.group;
       }
       return token;
     },
@@ -73,7 +70,6 @@ export const authOptions: NextAuthOptions = {
         id: token.id,
         nim: token.nim,
         role: token.role,
-        group: token.group,
       },
     }),
   },

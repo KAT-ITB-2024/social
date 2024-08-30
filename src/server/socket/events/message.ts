@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { createEvent } from '../helper';
 import { and, eq, or } from 'drizzle-orm';
 import { messages, userMatches } from '@katitb2024/database';
-import { RevealStatusEvent } from '~/types/enums/message';
+import { RevealStatusEvent } from '~/types/payloads/message';
 export const messageEvent = createEvent(
   {
     name: 'message',
@@ -61,7 +61,6 @@ export const anonTypingEvent = createEvent(
   {
     name: 'anonTyping',
     authRequired: true,
-    input: undefined,
   },
   ({ ctx }) => {
     const user = ctx.client.data.session.user;

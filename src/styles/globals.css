@@ -23,14 +23,6 @@
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
-
-    .bg-card-radial {
-      background: radial-gradient(
-        circle,
-        rgba(197, 255, 243, 0.7) 0%,
-        rgba(153, 224, 255, 0.7) 100%
-      );
-    }
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -154,27 +146,4 @@ h6 {
   max-height: 1000px;
   background-color: transparent;
   padding: 0px;
-}
-
-/* Global styles for thin scrollbars */
-html {
-  /* This sets the scrollbar width to thin for Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1; /* Color of the scrollbar and the track */
-}
-
-/* Webkit-based browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
-  height: 8px; /* Height of the scrollbar (for horizontal scrollbars) */
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Background of the track */
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #888; /* Color of the scrollbar thumb */
-  border-radius: 10px; /* Roundness of the scrollbar thumb */
-  border: 2px solid #f1f1f1; /* Padding around the thumb */
 }
