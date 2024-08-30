@@ -14,6 +14,7 @@ import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 export default function AttendancePage() {
   const { data: session, status } = useSession();
+  const getAllAttendancesQuery = api.attendance.getAllAttendances.useQuery();
 
   if (status === 'loading') {
     return <LoadingSpinnerCustom />;
@@ -21,7 +22,6 @@ export default function AttendancePage() {
     redirect('/login');
   }
 
-  const getAllAttendancesQuery = api.attendance.getAllAttendances.useQuery();
   return (
     <main className="flex min-h-screen w-screen max-w-md flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
       <div className="min-h-screen w-full bg-[url('/images/attendance/Background.png')] bg-center bg-no-repeat bg-cover p-6 pt-28">

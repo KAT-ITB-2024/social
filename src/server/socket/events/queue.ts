@@ -6,6 +6,7 @@ import {
   messages,
   type UserMatch,
   userMatches,
+  Profile,
 } from '@katitb2024/database';
 import { Redis } from '~/server/redis';
 import { eq, isNull, or, and, desc } from 'drizzle-orm';
@@ -95,9 +96,11 @@ export const checkMatchEvent = createEvent(
     const result: {
       queue: null | UserQueue;
       match: undefined | UserMatch;
+      profile: undefined | Profile;
     } = {
       queue: null,
       match: undefined,
+      profile: undefined,
     };
 
     // Kasus kalau dia belum dapet match, jadi queue nya ga null
@@ -109,7 +112,6 @@ export const checkMatchEvent = createEvent(
 
     if (!ctx.client.data.match) {
       const userId = ctx.client.data.session.user.id;
-      console.log(userId);
       const userMatch = await ctx.drizzle
         .select()
         .from(userMatches)
@@ -124,12 +126,26 @@ export const checkMatchEvent = createEvent(
         )
         .execute();
 
-      console.log(userMatch);
       ctx.client.data.match = userMatch[0];
     }
 
     ctx.client.data.matchQueue = null;
     result.match = ctx.client.data.match;
+
+    if (result.match) {
+      const otherUserId =
+        result.match.firstUserId == ctx.client.data.session.user.id
+          ? result.match.secondUserId
+          : result.match.firstUserId;
+
+      const otherProfile = await ctx.drizzle
+        .select()
+        .from(profiles)
+        .where(eq(profiles.userId, otherUserId))
+        .then((res) => res[0]);
+
+      result.profile = otherProfile;
+    }
     console.log('masuk check match');
     console.log(ctx.client.data.match);
     return result;

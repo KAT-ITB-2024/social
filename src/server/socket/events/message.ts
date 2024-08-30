@@ -102,7 +102,7 @@ export const askRevealEvent = createEvent(
     } else if (input.state === RevealStatusEvent.ACCEPTED) {
       const result = await ctx.drizzle
         .update(userMatches)
-        .set({ isRevealed: true })
+        .set({ isRevealed: true, isAnonymous: false })
         .where(eq(userMatches.id, currentMatch.id))
         .returning();
 

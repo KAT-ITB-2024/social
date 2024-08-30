@@ -33,6 +33,7 @@ const Messages = ({
     function listener() {
       if (container) {
         // check if containerRef scrolled max to the top in flex column reverse
+
         if (
           Math.abs(
             container.scrollTop -

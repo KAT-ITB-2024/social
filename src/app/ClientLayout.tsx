@@ -31,6 +31,7 @@ export default function ClientLayout({
 
   useEffect(() => {
     if (status === 'authenticated' && !socket.connected) {
+      console.log('Connecting to socket');
       socket.connect();
     } else if (status === 'unauthenticated' && socket.connected) {
       socket.disconnect();
@@ -38,7 +39,7 @@ export default function ClientLayout({
   }, [status]);
 
   useEffect(() => {
-    if (routes.includes(pathname)) {
+    if (routes.includes(pathname) || pathname.startsWith('/chat/history')) {
       setShouldShowNavbar(false);
     } else {
       setShouldShowNavbar(true);

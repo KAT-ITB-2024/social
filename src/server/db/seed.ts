@@ -68,11 +68,11 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
     }
     try {
       await db.insert(schema.profiles).values({
-        name: `User ${user.id}`,
+        name: `User ${i + 1}`,
         userId: user.id,
         faculty: 'STEI',
         gender: i % 2 === 0 ? 'Male' : 'Female',
-        profileImage: '',
+        profileImage: null,
         point: 0,
         group: group.name,
         updatedAt: new Date(),

@@ -29,7 +29,6 @@ import {
   sendChatEndTitle,
   receiveChatEndTitle,
 } from './constants';
-import { ScanFace } from 'lucide-react';
 
 const Chat = () => {
   const { data: session, status } = useSession();
@@ -77,18 +76,20 @@ const Chat = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatEndModalOpen, setIsChatEndModalOpen] = useState(false);
   const [chatEndTitle, setChatEndTitle] = useState(receiveChatEndTitle);
-
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const [profileName, setProfileName] = useState<string | null>(null);
 
   const checkMatch = useEmit('checkMatch', {
     onSuccess: (data) => {
       if (data.match === undefined) {
         // TODO: redirect to match page
         void router.push('/match');
-      }
-
-      if (data.match?.isRevealed && !isRevealed) {
-        setIsRevealed(true);
+      } else {
+        if ((data.match.isRevealed && !isRevealed) || !data.match.isAnonymous) {
+          setIsRevealed(true);
+          setProfileName(data.profile?.name ?? null);
+          setProfilePhoto(data.profile?.profileImage ?? null);
+        }
       }
     },
   });
@@ -104,8 +105,6 @@ const Chat = () => {
       enabled: !!userMatchId,
     },
   );
-  const updateMessageIsRead = api.message.updateIsReadCurrUser.useMutation();
-  const updateOneMessageIsRead = api.message.updateOneIsRead.useMutation();
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
 
@@ -162,6 +161,8 @@ const Chat = () => {
 
   useEffect(() => {
     checkMatch.mutate({});
+
+    // Set profile photo if available
   }, []);
 
   // saat nerima event message dari server
@@ -174,7 +175,11 @@ const Chat = () => {
   // saat nerima event askReveal dari server
   useSubscription('askReveal', (match, data) => {
     setRevealStatus(data);
-    setOpponentId(match.secondUserId);
+    setOpponentId(
+      match.firstUserId === session?.user.id
+        ? match.secondUserId
+        : match.firstUserId,
+    );
     if (data === RevealStatusEvent.ASK) {
       // setShowRevealPopup(true);
       openModal('showRevealPopup');
@@ -199,7 +204,7 @@ const Chat = () => {
 
   // const [sentryRef] = useInfiniteScroll({
   //   loading: false,
-  //   hasNextPage: true,
+  //   hasNextPage: true,f\
   //   onLoadMore: fetchMoreMessages,
   //   rootMargin: '0px 0px 400px 0px',
   // });
@@ -208,13 +213,6 @@ const Chat = () => {
     const msgs = messageQuery.data?.pages.map((page) => page.messages).flat();
     addMessages(msgs);
   }, [messageQuery.data?.pages, addMessages]);
-
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   if (status === 'loading') {
     return (
@@ -249,7 +247,12 @@ const Chat = () => {
           backgroundPosition: 'center',
         }}
       >
-        <ChatNavbar isTyping={opponentTyping} opponentId={opponentId} />
+        <ChatNavbar
+          isTyping={opponentTyping}
+          opponentId={opponentId}
+          name={profileName}
+          profilePhoto={profilePhoto}
+        />
         {/* Chat Room */}
         {/* <div
           className="flex-grow flex flex-col-reverse overflow-y-auto p-4 mt-20 no-scrollbar z-10"

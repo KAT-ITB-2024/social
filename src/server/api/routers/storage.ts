@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '~/env';

@@ -24,7 +24,6 @@ export default function MatchPage() {
 
   const checkMatch = useEmit('checkMatch', {
     onSuccess: (data) => {
-      console.log('ini match');
       console.log(data.match);
       if (data.match === undefined) {
         void router.push('/match');

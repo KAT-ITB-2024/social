@@ -11,6 +11,7 @@ import {
   type ChatHeader,
   type ChatHeaderData,
 } from '~/types/enums/message';
+import ProfilePage from '~/app/profile/page';
 
 export const messageRouter = createTRPCRouter({
   /**
@@ -20,7 +21,7 @@ export const messageRouter = createTRPCRouter({
     .input(
       z.object({
         cursor: z.date().optional(),
-        take: z.number().min(1).max(50).default(10),
+        take: z.number().min(1).max(50).default(15),
         userMatchId: z.string(),
       }),
     )
@@ -32,10 +33,12 @@ export const messageRouter = createTRPCRouter({
       }
 
       const userMatchData = await ctx.db
-        .select()
+        .select({
+          firstUserId: userMatches.firstUserId,
+          secondUserId: userMatches.secondUserId,
+        })
         .from(userMatches)
         .where(eq(userMatches.id, input.userMatchId));
-
       if (!userMatchData[0]) {
         throw new TRPCError({
           code: 'NOT_FOUND',
@@ -239,6 +242,7 @@ export const messageRouter = createTRPCRouter({
           isRevealed: userMatches.isRevealed,
           isAnonymous: userMatches.isAnonymous,
           endedAt: userMatches.endedAt,
+          id: userMatches.id,
         })
         .from(userMatches)
         .innerJoin(profiles1, eq(profiles1.userId, userMatches.firstUserId))
@@ -282,6 +286,7 @@ export const messageRouter = createTRPCRouter({
                 : otherUser.profileImage,
           },
           endedAt: chatHeader.endedAt,
+          userMatchId: chatHeader.id,
         };
       });
 
@@ -322,6 +327,7 @@ export const messageRouter = createTRPCRouter({
         isRevealed: userMatches.isRevealed,
         isAnonymous: userMatches.isAnonymous,
         endedAt: userMatches.endedAt,
+        id: userMatches.id,
       })
       .from(userMatches)
       .innerJoin(profiles1, eq(profiles1.userId, userMatches.firstUserId))
@@ -363,13 +369,84 @@ export const messageRouter = createTRPCRouter({
               : otherUser.profileImage,
         },
         endedAt: chatHeader.endedAt,
+        userMatchId: chatHeader.id,
       };
     });
 
-    return {
-      data,
-    };
+    return data;
   }),
+
+  getSpecificChatHeader: publicProcedure
+    .input(updateVisibilityPayload)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be loggedin first!',
+        });
+      }
+
+      console.log('Ayam');
+
+      const SpecificChat = await ctx.db
+        .select({
+          endedAt: userMatches.endedAt,
+          isAnonymous: userMatches.isAnonymous,
+          firstId: userMatches.firstUserId,
+          secondId: userMatches.secondUserId,
+        })
+        .from(userMatches)
+        .where(eq(userMatches.id, input.userMatchId))
+        .then((res) => res[0]);
+      if (!SpecificChat) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Chat history not found',
+        });
+      }
+
+      const { firstId, secondId } = SpecificChat;
+
+      if (firstId != userId && secondId != userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'This is not your chat',
+        });
+      }
+
+      if (SpecificChat.endedAt == null) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You have not end your chat',
+        });
+      }
+
+      if (SpecificChat.isAnonymous) {
+        return {
+          name: 'Anonymous',
+          profilePic: null,
+          endedAt: SpecificChat.endedAt,
+        };
+      } else {
+        const otherUserId = userId == firstId ? secondId : firstId;
+
+        const otherProfile = await ctx.db
+          .select({
+            name: profiles.name,
+            profilePic: profiles.profileImage,
+          })
+          .from(profiles)
+          .where(eq(profiles.userId, otherUserId))
+          .then((res) => res[0]);
+
+        return {
+          name: otherProfile?.name,
+          profilePic: otherProfile?.profilePic,
+          endedAt: SpecificChat.endedAt,
+        };
+      }
+    }),
 
   // update visibility for anonymous chat
   updateVisibility: publicProcedure

@@ -6,15 +6,21 @@ import { MoveLeft } from 'lucide-react';
 import Image from 'next/image';
 import PhotoProfile from 'public/images/chat/PhotoProfile.png';
 import Seaweed from 'public/images/chat/Seaweed.png';
+import { useRouter } from 'next/navigation';
 
 const ChatNavbar = ({
   isTyping = false,
   opponentId,
+  name,
+  profilePhoto,
 }: {
   opponentId?: string | null;
   isTyping?: boolean;
+  name: string | null;
+  profilePhoto: string | null;
 }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -25,16 +31,22 @@ const ChatNavbar = ({
       <div className="fixed top-4 z-20 flex flex-row items-center justify-between gap-x-2 w-full max-w-md px-8">
         <div className="bg-blue-600 rounded-full py-2 pl-4 pr-12 flex items-center gap-x-2 text-white w-full">
           <div className="rounded-full text-blue-600 bg-white p-1">
-            <MoveLeft className="w-4 h-4" />
+            <MoveLeft className="w-4 h-4" onClick={() => router.back()} />
           </div>
           <Image
-            src={PhotoProfile}
+            src={
+              profilePhoto != null && profilePhoto !== ''
+                ? profilePhoto
+                : PhotoProfile
+            }
             alt="Photo Profile"
             width={32}
             height={32}
           />
-          <div className="flex flex-col">
-            <h1 className="font-medium text-[20px]">Anonymous</h1>
+          <div className="flex flex-col overflow-hidden">
+            <h1 className="font-medium text-[20px] truncate max-w-[140px]">
+              {name ?? 'Anonymous'}
+            </h1>
             {isTyping && (
               <p className="text-xs text-neutral-200">is typing...</p>
             )}
