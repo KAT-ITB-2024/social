@@ -1,13 +1,4 @@
-import React, {
-  type Dispatch,
-  type SetStateAction,
-  useRef,
-  useState,
-} from 'react';
-import { toast } from 'sonner';
-import { api } from '~/trpc/react';
-import { type FolderEnum } from '~/types/enums/storage';
-import { ErrorToast } from './ui/error-toast';
+import React, { type Dispatch, type SetStateAction, useRef } from 'react';
 
 interface FileUploadProps {
   className: string;
