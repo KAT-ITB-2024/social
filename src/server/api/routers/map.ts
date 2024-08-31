@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { type Event, events } from '@katitb2024/database';
-import { lte, sql } from 'drizzle-orm';
+import { asc, lte } from 'drizzle-orm';
 import { getCurrentWIBTime, getPreviousWIBTime } from '../helpers/utils';
 
 export const mapRouter = createTRPCRouter({
@@ -16,7 +16,8 @@ export const mapRouter = createTRPCRouter({
     const openedEvents = await ctx.db
       .select()
       .from(events)
-      .where(lte(events.eventDate, getPreviousWIBTime()));
+      .where(lte(events.eventDate, getPreviousWIBTime()))
+      .orderBy(asc(events.eventDate));
     if (!openedEvents) {
       return [];
     }
@@ -33,16 +34,5 @@ export const mapRouter = createTRPCRouter({
       }
     });
     return result;
-  }),
-
-  getLastDays: pesertaProcedure.query(async ({ ctx }) => {
-    const lastDay = await ctx.db
-      .select({
-        eventDate: events.eventDate,
-      })
-      .from(events)
-      .orderBy(sql`events.eventDate DESC`)
-      .limit(1);
-    return lastDay[0];
   }),
 });

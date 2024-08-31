@@ -6,26 +6,23 @@ import MenuButton from '@/components/home/MenuButton';
 import Image from 'next/image';
 import Journey from '~/components/home/Journey';
 import ButtonOskmWrap from '~/components/home/ButtonOSKMWrap';
-import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { getCurrentWIBTime } from '~/server/api/helpers/utils';
-import { api } from '~/trpc/react';
 
 export default function Home() {
   const [showCoins, setShowCoins] = useState(false);
   const [showOSKMJourney, setShowOSKMJourney] = useState(false);
 
-  const { data: lastDay, isLoading } = api.map.getLastDays.useQuery();
-
   useEffect(() => {
-    if (isLoading) return; // Pastikan untuk tidak melakukan apapun sampai loading selesai
-
     const now = getCurrentWIBTime();
 
-    if (lastDay && now.getDay() === lastDay.eventDate.getDay()) {
+    if (now.getDate() === 7 && now.getMonth() === 8) {
       setShowOSKMJourney(true);
     }
-  }, [isLoading, lastDay]);
+    if (now.getDate() === 14 && now.getMonth() === 8) {
+      setShowCoins(true);
+    }
+  }, []);
 
   return (
     <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/Background.png')] bg-center bg-no-repeat bg-cover">

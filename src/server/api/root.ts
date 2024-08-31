@@ -5,7 +5,6 @@ import { profileRouter } from './routers/profile';
 import { userRouter } from './routers/user';
 import { assignmentRouter } from './routers/assignment';
 import { submissionRouter } from './routers/submission';
-import { postTestRouter } from './routers/postTest';
 import { classRouter } from './routers/class';
 import { messageRouter } from './routers/message';
 import { authRouter } from './routers/auth';
@@ -26,7 +25,6 @@ export const appRouter = createTRPCRouter({
   assignment: assignmentRouter,
   attendance: attendanceRouter,
   submission: submissionRouter,
-  postTest: postTestRouter,
   class: classRouter,
   message: messageRouter,
   leaderboard: leaderboardRouter,

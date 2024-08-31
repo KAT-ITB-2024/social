@@ -7,7 +7,7 @@ import Journey from '~/components/home/Journey';
 import ButtonOskmWrap from '~/components/home/ButtonOSKMWrap';
 import { Button } from '@/components/ui/button';
 
-export default async function Home() {
+export default function Home() {
   return (
     <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/Background.png')] bg-center bg-no-repeat bg-cover">
       <div className="flex flex-row mb-5 max-w-full justify-center">
