@@ -1145,7 +1145,6 @@
     "@paralleldrive/cuid2" "^2.2.2"
     bcrypt "^5.1.1"
     csv-parser "^3.0.0"
-    database-oskm "file:C:/Users/acer/AppData/Local/Yarn/Cache/v6/npm-@katitb2024-database-1.0.0-4ae4e05911cecc0dc41e91de373930fc235e49e5/node_modules/@katitb2024/database"
     drizzle-dbml-generator "^0.8.0"
     drizzle-orm "^0.31.2"
     postgres "^3.4.4"
