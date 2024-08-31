@@ -26,7 +26,7 @@ export const JourneyDay2 = ({ handleClick }: JourneyDay2Props) => {
             width={247}
             height={194}
             onClick={() => handleClick('Day 2')}
-            className="absolute top-[-3rem] left-8"
+            className="absolute top-[-3rem] left-4"
           />
         </div>
       </div>

@@ -15,6 +15,8 @@ export default function Home() {
   const [showOSKMWrapped, setShowOSKMWrapped] = useState(false);
   const router = useRouter();
 
+  // TODO: CHECK USE SESSION AND SET OSKM WRAPPED NAME
+
   useEffect(() => {
     const now = getCurrentWIBTime();
 
