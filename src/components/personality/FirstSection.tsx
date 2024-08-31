@@ -6,11 +6,11 @@ import { useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 import Image from 'next/image';
-import { MBTI, upperMBTI } from '~/types/enums/mbti';
+import { Personality, upperPersonality } from '~/types/enums/personality';
 import { api } from '~/trpc/react';
 
 interface FirstSectionProps {
-  setMostType: Dispatch<SetStateAction<MBTI>>;
+  setMostType: Dispatch<SetStateAction<Personality>>;
   onFinished: Dispatch<SetStateAction<State>>;
 }
 
@@ -21,7 +21,7 @@ export default function FirstSection({
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, Point>>(
     {},
   );
-  const updateDBMutation = api.profile.updateUserMBTI.useMutation();
+  const updateDBMutation = api.profile.updateUserPersonality.useMutation();
   const [isMissing, setIsMissing] = useState(false);
   const [confirmable, setConfirmable] = useState(false);
   const qtyQuestions = FirstSectionQuestions.length;
@@ -67,7 +67,7 @@ export default function FirstSection({
     setMostType(maxKey);
     const parsedType = maxKey.charAt(0).toUpperCase() + maxKey.slice(1);
     await updateDBMutation.mutateAsync({
-      mbti: parsedType as upperMBTI,
+      personality: parsedType as upperPersonality,
     });
   };
 
@@ -155,7 +155,7 @@ export default function FirstSection({
           <div className="absolute top-1/2 left-1/2 bg-blue-500 translate-x-[-50%] translate-y-[-50%] w-3/4 py-7 rounded-xl z-20">
             <div className="flex flex-col items-center text-yellow">
               <Image
-                src={'/images/mbti/mbti-turtle.png'}
+                src={'/images/personality/personality-turtle.png'}
                 width={180}
                 height={120}
                 alt="turtle"

@@ -13,13 +13,12 @@ import {
   TelegramIcon,
 } from 'react-share';
 import { useState } from 'react';
-import { api } from '~/trpc/react';
-import { MBTI, upperMBTI } from '~/types/enums/mbti';
-interface MbtiResultProps {
-  type: MBTI;
+import { Personality } from '~/types/enums/personality';
+interface PersonalityResultProps {
+  type: Personality;
 }
 
-export default function MbtiResult({ type }: MbtiResultProps) {
+export default function PersonalityResult({ type }: PersonalityResultProps) {
   const [saved, setSaved] = useState(false);
   const result = ResultsData.find((obj) => obj.type === type);
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
@@ -28,8 +27,8 @@ export default function MbtiResult({ type }: MbtiResultProps) {
 
   async function handleSave() {
     const link = document.createElement('a');
-    link.href = `/images/mbti/${type}_download.png`;
-    link.download = `oskm-mbti.png`;
+    link.href = `/images/personality/${type}_download.png`;
+    link.download = `oskm-personality.png`;
     link.click();
     if (type === '') {
       return;
@@ -41,13 +40,13 @@ export default function MbtiResult({ type }: MbtiResultProps) {
   return (
     <div className="px-9 flex flex-col items-center mt-24 overflow-y-auto no-scrollbar">
       <h2 className="text-center text-xl mt-2">
-        Yeay! we finally have the result of your test, so your MBTI is...
+        Yeay! we finally have the result of your test, so your personality is...
       </h2>
       <h1 className="text-pink-400 text-shadow-pink-md mt-6">
         {capitalizedType}
       </h1>
       <Image
-        src={`/images/mbti/char-mbti-${type}.png`}
+        src={`/images/personality/char-personality-${type}.png`}
         width={350}
         height={350}
         alt={type}
@@ -77,7 +76,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
             <div className="relative w-[90%]">
               <button className="absolute right-1 top-1">
                 <Image
-                  src={`/images/mbti/cross.png`}
+                  src={`/images/personality/cross.png`}
                   width={50}
                   height={50}
                   alt="cross"
@@ -87,7 +86,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
                 ></Image>
               </button>
               <Image
-                src={`/images/mbti/${type}_download.png`}
+                src={`/images/personality/${type}_download.png`}
                 width={350}
                 height={350}
                 layout="responsive"
@@ -103,7 +102,7 @@ export default function MbtiResult({ type }: MbtiResultProps) {
             <div className="flex justify-center gap-3 items-center w-1/2">
               <Link href={'https://www.instagram.com/'}>
                 <Image
-                  src={'/images/mbti/instagram.png'}
+                  src={'/images/personality/instagram.png'}
                   width={32}
                   height={32}
                   alt="instagram-icon"

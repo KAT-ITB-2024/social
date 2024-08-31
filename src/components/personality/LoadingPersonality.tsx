@@ -6,7 +6,7 @@ import { type State } from './QnAData';
 interface LoadingProps {
   onFinish: Dispatch<SetStateAction<State>>;
 }
-export default function LoadingMBTI({ onFinish }: LoadingProps) {
+export default function LoadingPersonality({ onFinish }: LoadingProps) {
   useEffect(() => {
     const waitFiveSecond = () => {
       onFinish('finished');

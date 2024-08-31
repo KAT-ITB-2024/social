@@ -20,6 +20,6 @@ export const updateProfileDataPayload = z.object({
   email: z.string().nullable(),
 });
 
-export const updateMBTIPayload = z.object({
-  mbti: z.enum(['Mova', 'Kovva', 'Ozirron', 'Sylas', 'Odra']),
+export const updatePersonalityPayload = z.object({
+  personality: z.enum(['Mova', 'Kovva', 'Ozirron', 'Sylas', 'Odra']),
 });

@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import {
   getFriendProfilePayload,
-  updateMBTIPayload,
+  updatePersonalityPayload,
   updateProfileDataPayload,
   updateProfileImgPayload,
 } from '~/types/payloads/profile';
@@ -173,8 +173,8 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
-  updateUserMBTI: publicProcedure
-    .input(updateMBTIPayload)
+  updateUserPersonality: publicProcedure
+    .input(updatePersonalityPayload)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;
 
@@ -185,13 +185,13 @@ export const profileRouter = createTRPCRouter({
         });
       }
 
-      const { mbti } = input;
+      const { personality } = input;
 
       try {
         const updatedProfile = await ctx.db
           .update(profiles)
           .set({
-            lastMBTI: mbti,
+            lastMBTI: personality,
           })
           .where(eq(profiles.userId, userId))
           .returning();
@@ -211,7 +211,7 @@ export const profileRouter = createTRPCRouter({
         }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update MBTI',
+          message: 'Failed to update Personality',
         });
       }
     }),

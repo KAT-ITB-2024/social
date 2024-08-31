@@ -2,24 +2,24 @@
 import { useState } from 'react';
 import FirstSection from '~/components/personality/FirstSection';
 import Landing from '~/components/personality/Landing';
-import MbtiResult from '~/components/personality/MbtiResult';
 import { type State } from '~/components/personality/QnAData';
-import LoadingMBTI from '~/components/personality/LoadingMBTI';
-import { MBTI } from '~/types/enums/mbti';
+import LoadingPersonality from '~/components/personality/LoadingPersonality';
+import { Personality } from '~/types/enums/personality';
+import PersonalityResult from '~/components/personality/PersonalityResult';
 
-export default function MbtiPage() {
+export default function PersonalityPage() {
   const [state, setState] = useState<State>('not started');
-  const [mostType, setMostType] = useState<MBTI>('');
+  const [mostType, setMostType] = useState<Personality>('');
 
-  let bgImgUrl = "url('/images/mbti/bg-mbti-landing.png')";
+  let bgImgUrl = "url('/images/personality/bg-personality-landing.png')";
   if (state === 'started') {
-    bgImgUrl = `url('/images/mbti/bg-mbti-firstSection.png')`;
+    bgImgUrl = `url('/images/personality/bg-personality-firstSection.png')`;
   }
   if (state === 'loading') {
-    bgImgUrl = `url('/images/mbti/bg-mbti-loading.png')`;
+    bgImgUrl = `url('/images/personality/bg-personality-loading.png')`;
   }
   if (state === 'finished') {
-    bgImgUrl = `url('/images/mbti/bg-mbti-${mostType}.png')`;
+    bgImgUrl = `url('/images/personality/bg-personality-${mostType}.png')`;
   }
 
   return (
@@ -37,8 +37,8 @@ export default function MbtiPage() {
         {state == 'started' && (
           <FirstSection onFinished={setState} setMostType={setMostType} />
         )}
-        {state == 'loading' && <LoadingMBTI onFinish={setState} />}
-        {state == 'finished' && <MbtiResult type={mostType} />}
+        {state == 'loading' && <LoadingPersonality onFinish={setState} />}
+        {state == 'finished' && <PersonalityResult type={mostType} />}
       </div>
     </main>
   );
