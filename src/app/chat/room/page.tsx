@@ -36,7 +36,7 @@ const Chat = () => {
   const router = useRouter();
 
   const [modals, setModals] = useState<Record<string, boolean>>({
-    isRulesModalOpen: false,
+    isRulesModalOpen: true,
     isEndConfirmationModalOpen: false,
     showRevealPopup: false,
     askRevealPopup: false,
@@ -82,13 +82,17 @@ const Chat = () => {
   const checkMatch = useEmit('checkMatch', {
     onSuccess: (data) => {
       if (data.match === undefined) {
-        // TODO: redirect to match page
         void router.push('/chat');
       } else {
-        if ((data.match.isRevealed && !isRevealed) || !data.match.isAnonymous) {
-          setIsRevealed(true);
-          setProfileName(data.profile?.name ?? null);
-          setProfilePhoto(data.profile?.profileImage ?? null);
+        if (data.match.isRevealed || !data.match.isAnonymous) {
+          if (!isRevealed) {
+            setIsRevealed(true);
+          }
+          if (!profileName || !profilePhoto || !opponentId) {
+            setProfileName(data.profile?.name ?? null);
+            setProfilePhoto(data.profile?.profileImage ?? null);
+            setOpponentId(data.profile?.userId ?? null);
+          }
         }
       }
     },
@@ -163,7 +167,7 @@ const Chat = () => {
     checkMatch.mutate({});
 
     // Set profile photo if available
-  }, []);
+  }, [isRevealed]);
 
   // saat nerima event message dari server
   useSubscription('add', (post) => {
@@ -184,10 +188,11 @@ const Chat = () => {
       // setShowRevealPopup(true);
       openModal('showRevealPopup');
     } else {
+      openModal('revealResponsePopup');
       if (data === RevealStatusEvent.ACCEPTED) {
         setIsRevealed(true);
+        checkMatch.mutate({});
       }
-      openModal('revealResponsePopup');
     }
   });
 
@@ -214,6 +219,12 @@ const Chat = () => {
     addMessages(msgs);
   }, [messageQuery.data?.pages, addMessages]);
 
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace('/login');
+    }
+  }, [status, router]);
+
   if (status === 'loading') {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
@@ -230,10 +241,6 @@ const Chat = () => {
         </div>
       </main>
     );
-  }
-
-  if (!session) {
-    redirect('/login');
   }
 
   return (
@@ -254,22 +261,6 @@ const Chat = () => {
           profilePhoto={profilePhoto}
         />
         {/* Chat Room */}
-        {/* <div
-          className="flex-grow flex flex-col-reverse overflow-y-auto p-4 mt-20 no-scrollbar z-10"
-          ref={chatContainerRef}
-        >
-          {messages.map((msg, index) => (
-            <BubbleChat
-              key={index}
-              date={msg.createdAt.toLocaleTimeString('en-GB', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-              text={msg.content}
-              variant={msg.senderId === session?.user?.id ? 'sent' : 'received'}
-            />
-          ))}
-        </div> */}
         <Messages
           messages={messages ?? []}
           hasNextPage={hasNextPage}

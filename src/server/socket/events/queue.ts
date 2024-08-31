@@ -63,7 +63,8 @@ export const findMatchEvent = createEvent(
       .values({
         firstUserId: matchResult.firstPair.userId,
         secondUserId: matchResult.secondPair.userId,
-        topic: '',
+        isAnonymous: input.isAnonymous,
+        topic: input.topic.toString(),
       })
       .returning();
 

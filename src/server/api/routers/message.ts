@@ -435,6 +435,7 @@ export const messageRouter = createTRPCRouter({
           .select({
             name: profiles.name,
             profilePic: profiles.profileImage,
+            userId: profiles.userId,
           })
           .from(profiles)
           .where(eq(profiles.userId, otherUserId))
@@ -444,6 +445,7 @@ export const messageRouter = createTRPCRouter({
           name: otherProfile?.name,
           profilePic: otherProfile?.profilePic,
           endedAt: SpecificChat.endedAt,
+          userId: otherProfile?.userId,
         };
       }
     }),
