@@ -6,12 +6,16 @@ import HistoryBar from '~/components/chat/bottombar/HistoryBar';
 import ChatNavbar from '~/components/chat/ChatNavbar';
 import Messages from '~/components/chat/Messages';
 import { api } from '~/trpc/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 interface Params {
   matchId: string;
 }
 
 const HistoryChat = ({ params }: { params: Params }) => {
+  const { data: session, status } = useSession();
   const { matchId } = params;
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -51,9 +55,16 @@ const HistoryChat = ({ params }: { params: Params }) => {
     return notFound;
   }
 
-  const { name, profilePic, endedAt } = data;
+  const { userId, name, profilePic } = data;
 
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = messageQuery;
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div
@@ -66,6 +77,7 @@ const HistoryChat = ({ params }: { params: Params }) => {
         }}
       >
         <ChatNavbar
+          opponentId={userId}
           name={name ?? 'Anonymous'}
           profilePhoto={profilePic ?? null}
         />

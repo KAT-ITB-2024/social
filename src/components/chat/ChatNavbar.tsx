@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import Sidebar from '~/components/Sidebar';
 import { MoveLeft } from 'lucide-react';
 import Image from 'next/image';
-import PhotoProfile from 'public/images/chat/PhotoProfile.png';
 import Seaweed from 'public/images/chat/Seaweed.png';
 import { useRouter } from 'next/navigation';
+import ProfileFriendModal from '~/components/profile/ModalProfileFriend';
 
 const ChatNavbar = ({
   isTyping = false,
@@ -20,11 +20,14 @@ const ChatNavbar = ({
   profilePhoto: string | null;
 }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
+  console.log(name);
 
   return (
     <div className="relative">
@@ -37,11 +40,12 @@ const ChatNavbar = ({
             src={
               profilePhoto != null && profilePhoto !== ''
                 ? profilePhoto
-                : PhotoProfile
+                : '/images/history/profile-default.png'
             }
             alt="Photo Profile"
             width={32}
             height={32}
+            onClick={() => opponentId && setIsModalOpen(true)}
           />
           <div className="flex flex-col overflow-hidden">
             <h1 className="font-medium text-[20px] truncate max-w-[140px]">
@@ -75,6 +79,14 @@ const ChatNavbar = ({
         >
           <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
         </div>
+      )}
+
+      {opponentId && (
+        <ProfileFriendModal
+          userId={opponentId}
+          isDialogOpen={isModalOpen}
+          setIsDialogOpen={setIsModalOpen}
+        />
       )}
     </div>
   );
