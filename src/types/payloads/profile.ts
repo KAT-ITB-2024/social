@@ -6,7 +6,16 @@ export type Profile = {
   profilePicture: string | null;
 };
 
-export const profileUpdatePayload = z.object({
+export const getFriendProfilePayload = z.object({
   userId: z.string(),
+});
+
+export const updateProfileImgPayload = z.object({
   profileImage: z.string(),
+});
+
+export const updateProfileDataPayload = z.object({
+  bio: z.string().nullable(),
+  instagram: z.string().nullable(),
+  email: z.string().nullable(),
 });

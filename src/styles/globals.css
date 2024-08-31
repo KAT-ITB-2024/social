@@ -69,47 +69,47 @@ body {
 }
 
 h1 {
-  @apply text-h1 font-heading;
+  @apply font-heading text-h1;
 }
 
 h2 {
-  @apply text-h2 font-heading;
+  @apply font-heading text-h2;
 }
 
 h3 {
-  @apply text-h3 font-heading;
+  @apply font-heading text-h3;
 }
 
 h4 {
-  @apply text-h4 font-heading;
+  @apply font-heading text-h4;
 }
 
 h5 {
-  @apply text-h5 font-heading;
+  @apply font-heading text-h5;
 }
 
 h6 {
-  @apply text-h6 font-heading;
+  @apply font-heading text-h6;
 }
 
 .sh1 {
-  @apply text-sh1 font-subheading font-bold;
+  @apply font-subheading text-sh1 font-bold;
 }
 
 .sh2 {
-  @apply text-sh2 font-subheading font-bold;
+  @apply font-subheading text-sh2 font-bold;
 }
 
 .sh3 {
-  @apply text-sh3 font-subheading font-bold;
+  @apply font-subheading text-sh3 font-bold;
 }
 
 .sh4 {
-  @apply text-sh4 font-subheading font-bold;
+  @apply font-subheading text-sh4 font-bold;
 }
 
 .sh5 {
-  @apply text-sh5 font-subheading font-bold;
+  @apply font-subheading text-sh5 font-bold;
 }
 
 /* Fonts */
@@ -154,4 +154,27 @@ h6 {
   max-height: 1000px;
   background-color: transparent;
   padding: 0px;
+}
+
+/* Global styles for thin scrollbars */
+html {
+  /* This sets the scrollbar width to thin for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1; /* Color of the scrollbar and the track */
+}
+
+/* Webkit-based browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  height: 8px; /* Height of the scrollbar (for horizontal scrollbars) */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Roundness of the scrollbar thumb */
+  border: 2px solid #f1f1f1; /* Padding around the thumb */
 }

@@ -1,35 +1,85 @@
+'use client';
 // import Link from "next/link";
 // import { getServerAuthSession } from "~/server/auth";
 // import { api } from "~/trpc/server";
-import { Button } from '@/components/ui/button';
+import MenuButton from '@/components/home/MenuButton';
+import Image from 'next/image';
+import Journey from '~/components/home/Journey';
+import ButtonOskmWrap from '~/components/home/ButtonOSKMWrap';
+import { useEffect, useState } from 'react';
+import { getCurrentWIBTime } from '~/server/api/helpers/utils';
+import { useRouter } from 'next/navigation';
 
-export default async function Home() {
+export default function Home() {
+  const [showCoins, setShowCoins] = useState(true);
+  const [showOSKMWrapped, setShowOSKMWrapped] = useState(true);
+  const router = useRouter();
+
+  // TODO: CHECK USE SESSION AND SET OSKM WRAPPED NAME
+
+  useEffect(() => {
+    const now = getCurrentWIBTime();
+
+    if (now.getDate() === 7 && now.getMonth() === 9) {
+      setShowOSKMWrapped(true);
+    }
+    if (now.getDate() === 14 && now.getMonth() === 9) {
+      setShowCoins(true);
+    }
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 lg:py-16 ">
-        Social (Coming Soon)
+    <main className="flex min-h-screen w-screen max-w-md flex-col bg-[url('/images/home/background.png')] bg-cover bg-center bg-no-repeat">
+      <div className="mb-5 mt-24 flex max-w-full flex-row justify-between gap-1 px-6">
+        <MenuButton label="Assignment" variant="Assignment" />
+        <MenuButton label="Attendance" variant="Attendance" />
+        <MenuButton label="Chat" variant="Chat" />
+        <MenuButton label="Leaderboard" variant="Leaderboard" />
       </div>
-      <h1 className="text-h1 font-heading text-turquoise-100">Heading 1</h1>
-      <h2 className="sh1 text-pink-100">Subheading 1</h2>
-      <h3 className="sh2 text-blue-100">Subheading 2</h3>
-      <p className="text-b1 font-body text-shade-100">
-        This is a body text with normal weight.
-      </p>
-      <Button variant="default">Button</Button>
-      <h1 className="text-h1 font-heading text-turquoise-100">Heading 1</h1>
-      <h2 className="sh1 text-pink-100">Subheading 1</h2>
-      <h3 className="sh2 text-blue-100">Subheading 2</h3>
-      <p className="text-b1 font-body text-shade-100">
-        This is a body text with normal weight.
-      </p>
-      <Button variant="default">Button</Button>
-      <h1 className="text-h1 font-heading text-turquoise-100">Heading 1</h1>
-      <h2 className="sh1 text-pink-100">Subheading 1</h2>
-      <h3 className="sh2 text-blue-100">Subheading 2</h3>
-      <p className="text-b1 font-body text-shade-100">
-        This is a body text with normal weight.
-      </p>
-      <Button variant="default">Button</Button>
+      {showCoins && (
+        <div className="mx-6 flex items-center justify-center rounded-xl border-2 border-solid border-turquoise-100 bg-turquoise-100 p-1 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50">
+          <div className="flex w-full flex-row justify-between">
+            <div className="flex w-full flex-row">
+              <Image
+                src="/images/home/coin.png"
+                width={62}
+                height={62}
+                alt="coin"
+              />
+              <h5 className="ml-2 mt-1 text-blue-600">
+                {' '}
+                Your coins <br />{' '}
+                <p className="sh3 text-turquoise-400">9999999</p>
+              </h5>
+            </div>
+            <div className="flex w-full items-center justify-end pr-4">
+              <button
+                className="flex justify-between rounded-[4px] bg-turquoise-400 px-5 py-2 text-shade-200 hover:bg-turquoise-300"
+                onClick={() => router.push('/get-coins')}
+              >
+                <div className="flex flex-row gap-2">
+                  <p className="text-b5">Get Coins</p>
+                  <Image
+                    src="/icons/chevron-right.svg"
+                    width={16}
+                    height={16}
+                    alt="right"
+                  />
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showOSKMWrapped && <ButtonOskmWrap />}
+
+      <div className="flex w-full items-center justify-center">
+        <h3 className="text-h3 text-blue-600 text-shadow-pink-md">
+          OSKM Journey
+        </h3>
+      </div>
+
+      <Journey />
     </main>
   );
 }

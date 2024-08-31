@@ -9,6 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from './ui/loading-spinner';
 
 const Navbar = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -18,31 +20,24 @@ const Navbar = () => {
   };
 
   // DUMMY
-  const notifications = [
-    {
-      date: 'Yesterday, 14:32',
-      isRead: false,
-      description: 'Terdapat tugas baru yang harus kamu kerjakan!',
-    },
-    {
-      date: '2 days ago, 14:32',
-      isRead: false,
-      description:
-        'Berhasil Tandai Hadir untuk mata acara OPENING DAY 1 - OSKM ITB',
-    },
-    {
-      date: '17 Aug 2024, 14:32',
-      isRead: true,
-      description: 'Tugas Mengenal Diri Sendiri berhasil dikumpulkan!',
-    },
-  ];
+  const { data: notification, isLoading } =
+    api.notification.getAllNotifications.useQuery();
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  let notifications = notification;
+  if (!notifications) {
+    notifications = [];
+  }
 
   return (
     <div className="relative">
       {!isSidebarOpen && (
-        <div className="fixed max-w-md w-full justify-center z-20">
+        <div className="fixed z-20 w-full max-w-md justify-center">
           <div
-            className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm top-4"
+            className="relative top-4 mx-6 flex items-center justify-between rounded-full bg-blue-600 py-3 pl-3 pr-5 shadow-green-sm"
             style={{
               backgroundImage: "url('/images/navbar/seaweed.png')",
               backgroundPosition: '95% 30%',
@@ -61,7 +56,7 @@ const Navbar = () => {
             <div className="flex items-center space-x-4">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="bg-turquoise-100 p-1 rounded-lg border-2 border-blue-600 shadow-green-sm">
+                  <button className="rounded-lg border-2 border-blue-600 bg-turquoise-100 p-1 shadow-green-sm">
                     <Image
                       src="/icons/notification-icon.svg"
                       alt="Notification"
@@ -71,14 +66,14 @@ const Navbar = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-[70vw] md:w-[300px] max-w-[300px] bg-transparent shadow-blue-sm"
+                  className="w-[70vw] max-w-[300px] bg-transparent shadow-blue-sm md:w-[300px]"
                   side="bottom"
                   sideOffset={1}
                   align="end"
                 >
                   {/* Mini triangle tip */}
                   <div className="flex justify-end bg-transparent pr-[4px]">
-                    <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[14px] border-l-transparent border-r-transparent border-b-turquoise-100" />
+                    <div className="h-0 w-0 border-b-[14px] border-l-[15px] border-r-[15px] border-b-turquoise-100 border-l-transparent border-r-transparent" />
                   </div>
                   <DropdownMenuGroup>
                     {notifications.map((notification, index) => (
@@ -88,11 +83,11 @@ const Navbar = () => {
                         >
                           <div className="flex flex-row gap-3">
                             {/* Indicator */}
-                            <div>
+                            {/* <div>
                               <div
                                 className={`my-[8px] w-[8px] h-[8px] rounded-full ${notification.isRead ? 'bg-neutral-400' : 'bg-success-500'}`}
                               />
-                            </div>
+                            </div> */}
                             {/* Content */}
                             <div className="flex flex-col gap-3">
                               <span className="text-b4">
@@ -115,7 +110,7 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
               <button
-                className="bg-turquoise-100 px-[7px] py-[10px] rounded-lg border-2 border-blue-600 shadow-green-sm"
+                className="rounded-lg border-2 border-blue-600 bg-turquoise-100 px-[7px] py-[10px] shadow-green-sm"
                 onClick={handleToggleSidebar}
               >
                 <Image
@@ -132,7 +127,7 @@ const Navbar = () => {
       {/* Black Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 z-30 w-screen h-screen"
+          className="fixed inset-0 z-30 h-screen w-screen bg-black bg-opacity-80"
           onClick={handleToggleSidebar}
         >
           <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
