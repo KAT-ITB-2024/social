@@ -11,9 +11,11 @@ import { getCurrentWIBTime } from '~/server/api/helpers/utils';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  const [showCoins, setShowCoins] = useState(false);
-  const [showOSKMWrapped, setShowOSKMWrapped] = useState(false);
+  const [showCoins, setShowCoins] = useState(true);
+  const [showOSKMWrapped, setShowOSKMWrapped] = useState(true);
   const router = useRouter();
+
+  // TODO: CHECK USE SESSION AND SET OSKM WRAPPED NAME
 
   useEffect(() => {
     const now = getCurrentWIBTime();
@@ -35,7 +37,7 @@ export default function Home() {
         <MenuButton label="Leaderboard" variant="Leaderboard" />
       </div>
       {showCoins && (
-        <div className="flex container border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50 bg-turquoise-100 rounded-xl w-96 p-1">
+        <div className="flex justify-center items-center border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50 bg-turquoise-100 rounded-xl mx-6 p-1">
           <div className="flex flex-row w-full justify-between">
             <div className="flex flex-row w-full">
               <Image
@@ -50,7 +52,7 @@ export default function Home() {
                 <p className="sh3 text-turquoise-400">9999999</p>
               </h5>
             </div>
-            <div className="flex flex-grow items-center w-full md:w-[80%] pr-4 justify-end">
+            <div className="flex items-center w-full pr-4 justify-end">
               <button
                 className="bg-turquoise-400 text-shade-200 hover:bg-turquoise-300 rounded-[4px] px-5 py-2 flex justify-between"
                 onClick={() => router.push('/get-coins')}

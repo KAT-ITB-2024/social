@@ -8,7 +8,7 @@ export interface JourneyDay2Props {
 
 export const JourneyDay2 = ({ handleClick }: JourneyDay2Props) => {
   return (
-    <div className="relative flex w-full h-[270px]">
+    <div className="relative flex w-full h-[250px]">
       <div className="absolute w-full flex flex-col items-center">
         <div className="relative w-full h-[120px]">
           <Image
@@ -26,7 +26,7 @@ export const JourneyDay2 = ({ handleClick }: JourneyDay2Props) => {
             width={247}
             height={194}
             onClick={() => handleClick('Day 2')}
-            className="absolute top-[-3rem] left-8"
+            className="absolute top-[-3rem] left-4"
           />
         </div>
       </div>

@@ -7,7 +7,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useEffect, useState, type ReactNode } from 'react';
-import CloseIcon from 'public/images/login/CloseIcon.svg';
+import CloseIcon from 'public/icons/close-icon.svg';
 
 import Image from 'next/image';
 import { type OpenedDays } from '~/types/payloads/map';

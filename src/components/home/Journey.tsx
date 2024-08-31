@@ -1,6 +1,7 @@
 'use client';
 
 import Day1Image from 'public/images/home/day-1-journey.png';
+import HiddenDays from 'public/images/home/hidden-journey.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { api } from '~/trpc/react';
@@ -45,14 +46,14 @@ export default function Journey() {
     <div className="w-full h-fit flex flex-col items-center justify-center">
       <div className="relative w-full h-[194px]">
         <div className="absolute w-full top-0 flex flex-col items-center h-full">
-          <div className="relative w-full h-[194px] z-10">
+          <div className="relative w-full h-[180px] z-10">
             <Image
               src={Day1Image}
               alt="Day 1 Journey"
               width={247}
               height={194}
               onClick={() => handleJourneyClicked('Day 1')}
-              className="absolute top-0 right-10"
+              className="absolute top-0 right-6"
             />
           </div>
         </div>
@@ -85,8 +86,18 @@ export default function Journey() {
             );
           }
         })}
-      {/* HAPUS, INI CM BUAT TESTING */}
-      <JourneyDay4 handleClick={handleJourneyClicked} />
+
+      {events && events.size < 4 && (
+        <div className="relative w-full">
+          <Image
+            src={HiddenDays}
+            alt="Hidden Journeys"
+            width={0}
+            height={0}
+            sizes="100vw"
+          />
+        </div>
+      )}
 
       {selectedEvent && (
         <DayModal event={selectedEvent} isOpen={isOpen} setIsOpen={setIsOpen} />
