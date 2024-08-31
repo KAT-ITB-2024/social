@@ -10,7 +10,7 @@ import { env } from '~/env.cjs';
 // Load environment variables from .env before doing anything else
 loadEnvConfig(process.cwd());
 
-const port = 3001;
+const port = 3009;
 const dev = env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();

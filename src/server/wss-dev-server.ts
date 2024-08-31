@@ -7,7 +7,7 @@ import parser from 'socket.io-msgpack-parser';
 // dotenv.config();
 const startServer = () => {
   console.log('start server');
-  const port = process.env.WS_PORT ?? '3001';
+  const port = process.env.WS_PORT ?? '3009';
   const io: SocketServer = new Server(parseInt(port, 10), {
     cors: {
       origin: process.env.NEXT_PUBLIC_API_URL,

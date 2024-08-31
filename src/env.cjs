@@ -28,7 +28,7 @@ exports.env = createEnv({
         // VERCEL_URL doesn't include `https` so it cant be validated as a URL
         process.env.VERCEL ? z.string() : z.string().url(),
       )
-      .default('http://localhost:3001'),
+      .default('http://localhost:3009'),
     REDIS_URL: z.string().url(),
     SMTP_HOST: z.string().min(1),
     SMTP_PORT: z.preprocess(
@@ -40,7 +40,7 @@ exports.env = createEnv({
     SMTP_USER: z.string().min(1),
     SMTP_PASS: z.string().min(1),
     WS_PORT: z.preprocess(
-      (str) => (str ? +str : 3001),
+      (str) => (str ? +str : 8080),
       z.number().int().positive(),
     ),
     DO_ACCESS_KEY: z.string(),
