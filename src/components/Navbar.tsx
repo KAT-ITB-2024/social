@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <div className="relative">
       {!isSidebarOpen && (
-        <div className="fixed max-w-md w-full justify-center z-20">
+        <div className="fixed max-w-md w-full justify-center z-50">
           <div
             className="relative bg-blue-600 py-3 pl-3 pr-5 mx-6 flex justify-between items-center rounded-full shadow-green-sm top-4"
             style={{

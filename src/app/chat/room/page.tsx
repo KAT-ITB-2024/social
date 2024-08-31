@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { redirect, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
-import { type Message } from '@katitb2024/database';
+import { type UserMatch, type Message } from '@katitb2024/database';
 import { RevealStatusEvent } from '~/types/enums/message';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
@@ -78,13 +78,33 @@ const Chat = () => {
   const [chatEndTitle, setChatEndTitle] = useState(receiveChatEndTitle);
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [profileName, setProfileName] = useState<string | null>(null);
+  const [match, setMatch] = useState<UserMatch | null>(null);
+  const { data: profileData, refetch } = api.profile.getOthersProfile.useQuery({
+    userId:
+      match === null
+        ? ''
+        : match.firstUserId === session?.user.id
+          ? match.secondUserId
+          : match.firstUserId,
+  });
+
+  useEffect(() => {
+    if (profileData === undefined && match?.isRevealed) {
+      console.log('Refetchh');
+      void refetch();
+    }
+    console.log('Masuk ke refetch', profileData, match);
+  }, [match, refetch, profileData]);
 
   const checkMatch = useEmit('checkMatch', {
     onSuccess: (data) => {
+      console.log('ini data di check match');
       if (data.match === undefined) {
         void router.push('/chat');
       } else {
+        console.log('ini data match', data.match);
         if (data.match.isRevealed || !data.match.isAnonymous) {
+          console.log('DATA MATCH IS REVEALED', data.match.isRevealed);
           if (!isRevealed) {
             setIsRevealed(true);
           }
@@ -185,15 +205,19 @@ const Chat = () => {
         : match.firstUserId,
     );
     if (data === RevealStatusEvent.ASK) {
-      // setShowRevealPopup(true);
       openModal('showRevealPopup');
     } else {
+      console.log('Ini data di bawah', data);
       openModal('revealResponsePopup');
       if (data === RevealStatusEvent.ACCEPTED) {
+        console.log('ini match', match);
         setIsRevealed(true);
-        checkMatch.mutate({});
+        setMatch(match);
+        setProfileName(match.firstUserId);
+        console.log('Masuk ke yes reveal');
       }
     }
+    [match, messageQuery];
   });
 
   // saat nerima event endMatch dari server
@@ -257,7 +281,7 @@ const Chat = () => {
         <ChatNavbar
           isTyping={opponentTyping}
           opponentId={opponentId}
-          name={profileName}
+          name={match?.isRevealed ? 'ga anon' : 'Anonymous'}
           profilePhoto={profilePhoto}
         />
         {/* Chat Room */}

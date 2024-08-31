@@ -105,7 +105,7 @@ export const askRevealEvent = createEvent(
         .set({ isRevealed: true, isAnonymous: false })
         .where(eq(userMatches.id, currentMatch.id))
         .returning();
-
+      console.log('Ini result di ask reveal', result);
       if (result?.[0] === undefined) {
         return;
       }

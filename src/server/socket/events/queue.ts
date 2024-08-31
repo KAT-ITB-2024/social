@@ -132,23 +132,6 @@ export const checkMatchEvent = createEvent(
 
     ctx.client.data.matchQueue = null;
     result.match = ctx.client.data.match;
-
-    if (result.match) {
-      const otherUserId =
-        result.match.firstUserId == ctx.client.data.session.user.id
-          ? result.match.secondUserId
-          : result.match.firstUserId;
-
-      const otherProfile = await ctx.drizzle
-        .select()
-        .from(profiles)
-        .where(eq(profiles.userId, otherUserId))
-        .then((res) => res[0]);
-
-      result.profile = otherProfile;
-    }
-    console.log('masuk check match');
-    console.log(ctx.client.data.match);
     return result;
   },
 );
