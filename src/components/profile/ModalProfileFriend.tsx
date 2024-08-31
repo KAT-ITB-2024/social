@@ -97,7 +97,6 @@ export default function ProfileFriendModal({
 }) {
   const data = api.profile.getFriendProfile.useQuery({ userId });
   const { data: userProfile } = data;
-  console.log(userProfile);
   if (!userProfile) {
     return null;
   }

@@ -9,13 +9,9 @@ import { type UserMatch, type Message } from '@katitb2024/database';
 import { RevealStatusEvent } from '~/types/enums/message';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
-import { socket } from '~/utils/socket';
 import Messages from '~/components/chat/Messages';
-
 import { api } from '~/trpc/react';
-
 import { Textarea } from '~/components/ui/textarea';
-import BubbleChat from '~/components/chat/BubbleChat';
 import RulesModal from '~/components/chat/RulesModal';
 import ConfirmationModal from '~/components/chat/ConfirmationModal';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';

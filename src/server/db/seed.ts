@@ -240,10 +240,10 @@ export async function seedPostTest(db: PostgresJsDatabase<typeof schema>) {
     deadline.setDate(deadline.getDate() + 7); // Adds 7 days to the current date
 
     await db.insert(schema.postTests).values({
-      deadline: deadline,
       eventId: events[i]?.id ?? '',
       googleFormLink: 'https://google.com',
       startTime: new Date(),
+      deadline,
     });
   }
 }

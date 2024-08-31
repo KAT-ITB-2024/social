@@ -27,8 +27,6 @@ const ChatNavbar = ({
     setSidebarOpen(!isSidebarOpen);
   };
 
-  console.log(name);
-
   return (
     <div className="relative">
       <div className="fixed top-4 z-20 flex flex-row items-center justify-between gap-x-2 w-full max-w-md px-8">
