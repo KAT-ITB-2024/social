@@ -24,25 +24,25 @@ export const MenuButton = ({
   switch (variant) {
     case 'Assignment':
       cn =
-        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-3';
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl';
       imgSrc = '/images/home/navigation/assignment.png';
       routePath = '/assignment';
       break;
     case 'Attendance':
       cn =
-        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-3';
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl';
       imgSrc = '/images/home/navigation/attendance.png';
       routePath = '/attendance';
       break;
     case 'Chat':
       cn =
-        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-3';
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl';
       imgSrc = '/images/home/navigation/chat.png';
       routePath = '/chat';
       break;
     case 'Leaderboard':
       cn =
-        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl ml-5';
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl';
       imgSrc = '/images/home/navigation/leaderboard.png';
       routePath = '/leaderboard';
       break;
@@ -50,7 +50,7 @@ export const MenuButton = ({
 
   return (
     <>
-      <div className="flex flex-col mt-24">
+      <div className="flex flex-col items-center justify-center">
         <div className={cn} onClick={() => router.push(routePath)}>
           <Image
             src={imgSrc}
@@ -60,7 +60,7 @@ export const MenuButton = ({
             height={70}
           />
         </div>
-        <div className="text-sm text-turquoise-100 mt-3 text-center -mr-4">
+        <div className="text-sm text-blue-600 mt-3 text-center break-words">
           {label}
         </div>
       </div>

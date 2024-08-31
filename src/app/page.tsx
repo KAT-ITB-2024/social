@@ -8,25 +8,27 @@ import Journey from '~/components/home/Journey';
 import ButtonOskmWrap from '~/components/home/ButtonOSKMWrap';
 import { useEffect, useState } from 'react';
 import { getCurrentWIBTime } from '~/server/api/helpers/utils';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [showCoins, setShowCoins] = useState(false);
-  const [showOSKMJourney, setShowOSKMJourney] = useState(false);
+  const [showOSKMWrapped, setShowOSKMWrapped] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const now = getCurrentWIBTime();
 
-    if (now.getDate() === 7 && now.getMonth() === 8) {
-      setShowOSKMJourney(true);
+    if (now.getDate() === 7 && now.getMonth() === 9) {
+      setShowOSKMWrapped(true);
     }
-    if (now.getDate() === 14 && now.getMonth() === 8) {
+    if (now.getDate() === 14 && now.getMonth() === 9) {
       setShowCoins(true);
     }
   }, []);
 
   return (
-    <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/Background.png')] bg-center bg-no-repeat bg-cover">
-      <div className="flex flex-row mb-5 max-w-full justify-center">
+    <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/background.png')] bg-center bg-no-repeat bg-cover">
+      <div className="flex flex-row mb-5 max-w-full justify-between mt-24 gap-1 px-6">
         <MenuButton label="Assignment" variant="Assignment" />
         <MenuButton label="Attendance" variant="Attendance" />
         <MenuButton label="Chat" variant="Chat" />
@@ -34,23 +36,40 @@ export default function Home() {
       </div>
       {showCoins && (
         <div className="flex container border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50 bg-turquoise-100 rounded-xl w-96 p-1">
-          <div className="flex flex-row w-full">
-            <Image
-              src="/components/coin.png"
-              className="w-16 h-auto"
-              width={62}
-              height={62}
-              alt="coin"
-            />
-            <h5 className=" ml-2 mt-1 text-blue-600">
-              {' '}
-              Your coins <br />{' '}
-              <p className="sh3 text-turquoise-400">9999999</p>
-            </h5>
+          <div className="flex flex-row w-full justify-between">
+            <div className="flex flex-row w-full">
+              <Image
+                src="/images/home/coin.png"
+                width={62}
+                height={62}
+                alt="coin"
+              />
+              <h5 className=" ml-2 mt-1 text-blue-600">
+                {' '}
+                Your coins <br />{' '}
+                <p className="sh3 text-turquoise-400">9999999</p>
+              </h5>
+            </div>
+            <div className="flex flex-grow items-center w-full md:w-[80%] pr-4 justify-end">
+              <button
+                className="bg-turquoise-400 text-shade-200 hover:bg-turquoise-300 rounded-[4px] px-5 py-2 flex justify-between"
+                onClick={() => router.push('/get-coins')}
+              >
+                <div className="flex flex-row gap-2">
+                  <p className="text-b5">Get Coins</p>
+                  <Image
+                    src="/icons/chevron-right.svg"
+                    width={16}
+                    height={16}
+                    alt="right"
+                  />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       )}
-      {showOSKMJourney && <ButtonOskmWrap />}
+      {showOSKMWrapped && <ButtonOskmWrap />}
 
       <div className="w-full justify-center items-center flex">
         <h3 className="text-h3 text-blue-600 text-shadow-pink-md">

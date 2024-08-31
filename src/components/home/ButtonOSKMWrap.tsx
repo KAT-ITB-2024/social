@@ -14,9 +14,10 @@ export const ButtonOSKMWrap = () => {
           className="flex flex-col w-[86%] justify-center items-center py-[24px] px-5 container rounded-xl my-5 gap-3"
           onClick={() => router.push(routePath)}
           style={{
-            backgroundImage: "url('/home/bg-oskm-wrapped-button.jpeg')",
+            backgroundImage: "url('/images/home/bg-oskm-wrapped-button.jpeg')",
             backgroundSize: 'cover',
-            backgroundPosition: 'center 87%',
+            backgroundPosition: 'center',
+            opacity: 0.9,
           }}
         >
           <div className="font-[700] text-xl text-center leading-[24px] text-[#000D76] px-5">
