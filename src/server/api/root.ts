@@ -10,6 +10,7 @@ import { leaderboardRouter } from './routers/leaderboard';
 import { storageRouter } from './routers/storage';
 import { attendanceRouter } from './routers/attendance';
 import { mapRouter } from './routers/map';
+import { notificationRouter } from './routers/notification';
 /**
  * This is the primary router for your server.
  *
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
   submission: submissionRouter,
   class: classRouter,
   message: messageRouter,
+  notification: notificationRouter,
   leaderboard: leaderboardRouter,
   auth: authRouter,
   storage: storageRouter,
