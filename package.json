@@ -2,9 +2,10 @@
   "name": "t3-template-app",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "next build",
+    "build:next": "next build",
+    "build:server": "tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
+    "build": "run-s build:*",
     "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
@@ -15,7 +16,7 @@
     "dev:next": "next dev",
     "dev": "env-cmd run-p dev:*",
     "lint": "next lint",
-    "start": "next start",
+    "start": "env-cmd cross-env NODE_ENV=production node dist/server/prod-server.js",
     "prepare": "husky",
     "postinstall": "patch-package"
   },

@@ -1,7 +1,9 @@
-import { createEnv } from '@t3-oss/env-nextjs';
-import { z } from 'zod';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-export const env = createEnv({
+const { createEnv } = require('@t3-oss/env-nextjs');
+const { z } = require('zod');
+
+exports.env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
    * isn't built with invalid env vars.
@@ -26,7 +28,7 @@ export const env = createEnv({
         // VERCEL_URL doesn't include `https` so it cant be validated as a URL
         process.env.VERCEL ? z.string() : z.string().url(),
       )
-      .default('http://localhost:3000'),
+      .default('http://localhost:3001'),
     REDIS_URL: z.string().url(),
     SMTP_HOST: z.string().min(1),
     SMTP_PORT: z.preprocess(
@@ -90,5 +92,4 @@ export const env = createEnv({
    * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
    * `SOME_VAR=''` will throw an error.
    */
-  emptyStringAsUndefined: true,
 });

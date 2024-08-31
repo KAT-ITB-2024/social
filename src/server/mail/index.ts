@@ -1,6 +1,6 @@
 import { createTransport, type Transporter } from 'nodemailer';
 import type SMTPPool from 'nodemailer/lib/smtp-pool';
-import { env } from '~/env.js';
+import { env } from '~/env.cjs';
 
 const instantiateTransporter = (): Transporter<SMTPPool.SentMessageInfo> => {
   return createTransport({
