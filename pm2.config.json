@@ -19,7 +19,7 @@
         "exec_mode": "fork"
       },
       {
-        "name": "oskm-main-4",
+        "name": "oskm-social-4",
         "script": "yarn",
         "args": "start -p 3004",
         "exec_mode": "fork"
