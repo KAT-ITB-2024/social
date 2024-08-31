@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 'use client';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import useInfiniteScroll from 'react-infinite-scroll-hook';
 import Image from 'next/image';
 import { redirect, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -370,7 +370,7 @@ const Chat = () => {
                 onClick={handleSendMessage}
               >
                 <Image
-                  src="/icons/chevron-right.svg"
+                  src="/icons/chat/chevron-right.svg"
                   alt="Send"
                   width={16}
                   height={16}
