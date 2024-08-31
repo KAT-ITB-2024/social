@@ -98,35 +98,24 @@ export const askRevealEvent = createEvent(
     if (input.state === RevealStatusEvent.ASK) {
       ctx.io
         .to([receiverId])
-        .emit('askReveal', currentMatch, RevealStatusEvent.ASK, null);
+        .emit('askReveal', currentMatch, RevealStatusEvent.ASK);
     } else if (input.state === RevealStatusEvent.ACCEPTED) {
       const result = await ctx.drizzle
         .update(userMatches)
         .set({ isRevealed: true, isAnonymous: false })
         .where(eq(userMatches.id, currentMatch.id))
         .returning();
-      console.log('Ini result di ask reveal', result);
       if (result?.[0] === undefined) {
         return;
       }
 
-      const profileres = await ctx.drizzle
-        .select({
-          name: profiles.name,
-          profilepic: profiles.profileImage,
-          userId: profiles.userId,
-        })
-        .from(profiles)
-        .where(or(eq(profiles.userId, userId), eq(profiles.userId, receiverId)))
-        .execute();
-
       ctx.io
         .to([userId, receiverId])
-        .emit('askReveal', result[0], RevealStatusEvent.ACCEPTED, profileres);
+        .emit('askReveal', result[0], RevealStatusEvent.ACCEPTED);
     } else {
       ctx.io
         .to([receiverId])
-        .emit('askReveal', currentMatch, RevealStatusEvent.REJECTED, null);
+        .emit('askReveal', currentMatch, RevealStatusEvent.REJECTED);
     }
   },
 );

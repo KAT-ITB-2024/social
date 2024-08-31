@@ -35,13 +35,7 @@ export type ServerToClientEvents = {
   isTyping: (id: string) => void;
   anonIsTyping: (id: string) => void;
   add: (message: Message) => void;
-  askReveal: (
-    match: UserMatch,
-    type: RevealStatusEvent,
-    otherProfile:
-      | { name: string; profilepic: string | null; userId: string }[]
-      | null,
-  ) => void;
+  askReveal: (match: UserMatch, type: RevealStatusEvent) => void;
   endMatch: (match: UserMatch) => void;
 };
 
