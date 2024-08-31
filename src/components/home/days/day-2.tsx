@@ -2,7 +2,11 @@ import Image from 'next/image';
 import Day2Image from 'public/images/home/day-2-journey.png';
 import Bubble1 from 'public/images/home/bubble1.png';
 
-export const JourneyDay2 = () => {
+export interface JourneyDay2Props {
+  handleClick: (eventDay: string) => void;
+}
+
+export const JourneyDay2 = ({ handleClick }: JourneyDay2Props) => {
   return (
     <div className="relative flex w-full h-[35vh]">
       <div className="absolute w-full flex flex-col items-center">
@@ -21,7 +25,7 @@ export const JourneyDay2 = () => {
             alt="Day 2 Journey"
             width={247}
             height={194}
-            // onClick={() => router.push('')}
+            onClick={() => handleClick('Day 2')}
             className="absolute top-[-3rem] left-8"
           />
         </div>

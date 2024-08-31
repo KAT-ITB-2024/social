@@ -3,7 +3,11 @@ import Day4Image from 'public/images/home/day-4-journey.png';
 
 import Bubble3 from 'public/images/home/bubble3.png';
 
-export const JourneyDay4 = () => {
+export interface JourneyDay4Props {
+  handleClick: (eventDay: string) => void;
+}
+
+export const JourneyDay4 = ({ handleClick }: JourneyDay4Props) => {
   return (
     <>
       <div className="relative w-full h-6">
@@ -21,7 +25,7 @@ export const JourneyDay4 = () => {
           alt="Day 4 Journey"
           width={247}
           height={194}
-          // onClick={() => router.push('')}
+          onClick={() => handleClick('Day 4')}
           className="absolute top-0 left-16"
         />
       </div>
