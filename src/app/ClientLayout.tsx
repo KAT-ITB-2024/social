@@ -39,7 +39,10 @@ export default function ClientLayout({
   }, [status]);
 
   useEffect(() => {
-    if (routes.includes(pathname) || pathname.startsWith('/chat/history')) {
+    if (
+      routes.includes(pathname) ||
+      (pathname.startsWith('/chat/history/') && pathname !== '/chat/history')
+    ) {
       setShouldShowNavbar(false);
     } else {
       setShouldShowNavbar(true);

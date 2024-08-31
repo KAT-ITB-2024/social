@@ -83,7 +83,7 @@ const Chat = () => {
     onSuccess: (data) => {
       if (data.match === undefined) {
         // TODO: redirect to match page
-        void router.push('/match');
+        void router.push('/chat');
       } else {
         if ((data.match.isRevealed && !isRevealed) || !data.match.isAnonymous) {
           setIsRevealed(true);
@@ -440,7 +440,7 @@ const Chat = () => {
           title={chatEndTitle}
           description={'Chat ini sudah tersimpan di history chat kamu ya!'}
           buttonLabel={'Balik ke Menu'}
-          onClose={() => router.push('/match')}
+          onClose={() => router.push('/chat')}
         />
       </div>
     </main>

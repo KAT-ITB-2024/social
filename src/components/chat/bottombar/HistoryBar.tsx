@@ -8,7 +8,7 @@ const HistoryBar = ({ date }: { date: Date }) => {
   }
   return (
     <div className="max-w-md bg-blue-600 rounded-t-[46px] flex justify-center items-center w-full h-20 gap-20 shadow-green-xl p-6">
-      <div className="flex flex-row justify-start bg-white rounded-[20px] pl-[21px] py-[15px] items-start w-full">
+      <div className="flex flex-row justify-start bg-white rounded-[20px] pl-[21px] py-3 items-start w-full">
         <p className="text-sm font-normal text-pink-300">
           Percakapan ini berakhir pada {formatDate(date)}
         </p>

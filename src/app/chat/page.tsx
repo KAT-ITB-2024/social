@@ -16,6 +16,13 @@ import BoxButton from '~/components/chat/newchat/BoxButton';
 import { Button } from '~/components/ui/button';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import NoMatchModal from '~/components/chat/newchat/NoMatchModal';
+// Import Images
+import MatchBg from 'public/images/chat/bg-matchfriend.png';
+import CoralBg from 'public/images/chat/coral-left.png';
+
+// Import Component
+import BottomBar from '~/components/chat/bottombar/Bottombar';
+
 import { useSession } from 'next-auth/react';
 
 export default function MatchPage() {
@@ -157,30 +164,53 @@ export default function MatchPage() {
     redirect('/login');
   }
   return (
-    <div className="flex flex-col items-center justify-center py-40">
-      {showForm ? (
-        <NewChatForm
-          findMatch={findMatch}
-          setAnonymous={setAnonymous}
-          setTopic={setTopic}
-          setJodoh={setJodoh}
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-evenly">
-          <Image src={Coral} alt="coral" width={300} height={300} />
-          <div className="flex flex-col items-center justify-center gap-8">
-            <h3 className="text-blue-500 text-center">
-              MULAI CHAT BARU <br /> DULU YUK!
-            </h3>
-            <Button
-              className="bg-pink-300 rounded-full px-6 shadow-pink-md hover:bg-pink-400"
-              onClick={showChatForm}
-            >
-              <Image src={AddIcon} alt="addicon" width={40} height={40} />
-            </Button>
+    <div className="bg-black h-screen w-full flex items-center justify-center">
+      <div className="relative h-full w-full bg-white overflow-hidden">
+        <div className="flex flex-col items-center h-full justify-start px-8 relative z-20">
+          <div className="flex flex-col items-center justify-center py-40">
+            {showForm ? (
+              <NewChatForm
+                findMatch={findMatch}
+                setAnonymous={setAnonymous}
+                setTopic={setTopic}
+                setJodoh={setJodoh}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-evenly">
+                <Image src={Coral} alt="coral" width={300} height={300} />
+                <div className="flex flex-col items-center justify-center gap-8">
+                  <h3 className="text-blue-500 text-center">
+                    MULAI CHAT BARU <br /> DULU YUK!
+                  </h3>
+                  <Button
+                    className="bg-pink-300 rounded-full px-6 shadow-pink-md hover:bg-pink-400"
+                    onClick={showChatForm}
+                  >
+                    <Image src={AddIcon} alt="addicon" width={40} height={40} />
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
+          {/* Bottom Bar */}
+          <BottomBar />
         </div>
-      )}
+
+        {/* Background */}
+        <Image
+          src={MatchBg}
+          alt="OSKM Chat Match Background"
+          className="absolute top-0 left-0 object-cover h-full w-full z-10"
+        />
+
+        <Image
+          src={CoralBg}
+          alt="Coral"
+          className="absolute bottom-0 left-0 z-10"
+          width={250}
+          height={250}
+        />
+      </div>
     </div>
   );
 }

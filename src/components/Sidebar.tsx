@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       text: 'Attendance',
     },
     {
-      href: '/match',
+      href: '/chat',
       src: '/icons/sidebar/chat.svg',
       text: 'Chat',
     },

@@ -16,9 +16,9 @@ const BottomBar = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'history'>('chat');
   const pathname = usePathname();
   useEffect(() => {
-    if (pathname === '/match/history') {
+    if (pathname === '/chat/history') {
       setActiveTab('history');
-    } else if (pathname === '/match' || pathname === '/match/room') {
+    } else if (pathname === '/chat' || pathname === '/chat/room') {
       setActiveTab('chat');
     }
   }, [pathname]);
@@ -28,14 +28,14 @@ const BottomBar = () => {
       label: 'Chat',
       icon: '/icons/bottombar/chat-icon.svg',
       activeIcon: '/icons/bottombar/chat-active.svg',
-      href: '/match',
+      href: '/chat',
     },
     {
       id: 'history',
       label: 'History',
       icon: '/icons/bottombar/history-icon.svg',
       activeIcon: '/icons/bottombar/history-active.svg',
-      href: '/match/history',
+      href: '/chat/history',
     },
   ];
 
