@@ -39,6 +39,7 @@ void app.prepare().then(() => {
   });
 
   const io: SocketServer = new Server({
+    path: '/socket.io/',
     parser,
     adapter: getAdapter(),
     transports: ['websocket'],
