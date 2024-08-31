@@ -1,9 +1,9 @@
-name: Deploy Staging Social
+name: Deploy Production Social
 
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ['staging']
+    branches: ['main']
 
   # Allows you to run this workflow manually from the Actions tab
   # workflow_dispatch:
@@ -11,8 +11,8 @@ on:
 jobs:
   # Build job
   build-and-deploy:
-    runs-on: [self-hosted, social]
-    environment: staging
+    runs-on: [self-hosted, production]
+    environment: production
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
