@@ -39,7 +39,6 @@ function LeaderBoardContent() {
   const handleCardClick = (userId: string) => {
     setSelectedUserId(userId);
     setIsModalOpen(true);
-    console.log('masuk');
   };
 
   if (

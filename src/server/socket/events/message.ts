@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { and, eq, or } from 'drizzle-orm';
-import { messages, userMatches } from '@katitb2024/database';
+import { eq, or } from 'drizzle-orm';
+import { messages, profiles, userMatches } from '@katitb2024/database';
 import { RevealStatusEvent } from '~/types/enums/message';
 export const messageEvent = createEvent(
   {
@@ -98,7 +98,7 @@ export const askRevealEvent = createEvent(
     if (input.state === RevealStatusEvent.ASK) {
       ctx.io
         .to([receiverId])
-        .emit('askReveal', currentMatch, RevealStatusEvent.ASK);
+        .emit('askReveal', currentMatch, RevealStatusEvent.ASK, null);
     } else if (input.state === RevealStatusEvent.ACCEPTED) {
       const result = await ctx.drizzle
         .update(userMatches)
@@ -109,13 +109,24 @@ export const askRevealEvent = createEvent(
       if (result?.[0] === undefined) {
         return;
       }
+
+      const profileres = await ctx.drizzle
+        .select({
+          name: profiles.name,
+          profilepic: profiles.profileImage,
+          userId: profiles.userId,
+        })
+        .from(profiles)
+        .where(or(eq(profiles.userId, userId), eq(profiles.userId, receiverId)))
+        .execute();
+
       ctx.io
         .to([userId, receiverId])
-        .emit('askReveal', result[0], RevealStatusEvent.ACCEPTED);
+        .emit('askReveal', result[0], RevealStatusEvent.ACCEPTED, profileres);
     } else {
       ctx.io
         .to([receiverId])
-        .emit('askReveal', currentMatch, RevealStatusEvent.REJECTED);
+        .emit('askReveal', currentMatch, RevealStatusEvent.REJECTED, null);
     }
   },
 );

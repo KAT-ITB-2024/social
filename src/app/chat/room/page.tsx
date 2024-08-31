@@ -9,13 +9,9 @@ import { type Message } from '@katitb2024/database';
 import { RevealStatusEvent } from '~/types/enums/message';
 import useEmit from '~/hooks/useEmit';
 import useSubscription from '~/hooks/useSubscription';
-import { socket } from '~/utils/socket';
 import Messages from '~/components/chat/Messages';
-
 import { api } from '~/trpc/react';
-
 import { Textarea } from '~/components/ui/textarea';
-import BubbleChat from '~/components/chat/BubbleChat';
 import RulesModal from '~/components/chat/RulesModal';
 import ConfirmationModal from '~/components/chat/ConfirmationModal';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
@@ -177,7 +173,7 @@ const Chat = () => {
   });
 
   // saat nerima event askReveal dari server
-  useSubscription('askReveal', (match, data) => {
+  useSubscription('askReveal', (match, data, profiles) => {
     setRevealStatus(data);
     setOpponentId(
       match.firstUserId === session?.user.id
@@ -191,7 +187,20 @@ const Chat = () => {
       openModal('revealResponsePopup');
       if (data === RevealStatusEvent.ACCEPTED) {
         setIsRevealed(true);
-        checkMatch.mutate({});
+        if (profiles) {
+          const profile = profiles.find(
+            (profile) => profile.userId !== session?.user.id,
+          );
+
+          // Check if a matching profile is found
+          if (profile) {
+            // Destructure name and profilepic from the found profile
+            const { name, profilepic } = profile;
+            setProfileName(name);
+            setProfilePhoto(profilepic);
+            // Use name and profilepic as needed
+          }
+        }
       }
     }
   });
