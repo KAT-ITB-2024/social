@@ -5,32 +5,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Share } from '~/components/share';
 import { Share2, Download } from 'lucide-react';
+import { type OSKMWrapped } from '~/types/payloads/wrapped';
 
-interface wrappedProps {
-  name: string;
-  jumlah_match: number | string;
-  quest_num: number | string;
-  fav_topics: string[];
-  percent: number | string;
-  test: boolean;
-  character: string;
-  mbti: string;
-  mbti_desc: string;
-  leaderboard_rank: number | string;
+interface WrappedStoriesProps {
+  oskmWrapped: OSKMWrapped;
 }
 
-const WrappedStories = ({
-  name,
-  jumlah_match,
-  quest_num,
-  fav_topics,
-  percent,
-  test,
-  character,
-  mbti,
-  mbti_desc,
-  leaderboard_rank,
-}: wrappedProps) => {
+const WrappedStories = ({ oskmWrapped }: WrappedStoriesProps) => {
   const router = useRouter();
   const [file, setFile] = useState<File[]>();
 
@@ -152,7 +133,7 @@ const WrappedStories = ({
                 Kamu udah matching sebanyak
               </p>
               <p className="pb-0.5 text-center font-heading text-5xl text-blue-500">
-                {jumlah_match}
+                {oskmWrapped.totalMatch}
               </p>
               <p className="text-center font-heading text-2xl text-lightYellow">
                 kali lho, selama OSKM!
@@ -213,7 +194,7 @@ const WrappedStories = ({
                 Selamat! Kamu telah berhasil menyelesaikan
               </p>
               <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
-                {quest_num}
+                {oskmWrapped.submittedQuest}
               </p>
               <p className="text-center font-heading text-2xl text-purple">
                 quest!
@@ -266,13 +247,13 @@ const WrappedStories = ({
                 Kamu sering banget ngobrolin
               </p>
               <p className="pb-0.5 text-center font-heading text-5xl text-orange-400">
-                {fav_topics[0]}
+                {oskmWrapped.favTopics[0]}
               </p>
               <p className="text-center font-heading text-2xl text-turquoise-400">
                 sama temanmu.
               </p>
               <p className="text-md text-center font-subheading text-turquoise-400">
-                Kayaknya kamu cinta {fav_topics[0]} banget, nih!
+                Kayaknya kamu cinta {oskmWrapped.favTopics[0]} banget, nih!
               </p>
             </div>
           </>
@@ -319,7 +300,7 @@ const WrappedStories = ({
                 Kamu masuk top
               </p>
               <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
-                {percent}%
+                {oskmWrapped.percent}%
               </p>
               <p className="text-center font-heading text-2xl text-blue-500">
                 peserta!
@@ -369,25 +350,27 @@ const WrappedStories = ({
             />
             <div className="absolute left-[12.5%] flex w-3/4 flex-col items-center gap-2">
               <p className="text-center font-heading text-2xl text-pink-400">
-                {test ? (
-                  <>Kamu memiliki pribadi yang {mbti} seperti</>
+                {oskmWrapped.test ? (
+                  <>
+                    Kamu memiliki pribadi yang {oskmWrapped.personality} seperti
+                  </>
                 ) : (
                   <>Waduh! Kamu belum melakukan OSKM Personality Test :(</>
                 )}
               </p>
-              {test ? (
+              {oskmWrapped.test ? (
                 <p className="pb-0.5 text-center font-heading text-5xl text-purple">
-                  {character}
+                  {oskmWrapped.character}
                 </p>
               ) : null}
               <p className="text-md text-center font-subheading text-pink-400">
-                {test ? (
-                  <>{mbti_desc}</>
+                {oskmWrapped.test ? (
+                  <>{oskmWrapped.personalityDesc}</>
                 ) : (
                   <>Kira-kira kamu akan mendapatkan karakter apa ya?👀</>
                 )}
               </p>
-              {test ? null : (
+              {oskmWrapped.test ? null : (
                 <Button
                   className="z-[1000] mt-2 w-1/2 bg-pink-400"
                   onClick={() => router.push('/personality')}
@@ -430,10 +413,10 @@ const WrappedStories = ({
             <div className="absolute top-0 flex size-full items-center justify-center">
               <div className="flex h-full w-5/6 flex-col items-center justify-center gap-4">
                 <p className="text-center font-heading text-xl text-blue-400">
-                  {test ? (
+                  {oskmWrapped.test ? (
                     <>
-                      <span className="text-pink-400">{name}</span>, OSKM
-                      Personality-mu adalah
+                      <span className="text-pink-400">{oskmWrapped.name}</span>,
+                      OSKM Personality-mu adalah
                     </>
                   ) : (
                     <>Yuk, segera cek OSKM Personality-mu!</>
@@ -441,16 +424,16 @@ const WrappedStories = ({
                 </p>
                 <Image
                   src={
-                    test
+                    oskmWrapped.test
                       ? '/images/wrapped/svg/ray.svg'
                       : '/images/wrapped/svg/cancer.svg'
                   }
-                  alt={test ? 'Ray' : 'Cancer'}
+                  alt={oskmWrapped.test ? 'Ray' : 'Cancer'}
                   width={250}
                   height={250}
                   loading="eager"
                 />
-                {test ? (
+                {oskmWrapped.test ? (
                   <p className="pb-0.5 text-center font-heading text-3xl text-blue-500">
                     Sylas
                   </p>
@@ -462,13 +445,13 @@ const WrappedStories = ({
                         Top Topics
                       </p>
                       <p className="font-subheading text-xl font-bold text-blue-500">
-                        1.&ensp;{fav_topics[0]}
+                        1.&ensp;{oskmWrapped.favTopics[0]}
                       </p>
                       <p className="font-subheading text-xl font-bold text-blue-500">
-                        2. {fav_topics[1]}
+                        2. {oskmWrapped.favTopics[1]}
                       </p>
                       <p className="font-subheading text-xl font-bold text-blue-500">
-                        3. {fav_topics[2]}
+                        3. {oskmWrapped.favTopics[2]}
                       </p>
                     </div>
                     <div className="flex w-2/5 flex-col">
@@ -476,7 +459,7 @@ const WrappedStories = ({
                         Leaderboard Position
                       </p>
                       <p className="font-subheading text-xl font-bold text-blue-500">
-                        Rank {leaderboard_rank}
+                        Rank {oskmWrapped.rank}
                       </p>
                     </div>
                   </div>
@@ -486,7 +469,7 @@ const WrappedStories = ({
                         Matched Chat
                       </p>
                       <p className="font-subheading text-xl font-bold text-blue-500">
-                        {jumlah_match} times
+                        {oskmWrapped.totalMatch} times
                       </p>
                     </div>
                     <div className="flex w-2/5 flex-col">
@@ -494,7 +477,7 @@ const WrappedStories = ({
                         Quest Done
                       </p>
                       <p className="font-subheading text-xl font-bold text-blue-500">
-                        {quest_num} tasks
+                        {oskmWrapped.submittedQuest} tasks
                       </p>
                     </div>
                   </div>

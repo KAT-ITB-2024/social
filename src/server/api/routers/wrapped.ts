@@ -12,7 +12,6 @@ export const wrappedRouter = createTRPCRouter({
         message: 'User not logged in!',
       });
     }
-
     const oskmWrapped = await ctx.db
       .select()
       .from(wrappedProfiles)
@@ -24,6 +23,6 @@ export const wrappedRouter = createTRPCRouter({
         message: "User's oskm wrapped not found!",
       });
     }
-    return oskmWrapped;
+    return oskmWrapped[0];
   }),
 });
