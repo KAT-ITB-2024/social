@@ -6,7 +6,7 @@ import Bubble3 from 'public/images/home/bubble3.png';
 export const JourneyDay4 = () => {
   return (
     <>
-      <div className="relative w-full h-8">
+      <div className="relative w-full h-6">
         <Image
           src={Bubble3}
           alt="Bubble3"
@@ -15,7 +15,7 @@ export const JourneyDay4 = () => {
           className="absolute top-0 right-[50px]"
         />
       </div>
-      <div className="relative w-full h-80 z-10">
+      <div className="relative w-full h-[300px] z-10">
         <Image
           src={Day4Image}
           alt="Day 4 Journey"

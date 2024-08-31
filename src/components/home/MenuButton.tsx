@@ -54,10 +54,10 @@ export const MenuButton = ({
         <div className={cn} onClick={() => router.push(routePath)}>
           <Image
             src={imgSrc}
-            className="w-20 h-auto"
+            className="w-16 h-auto"
             alt={label}
-            width={74}
-            height={74}
+            width={70}
+            height={70}
           />
         </div>
         <div className="text-sm text-turquoise-100 mt-3 text-center -mr-4">

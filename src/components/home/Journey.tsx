@@ -16,7 +16,7 @@ export default function Journey() {
     return <LoadingSpinnerCustom />;
   }
   return (
-    <div className="w-full h-fit min-h-[60vh] flex flex-col">
+    <div className="w-full h-fit flex flex-col items-center justify-center">
       <div className="relative w-full h-[194px]">
         <div className="absolute w-full top-0 flex flex-col items-center h-full">
           <div className="relative w-full h-[194px] z-10">
@@ -41,10 +41,11 @@ export default function Journey() {
           if (day.day === 'Day 3') {
             return <JourneyDay3 key={day.id} />;
           }
-          if (day.day === 'Day 4') {
-            return <JourneyDay4 key={day.id} />;
-          }
+          // if (day.day === 'Day 4') {
+          //   return <JourneyDay4 key={day.id} />;
+          // }
         })}
+      <JourneyDay4 />
     </div>
   );
 }
