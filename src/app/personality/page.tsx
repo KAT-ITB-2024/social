@@ -5,10 +5,11 @@ import Landing from '~/components/personality/Landing';
 import MbtiResult from '~/components/personality/MbtiResult';
 import { type State } from '~/components/personality/QnAData';
 import LoadingMBTI from '~/components/personality/LoadingMBTI';
+import { MBTI } from '~/types/enums/mbti';
 
 export default function MbtiPage() {
   const [state, setState] = useState<State>('not started');
-  const [mostType, setMostType] = useState('');
+  const [mostType, setMostType] = useState<MBTI>('');
 
   let bgImgUrl = "url('/images/mbti/bg-mbti-landing.png')";
   if (state === 'started') {

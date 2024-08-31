@@ -13,8 +13,10 @@ import {
   TelegramIcon,
 } from 'react-share';
 import { useState } from 'react';
+import { api } from '~/trpc/react';
+import { MBTI, upperMBTI } from '~/types/enums/mbti';
 interface MbtiResultProps {
-  type: string;
+  type: MBTI;
 }
 
 export default function MbtiResult({ type }: MbtiResultProps) {
@@ -23,11 +25,16 @@ export default function MbtiResult({ type }: MbtiResultProps) {
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
   const share_url = 'app.oskmitb.com/personality';
   const share_content = `Aku mendapatkan ${capitalizedType} di Tes Kepribadian OSKM! Kalau kalian dapat apa?\nAyo coba cek personality kalian di\n`;
-  function handleSave() {
+
+  async function handleSave() {
     const link = document.createElement('a');
     link.href = `/images/mbti/${type}_download.png`;
     link.download = `oskm-mbti.png`;
     link.click();
+    if (type === '') {
+      return;
+    }
+
     setSaved(true);
   }
 

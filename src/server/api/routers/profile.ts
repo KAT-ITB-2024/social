@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import {
   getFriendProfilePayload,
+  updateMBTIPayload,
   updateProfileDataPayload,
   updateProfileImgPayload,
 } from '~/types/payloads/profile';
@@ -169,6 +170,48 @@ export const profileRouter = createTRPCRouter({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to update profile data',
+        });
+      }
+    }),
+  updateUserMBTI: publicProcedure
+    .input(updateMBTIPayload)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Unauthorized',
+        });
+      }
+
+      const { mbti } = input;
+
+      try {
+        const updatedProfile = await ctx.db
+          .update(profiles)
+          .set({
+            lastMBTI: mbti,
+          })
+          .where(eq(profiles.userId, userId))
+          .returning();
+
+        if (updatedProfile.length == 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Profile not found',
+          });
+        }
+
+        return updatedProfile;
+      } catch (error) {
+        console.log(error);
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update MBTI',
         });
       }
     }),

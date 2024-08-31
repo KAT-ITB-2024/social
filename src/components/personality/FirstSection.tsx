@@ -6,9 +6,11 @@ import { useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import React from 'react';
 import Image from 'next/image';
+import { MBTI, upperMBTI } from '~/types/enums/mbti';
+import { api } from '~/trpc/react';
 
 interface FirstSectionProps {
-  setMostType: Dispatch<SetStateAction<string>>;
+  setMostType: Dispatch<SetStateAction<MBTI>>;
   onFinished: Dispatch<SetStateAction<State>>;
 }
 
@@ -19,6 +21,7 @@ export default function FirstSection({
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, Point>>(
     {},
   );
+  const updateDBMutation = api.profile.updateUserMBTI.useMutation();
   const [isMissing, setIsMissing] = useState(false);
   const [confirmable, setConfirmable] = useState(false);
   const qtyQuestions = FirstSectionQuestions.length;
@@ -31,7 +34,7 @@ export default function FirstSection({
     setIsMissing(false);
   }
 
-  const calcScore = () => {
+  const calcScore = async () => {
     const score = {
       mova: 0,
       kovva: 0,
@@ -62,6 +65,10 @@ export default function FirstSection({
       }
     }
     setMostType(maxKey);
+    const parsedType = maxKey.charAt(0).toUpperCase() + maxKey.slice(1);
+    await updateDBMutation.mutateAsync({
+      mbti: parsedType as upperMBTI,
+    });
   };
 
   const handleSubmit = () => {
@@ -161,8 +168,8 @@ export default function FirstSection({
               <div className="flex flex-col w-3/4 mt-6">
                 <Button
                   className="bg-yellow text-blue-500 mb-2"
-                  onClick={() => {
-                    calcScore();
+                  onClick={async () => {
+                    await calcScore();
                     onFinished('loading');
                   }}
                 >

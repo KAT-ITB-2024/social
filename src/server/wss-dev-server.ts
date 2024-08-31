@@ -1,9 +1,7 @@
 import { getAdapter, initializeSocket, type SocketServer } from './socket';
 import { Server } from 'socket.io';
 import parser from 'socket.io-msgpack-parser';
-import { loadEnvFile } from 'process';
 
-loadEnvFile('.env');
 // dotenv.config();
 const startServer = () => {
   console.log('start server');
