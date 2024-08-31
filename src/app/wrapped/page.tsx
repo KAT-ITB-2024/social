@@ -29,28 +29,45 @@ function Wrapped() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [oskmWrapped, setOSKMWrapped] = useState<OSKMWrapped | null>(null);
+  const [file, setFile] = useState<File[]>([]);
+
+  const [stories, setStories] = useState<
+    { content: () => JSX.Element }[] | null
+  >(null);
 
   const { data: wrappedData, isLoading: loadingFetchingData } =
     api.wrapped.getWrapped.useQuery();
-  const mappedWrapped = wrappedData
-    ? {
-        name: wrappedData.name,
-        totalMatch: wrappedData.totalMatch,
-        submittedQuest: wrappedData.submittedQuest,
-        favTopics: wrappedData.favTopics ?? [], // default to empty array if null
-        percent: wrappedData.rankPercentage,
-        test: wrappedData.character !== null, // test is true if character is not null
-        character: wrappedData.character ?? '', // default to empty string if null
-        personality: wrappedData.personality ?? '', // default to empty string if null
-        personalityDesc: wrappedData.personalityDesc ?? '', // default to empty string if null
-        rank: wrappedData.rank,
-      }
-    : null;
 
+  const handleBack = () => {
+    router.push('/personality');
+  };
   // Update state langsung jika data ada
-  if (mappedWrapped && !oskmWrapped) {
-    setOSKMWrapped(mappedWrapped);
-  }
+  useEffect(() => {
+    const mappedWrapped = wrappedData
+      ? {
+          name: wrappedData.name,
+          totalMatch: wrappedData.totalMatch,
+          submittedQuest: wrappedData.submittedQuest,
+          favTopics: wrappedData.favTopics ?? [], // default to empty array if null
+          percent: wrappedData.rankPercentage,
+          test: wrappedData.character !== null, // test is true if character is not null
+          character: wrappedData.character ?? '', // default to empty string if null
+          personality: wrappedData.personality ?? '', // default to empty string if null
+          personalityDesc: wrappedData.personalityDesc ?? '', // default to empty string if null
+          rank: wrappedData.rank,
+        }
+      : null;
+    if (mappedWrapped && !oskmWrapped) {
+      setOSKMWrapped(mappedWrapped);
+      const result = WrappedStories({
+        oskmWrapped: mappedWrapped,
+        file,
+        setFile,
+        handleBack,
+      });
+      setStories(result);
+    }
+  }, [wrappedData]);
   if (loadingFetchingData) {
     return <LoadingSpinnerCustom />;
   }
@@ -67,9 +84,9 @@ function Wrapped() {
             isLoading ? 'blur-md' : 'blur-none transition duration-500'
           }
         >
-          {oskmWrapped && (
+          {oskmWrapped && stories && (
             <Stories
-              stories={WrappedStories({ oskmWrapped })}
+              stories={stories}
               defaultInterval={10000}
               width={'100%'}
               height={'100vh'}

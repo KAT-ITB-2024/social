@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import html2canvas from 'html2canvas';
 import { Button } from '~/components/ui/button';
-import { useState } from 'react';
+import { type Dispatch, type SetStateAction, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Share } from '~/components/share';
 import { Share2, Download } from 'lucide-react';
@@ -9,11 +9,18 @@ import { type OSKMWrapped } from '~/types/payloads/wrapped';
 
 interface WrappedStoriesProps {
   oskmWrapped: OSKMWrapped;
+  file: File[];
+  setFile: Dispatch<SetStateAction<File[]>>;
+  handleBack: () => void;
 }
 
-const WrappedStories = ({ oskmWrapped }: WrappedStoriesProps) => {
-  const router = useRouter();
-  const [file, setFile] = useState<File[]>();
+const WrappedStories = ({
+  oskmWrapped,
+  file,
+  setFile,
+  handleBack,
+}: WrappedStoriesProps) => {
+  // const router = useRouter();
 
   const handleShare = async (download: boolean) => {
     const element = document.getElementById('wrapped-summary');
@@ -373,7 +380,7 @@ const WrappedStories = ({ oskmWrapped }: WrappedStoriesProps) => {
               {oskmWrapped.test ? null : (
                 <Button
                   className="z-[1000] mt-2 w-1/2 bg-pink-400"
-                  onClick={() => router.push('/personality')}
+                  onClick={() => handleBack()}
                 >
                   Periksa disini!
                 </Button>
