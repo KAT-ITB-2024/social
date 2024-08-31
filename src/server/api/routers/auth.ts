@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import { generateHash, generateResetToken } from '~/utils/auth';
 import { TRPCError } from '@trpc/server';
-import { env } from '~/env.js';
+import { env } from '~/env.cjs';
 import { users, resetTokens } from '@katitb2024/database';
 import { eq, and } from 'drizzle-orm';
 import {

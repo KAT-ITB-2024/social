@@ -1,5 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3';
-import { env } from '~/env';
+import { env } from '~/env.cjs';
 
 const globalForS3 = globalThis as unknown as {
   s3Client: S3Client | undefined;

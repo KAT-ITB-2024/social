@@ -1,7 +1,9 @@
-import { createEnv } from '@t3-oss/env-nextjs';
-import { z } from 'zod';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { createEnv } = require('@t3-oss/env-nextjs');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { z } = require('zod');
 
-export const env = createEnv({
+exports.env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
    * isn't built with invalid env vars.
@@ -90,5 +92,4 @@ export const env = createEnv({
    * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
    * `SOME_VAR=''` will throw an error.
    */
-  emptyStringAsUndefined: true,
 });

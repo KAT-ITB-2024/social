@@ -5,13 +5,13 @@ import { profileRouter } from './routers/profile';
 import { userRouter } from './routers/user';
 import { assignmentRouter } from './routers/assignment';
 import { submissionRouter } from './routers/submission';
-import { postTestRouter } from './routers/postTest';
 import { classRouter } from './routers/class';
 import { messageRouter } from './routers/message';
 import { authRouter } from './routers/auth';
 import { leaderboardRouter } from './routers/leaderboard';
 import { storageRouter } from './routers/storage';
 import { attendanceRouter } from './routers/attendance';
+import { postTestRouter } from './routers/postTest';
 /**
  * This is the primary router for your server.
  *

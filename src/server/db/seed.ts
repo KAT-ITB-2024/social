@@ -204,31 +204,9 @@ export async function seedPostTest(db: PostgresJsDatabase<typeof schema>) {
 
     await db.insert(schema.postTests).values({
       deadline: deadline,
-      description: `Post test day ${i + 1}`,
       eventId: events[i]?.id ?? '',
-      title: `Post Test Day ${i + 1}`,
       googleFormLink: 'https://google.com',
       startTime: new Date(),
-    });
-  }
-}
-
-export async function seedPostTestSubmission(
-  db: PostgresJsDatabase<typeof schema>,
-) {
-  const tests = await db.query.postTests.findMany();
-  const users = await db.query.users.findMany();
-
-  if (tests.length < 2) {
-    throw new Error(
-      'Not enough post tests available to seed post test submissions.',
-    );
-  }
-
-  for (let i = 0; i < 10; i++) {
-    await db.insert(schema.postTestSubmissions).values({
-      postTestId: tests[i % 2]?.id ?? '',
-      userNim: users[i]?.nim ?? '',
     });
   }
 }
@@ -286,8 +264,6 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding assignment submission');
   await seedPostTest(db);
   console.log('Done seeding post test');
-  await seedPostTestSubmission(db);
-  console.log('Done seeding post test submission');
   await seedNotifications(db);
   console.log('Done seeding notifications!');
   await seedClasses(db);
@@ -298,12 +274,11 @@ export async function seed(dbUrl: string) {
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
-  console.error('No databse url provided!');
-} else {
-  await seed(dbUrl)
-    .catch((err) => {
-      console.log(err);
-    })
-    .then(() => console.log('Done seeding data!'));
-}
+
+const seeding = async () => {
+  await seed(dbUrl ?? '');
+};
+
+seeding().catch((err) => {
+  console.error(err);
+});
