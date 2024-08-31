@@ -191,8 +191,8 @@ export default function MatchPage() {
   return (
     <div className="bg-black h-screen w-full flex items-center justify-center">
       <div className="relative h-full w-full bg-white overflow-hidden">
-        <div className="flex flex-col items-center h-full justify-start px-8 relative z-20">
-          <div className="flex flex-col items-center justify-center py-40">
+        <div className="flex flex-col items-center h-full justify-center px-8 relative z-20">
+          <div className="flex flex-col items-center justify-center">
             {showForm ? (
               <NewChatForm
                 findMatch={findMatch}
