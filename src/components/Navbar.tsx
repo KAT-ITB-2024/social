@@ -9,6 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from './ui/loading-spinner';
 
 const Navbar = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -18,24 +20,17 @@ const Navbar = () => {
   };
 
   // DUMMY
-  const notifications = [
-    {
-      date: 'Yesterday, 14:32',
-      isRead: false,
-      description: 'Terdapat tugas baru yang harus kamu kerjakan!',
-    },
-    {
-      date: '2 days ago, 14:32',
-      isRead: false,
-      description:
-        'Berhasil Tandai Hadir untuk mata acara OPENING DAY 1 - OSKM ITB',
-    },
-    {
-      date: '17 Aug 2024, 14:32',
-      isRead: true,
-      description: 'Tugas Mengenal Diri Sendiri berhasil dikumpulkan!',
-    },
-  ];
+  const { data: notification, isLoading } =
+    api.notification.getAllNotifications.useQuery();
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  let notifications = notification;
+  if (!notifications) {
+    notifications = [];
+  }
 
   return (
     <div className="relative">
@@ -88,11 +83,11 @@ const Navbar = () => {
                         >
                           <div className="flex flex-row gap-3">
                             {/* Indicator */}
-                            <div>
+                            {/* <div>
                               <div
                                 className={`my-[8px] w-[8px] h-[8px] rounded-full ${notification.isRead ? 'bg-neutral-400' : 'bg-success-500'}`}
                               />
-                            </div>
+                            </div> */}
                             {/* Content */}
                             <div className="flex flex-col gap-3">
                               <span className="text-b4">

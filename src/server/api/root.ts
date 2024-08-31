@@ -12,6 +12,7 @@ import { authRouter } from './routers/auth';
 import { leaderboardRouter } from './routers/leaderboard';
 import { storageRouter } from './routers/storage';
 import { attendanceRouter } from './routers/attendance';
+import { notificationRouter } from './routers/notification';
 /**
  * This is the primary router for your server.
  *
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
   postTest: postTestRouter,
   class: classRouter,
   message: messageRouter,
+  notification: notificationRouter,
   leaderboard: leaderboardRouter,
   auth: authRouter,
   storage: storageRouter,
