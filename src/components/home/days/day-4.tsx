@@ -16,7 +16,7 @@ export const JourneyDay4 = ({ handleClick }: JourneyDay4Props) => {
           alt="Bubble3"
           width={150}
           height={120}
-          className="absolute top-0 right-[50px]"
+          className="absolute top-[-2rem] right-[50px]"
         />
       </div>
       <div className="relative w-full h-[300px] z-10">

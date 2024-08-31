@@ -7,7 +7,7 @@ export interface JourneyDay3Props {
 }
 export const JourneyDay3 = ({ handleClick }: JourneyDay3Props) => {
   return (
-    <div className="relative flex w-full h-[32vh]">
+    <div className="relative flex w-full h-[270px]">
       <div className="absolute w-full flex flex-col items-center">
         <div className="relative w-full h-[56px]">
           <Image
@@ -15,7 +15,7 @@ export const JourneyDay3 = ({ handleClick }: JourneyDay3Props) => {
             alt="Bubble2"
             width={150}
             height={120}
-            className="absolute top-[-2rem] left-[120px]"
+            className="absolute top-0 left-[120px]"
           />
         </div>
         <div className="relative w-full h-[116px] z-10">
