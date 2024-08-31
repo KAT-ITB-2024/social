@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import LM from 'public/images/assignment/left-middle.png';
 import RB from 'public/images/assignment/right-bottom.png';
@@ -5,6 +6,9 @@ import TR from 'public/images/assignment/top-right.png';
 import { MainTask } from '~/components/assignment/MainTask';
 import { SideTask } from '~/components/assignment/SideTask';
 import { TabsAssignment, type TabsProps } from '~/components/Tabs';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const AssignmentPage = () => {
   const TabsProps: TabsProps = {
@@ -13,6 +17,13 @@ const AssignmentPage = () => {
     leftContent: <MainTask />,
     rightContent: <SideTask />,
   };
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
   return (
     <main className="h-screen w-full items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
       {/* Background Component */}

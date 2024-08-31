@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState } from 'react';
 import { CustomPagination } from '~/components/leaderboard/Pagination';
 import CardDefault from '~/components/leaderboard/CardDefault';
 import TopThreeContainer from '~/components/leaderboard/TopThreeContainer';
@@ -8,13 +8,13 @@ import { TabsAssignment } from '~/components/leaderboard/Tabs';
 import { useSearchParams } from 'next/navigation';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { api } from '~/trpc/react';
-// import { api as serverApi } from '~/trpc/server';
 
-import ProfileFriendModal, {
-  type ProfileDetailProps,
-} from '~/components/profile/ModalProfileFriend';
+import ProfileFriendModal from '~/components/profile/ModalProfileFriend';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 function LeaderBoardContent() {
+  const { data: session, status } = useSession();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -45,7 +45,8 @@ function LeaderBoardContent() {
   if (
     leaderboardData.isLoading ||
     groupLeaderboardData.isLoading ||
-    userData.isLoading
+    userData.isLoading ||
+    status === 'loading'
   ) {
     return (
       <main className="min-h-screen items-center justify-center flex flex-col">
@@ -88,6 +89,10 @@ function LeaderBoardContent() {
     currentContent === 'Individu'
       ? Math.ceil(leaderboardData.data!.totalProfiles / 20)
       : Math.ceil(groupLeaderboardData.data!.totalGroups / 20);
+
+  if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
 
   return (
     <main className="h-screen items-center justify-center flex flex-col">

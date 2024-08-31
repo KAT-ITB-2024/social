@@ -16,8 +16,12 @@ import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
 import { AssignmentConfirmationModal } from '~/components/assignment/ConfirmationModal';
 import { AssingmentInfoModal } from '~/components/assignment/InfoModal';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
+  const { data: session, status } = useSession();
+
   const router = useRouter();
   const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
   const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
@@ -151,6 +155,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   if (isLoading || !assignment || isSubmitting) {
     return <LoadingSpinnerCustom />;
   }
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div

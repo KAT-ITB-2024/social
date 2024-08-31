@@ -12,8 +12,11 @@ import { ErrorToast } from '~/components/ui/error-toast';
 import Coral1 from 'public/images/class-selection/coral-1.png';
 import Coral2 from 'public/images/class-selection/coral-2.png';
 import { type Class } from '@katitb2024/database';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function ClassSelection() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [confirmedClassId, setConfirmedClassId] = useState<string | null>(null);
   const [allClasses, setAllClasses] = useState<Class[]>([]);
@@ -61,6 +64,12 @@ export default function ClassSelection() {
 
   if (classesLoading ?? enrolledClassLoading) {
     return <LoadingSpinnerCustom />;
+  }
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
   }
 
   return (
