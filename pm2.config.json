@@ -1,0 +1,28 @@
+{
+    "apps": [
+      {
+        "name": "oskm-social-1",
+        "script": "yarn",
+        "args": "start -p 3001",
+        "exec_mode": "fork"
+      },
+      {
+        "name": "oskm-social-2",
+        "script": "yarn",
+        "args": "start -p 3002",
+        "exec_mode": "fork"
+      },
+      {
+        "name": "oskm-social-3",
+        "script": "yarn",
+        "args": "start -p 3003",
+        "exec_mode": "fork"
+      },
+      {
+        "name": "oskm-main-4",
+        "script": "yarn",
+        "args": "start -p 3004",
+        "exec_mode": "fork"
+      }
+    ]
+  }
