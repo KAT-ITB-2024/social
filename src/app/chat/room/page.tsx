@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import { type UserMatch, type Message } from '@katitb2024/database';
@@ -91,6 +91,7 @@ const Chat = () => {
       if (data.match === undefined) {
         void router.push('/chat');
       } else {
+        console.log(data.match);
         setMatch(data.match);
       }
     },
@@ -194,13 +195,6 @@ const Chat = () => {
     setTimeout(() => setOpponentTyping(false), 1000);
   });
 
-  // const [sentryRef] = useInfiniteScroll({
-  //   loading: false,
-  //   hasNextPage: true,f\
-  //   onLoadMore: fetchMoreMessages,
-  //   rootMargin: '0px 0px 400px 0px',
-  // });
-
   useEffect(() => {
     const msgs = messageQuery.data?.pages.map((page) => page.messages).flat();
     addMessages(msgs);
@@ -243,7 +237,7 @@ const Chat = () => {
       >
         <ChatNavbar
           isTyping={opponentTyping}
-          opponentId={profileData?.[0] ? profileData[0].name : ''}
+          opponentId={profileData?.[0] ? profileData[0].userId : ''}
           name={
             match?.isRevealed && profileData?.[0] ? profileData[0]?.name : null
           }

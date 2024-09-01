@@ -76,36 +76,46 @@ const Navbar = () => {
                     <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[14px] border-l-transparent border-r-transparent border-b-turquoise-100" />
                   </div>
                   <DropdownMenuGroup>
-                    {notifications.map((notification, index) => (
-                      <div key={index}>
-                        <DropdownMenuItem
-                          className={`bg-turquoise-100 ${index === 0 ? 'rounded-t-sm' : ''}`}
-                        >
-                          <div className="flex flex-row gap-3">
-                            {/* Indicator */}
-                            {/* <div>
+                    {notifications.length === 0 ? (
+                      <DropdownMenuItem
+                        className={`bg-turquoise-100 rounded-t-sm`}
+                      >
+                        <div className="p-4 text-center">
+                          Tidak ada Notifikasi
+                        </div>
+                      </DropdownMenuItem>
+                    ) : (
+                      notifications.map((notification, index) => (
+                        <div key={index}>
+                          <DropdownMenuItem
+                            className={`bg-turquoise-100 ${index === 0 ? 'rounded-t-sm' : ''}`}
+                          >
+                            <div className="flex flex-row gap-3">
+                              {/* Indicator */}
+                              {/* <div>
                               <div
                                 className={`my-[8px] w-[8px] h-[8px] rounded-full ${notification.isRead ? 'bg-neutral-400' : 'bg-success-500'}`}
                               />
                             </div> */}
-                            {/* Content */}
-                            <div className="flex flex-col gap-3">
-                              <span className="text-b4">
-                                {notification.description}
-                              </span>
-                              <span className="text-b5 text-neutral-400">
-                                {notification.date}
-                              </span>
+                              {/* Content */}
+                              <div className="flex flex-col gap-3">
+                                <span className="text-b4">
+                                  {notification.description}
+                                </span>
+                                <span className="text-b5 text-neutral-400">
+                                  {notification.date}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </DropdownMenuItem>
-                        {index < notifications.length - 1 && (
-                          <div className="bg-turquoise-100 py-1">
-                            <DropdownMenuSeparator className="bg-turquoise-200" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                          </DropdownMenuItem>
+                          {index < notifications.length - 1 && (
+                            <div className="bg-turquoise-100 py-1">
+                              <DropdownMenuSeparator className="bg-turquoise-200" />
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>

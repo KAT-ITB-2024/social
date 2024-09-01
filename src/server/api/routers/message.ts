@@ -278,7 +278,7 @@ export const messageRouter = createTRPCRouter({
             id: otherUser.id,
             name:
               chatHeader.isAnonymous && !chatHeader.isRevealed
-                ? 'Anynomous'
+                ? 'Anonymous'
                 : otherUser.name,
             profileImage:
               chatHeader.isAnonymous && !chatHeader.isRevealed
@@ -361,7 +361,7 @@ export const messageRouter = createTRPCRouter({
           id: otherUser.id,
           name:
             chatHeader.isAnonymous && !chatHeader.isRevealed
-              ? 'Anynomous'
+              ? 'Anonymous'
               : otherUser.name,
           profileImage:
             chatHeader.isAnonymous && !chatHeader.isRevealed
