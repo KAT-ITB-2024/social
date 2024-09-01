@@ -8,9 +8,20 @@ import Coral from 'public/images/attendance/Coral.png';
 import CoralPensu from 'public/images/attendance/Coral Pensu.png';
 import { AttendanceCard } from '~/components/attendance/AttendanceCard';
 import { api } from '~/trpc/react';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 export default function AttendancePage() {
+  const { data: session, status } = useSession();
   const getAllAttendancesQuery = api.attendance.getAllAttendances.useQuery();
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
+
   return (
     <main className="flex min-h-screen w-screen max-w-md flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
       <div className="min-h-screen w-full bg-[url('/images/attendance/Background.png')] bg-center bg-no-repeat bg-cover p-6 pt-28">

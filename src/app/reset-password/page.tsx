@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import { type z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -20,7 +20,6 @@ import { api } from '~/trpc/react';
 import { toast } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { TRPCError } from '@trpc/server';
-import { param } from 'drizzle-orm';
 
 const NewPasswordPage = () => {
   type ResetPasswordPayloadSchema = z.infer<typeof ResetPasswordPayload>;

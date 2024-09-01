@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
@@ -16,8 +16,12 @@ import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
 import { AssignmentConfirmationModal } from '~/components/assignment/ConfirmationModal';
 import { AssingmentInfoModal } from '~/components/assignment/InfoModal';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
+  const { data: session, status } = useSession();
+
   const router = useRouter();
   const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
   const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
@@ -128,10 +132,13 @@ export default function DetailPage({ params }: { params: { id: string } }) {
           filename,
           downloadUrl,
         });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         await uploadFile(url, file, AllowableFileTypeEnum.PDF);
         setProgress(0);
         setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setDownloadUrl(downloadUrl);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setFilename(filename);
         setShowInfoModal(true);
       } catch (error) {
@@ -148,6 +155,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   if (isLoading || !assignment || isSubmitting) {
     return <LoadingSpinnerCustom />;
   }
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div

@@ -19,7 +19,6 @@ import { Input } from '@/components/ui/input';
 import { RequestResetPasswordPayload } from '~/types/payloads/auth';
 
 // Image Import
-import Image from 'next/image';
 import Starfish from 'public/images/login/Starfish.png';
 
 // Component Import

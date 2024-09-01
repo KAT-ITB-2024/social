@@ -1,6 +1,6 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import {
-  Assignment,
+  type Assignment,
   assignmentSubmissions,
   assignmentTypeEnum,
   assignments,

@@ -9,13 +9,17 @@ import ButtonOskmWrap from '~/components/home/ButtonOSKMWrap';
 import { useEffect, useState } from 'react';
 import { getCurrentWIBTime } from '~/server/api/helpers/utils';
 import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 export default function Home() {
-  const [showCoins, setShowCoins] = useState(true);
-  const [showOSKMWrapped, setShowOSKMWrapped] = useState(true);
+  const { data: session, status } = useSession();
+  const [showCoins, setShowCoins] = useState(false);
+  const [showOSKMWrapped, setShowOSKMWrapped] = useState(false);
   const router = useRouter();
 
-  // TODO: CHECK USE SESSION AND SET OSKM WRAPPED NAME
+  // TODO: SET OSKM WRAPPED NAME
 
   useEffect(() => {
     const now = getCurrentWIBTime();
@@ -27,6 +31,12 @@ export default function Home() {
       setShowCoins(true);
     }
   }, []);
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
 
   return (
     <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/background.png')] bg-center bg-no-repeat bg-cover">
