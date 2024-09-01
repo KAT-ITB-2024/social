@@ -10,7 +10,6 @@ import {
 export type SocketClient = Socket<ServerToClientEvents, ClientToServerEvents>;
 
 export const socket: SocketClient = io(env.NEXT_PUBLIC_WS_URL, {
-  path: '/socket.io/',
   withCredentials: false,
   parser,
   transports: ['websocket'],
