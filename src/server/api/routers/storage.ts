@@ -56,7 +56,9 @@ export const storageRouter = createTRPCRouter({
         Key: file,
       });
       try {
-        const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+        const url = await getSignedUrl(s3Client, command, {
+          expiresIn: 604800,
+        });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return url;
       } catch (error) {
