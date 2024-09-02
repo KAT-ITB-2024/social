@@ -1,4 +1,4 @@
-name: Deploy Productoin Social
+name: Deploy Production Social
 
 on:
   # Runs on pushes targeting the default branch
