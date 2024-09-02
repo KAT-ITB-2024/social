@@ -33,6 +33,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [assignmentStatus, setAssignmentStatus] =
     useState<AssignmentSubmission | null>(null);
+  const [sudahKumpul, setSudahKumpul] = useState(false);
   const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
     id: params.id,
   });
@@ -60,7 +61,15 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             setFilename(assignment.assignmentSubmissions.filename);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             setDownloadUrl(assignment.assignmentSubmissions.downloadUrl);
-            setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+            if (
+              assignment.assignmentSubmissions.createdAt >
+              assignment.assignments.deadline
+            ) {
+              setAssignmentStatus(AssignmentSubmission.TERLAMBAT);
+            } else {
+              setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+            }
+            setSudahKumpul(true);
           } catch (error) {}
         } else {
           if (assignment.assignments.deadline < new Date()) {
@@ -189,7 +198,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                 <div className="flex flex-row">
                   <p className="text-b4">
                     <b>Deadline :</b>{' '}
-                    {format(assignment.assignments.deadline, 'PPPP', {
+                    {format(assignment.assignments.deadline, 'PPPP - HH:mm', {
                       locale: idLocale,
                     })}
                   </p>
@@ -230,29 +239,33 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   isUserSubmit={true}
                   onDelete={handleDelete}
                   isDeleteable={
-                    assignment.assignmentSubmissions?.point === null
+                    assignment.assignmentSubmissions?.point === null &&
+                    assignmentStatus !== AssignmentSubmission.TERLAMBAT
                   }
                 />
               ) : (
-                assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
-                  <div className="relative">
-                    <Image
-                      src="/images/detail/ubur-ubur.png"
-                      alt="Ubur-Ubur"
-                      width={120}
-                      height={90}
-                    />
-                    <FileUpload
-                      className="h-8 w-32 rounded-[4px] bg-blue-500 px-5 py-2 text-b5 text-[#FFFEFE]"
-                      progress={progress}
-                      setFile={setFile}
-                      setFilename={setFilename}
-                    />
-                  </div>
-                )
+                <div className="relative">
+                  <Image
+                    src="/images/detail/ubur-ubur.png"
+                    alt="Ubur-Ubur"
+                    width={120}
+                    height={90}
+                  />
+                  <FileUpload
+                    className="h-8 w-32 rounded-[4px] bg-blue-500 px-5 py-2 text-b5 text-[#FFFEFE]"
+                    progress={progress}
+                    setFile={setFile}
+                    setFilename={setFilename}
+                  />
+                </div>
               )}
             </div>
-            {assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
+            {(assignmentStatus === AssignmentSubmission.BELUM_KUMPUL ||
+              (assignmentStatus === AssignmentSubmission.TERLAMBAT &&
+                !filename) ||
+              (assignmentStatus === AssignmentSubmission.TERLAMBAT &&
+                filename &&
+                !sudahKumpul)) && (
               <AssignmentConfirmationModal
                 handleSubmit={handleSubmit}
                 customTriggerButton={
