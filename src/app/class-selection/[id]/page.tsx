@@ -199,7 +199,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {(!enrolledClass ?? enrolledClass.id !== selectedClass?.id) ? (
+        {!enrolledClass ? (
           <Button
             className="z-0 mb-8 bg-pink-400"
             onClick={openConfirmationModal}

@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { users } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
@@ -10,7 +10,7 @@ import {
 } from '~/types/payloads/user';
 
 export const userRouter = createTRPCRouter({
-  addUser: publicProcedure
+  addUser: pesertaProcedure
     .input(userInsertPayload)
     .mutation(async ({ ctx, input }) => {
       const password = await hash(input.password, 10);
@@ -39,7 +39,7 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
-  forgotPassword: publicProcedure
+  forgotPassword: pesertaProcedure
     .input(userUpdatePayload)
     .mutation(async ({ ctx, input }) => {
       const nim = ctx.session?.user.nim;
@@ -74,13 +74,13 @@ export const userRouter = createTRPCRouter({
     }),
 
   // Get all users
-  getAllUsers: publicProcedure.query(async ({ ctx }) => {
+  getAllUsers: pesertaProcedure.query(async ({ ctx }) => {
     const allUsers = await ctx.db.select().from(users);
     return allUsers;
   }),
 
   // Get a user by ID
-  getUserById: publicProcedure
+  getUserById: pesertaProcedure
     .input(userIdPayload)
     .query(async ({ ctx, input }) => {
       const user = await ctx.db
@@ -96,7 +96,7 @@ export const userRouter = createTRPCRouter({
       return user;
     }),
   // Delete a user
-  deleteUser: publicProcedure
+  deleteUser: pesertaProcedure
     .input(userIdPayload)
     .mutation(async ({ ctx, input }) => {
       const deletedUser = await ctx.db

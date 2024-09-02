@@ -1,10 +1,10 @@
 import { notifications } from '@katitb2024/database';
 import { TRPCError } from '@trpc/server';
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { desc } from 'drizzle-orm';
 
 export const notificationRouter = createTRPCRouter({
-  getAllNotifications: publicProcedure.query(async ({ ctx }) => {
+  getAllNotifications: pesertaProcedure.query(async ({ ctx }) => {
     try {
       const notifs = await ctx.db
         .select()
