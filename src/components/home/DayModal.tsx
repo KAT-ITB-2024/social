@@ -76,14 +76,12 @@ export function DayModal({ event, isOpen, setIsOpen }: DayModalProps) {
                 {event.lore}
               </p>
             </AlertDialogDescription>
-            <span className="text-sh5 font-bold text-blue-500">
-              Youtube Video
-            </span>{' '}
+            <span className="text-sh5 font-bold text-blue-500">Video</span>{' '}
             <Link
               href={event.youtubeVideo ?? ''}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-b4 text-pink-400"
+              className="w-full truncate text-b4 text-pink-400"
             >
               {event.youtubeVideo}
             </Link>
