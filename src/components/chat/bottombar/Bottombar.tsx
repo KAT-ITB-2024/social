@@ -40,7 +40,7 @@ const BottomBar = () => {
   ];
 
   return (
-    <div className="absolute bottom-0 left-0 max-w-md bg-blue-600 rounded-t-[46px] flex justify-center items-center w-full h-20 gap-20 shadow-green-xl ">
+    <div className="absolute bottom-0 left-0 flex h-20 w-full max-w-md items-center justify-center gap-20 rounded-t-[46px] bg-blue-600 shadow-green-xl">
       {tabs.map((tab, index) => (
         <a
           key={index}
@@ -48,7 +48,7 @@ const BottomBar = () => {
           className="flex flex-row items-center justify-center"
         >
           <div
-            className={`flex flex-col items-center justify-evenly text-neutral-50 gap-0 w-20 h-16 ${activeTab === tab.id ? 'text-turquoise-200' : ''}`}
+            className={`flex h-16 w-20 flex-col items-center justify-evenly gap-0 text-neutral-50 ${activeTab === tab.id ? 'text-turquoise-200' : ''}`}
           >
             <Image
               src={activeTab === tab.id ? tab.activeIcon : tab.icon}
@@ -59,7 +59,7 @@ const BottomBar = () => {
             <p className="text-b4">{tab.label}</p>
 
             {activeTab === tab.id && (
-              <div className="w-full h-1 bg-turquoise-200 mt-1"></div>
+              <div className="mt-1 h-1 w-full bg-turquoise-200"></div>
             )}
           </div>
         </a>

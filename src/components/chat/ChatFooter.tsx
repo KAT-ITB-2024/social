@@ -18,12 +18,10 @@ export const ChatFooter = ({
 }: ChatFooterProps) => {
   return (
     <div
-      className={`flex flex-row items-center justify-between p-4 bg-blue-600 gap-2 shadow-orange-2xl
-          ${isMenuOpen ? '' : 'rounded-t-2xl'}
-        `}
+      className={`flex flex-row items-center justify-between gap-2 bg-blue-600 p-4 shadow-orange-2xl ${isMenuOpen ? '' : 'rounded-t-2xl'} `}
     >
       <div
-        className="flex flex-row p-2 rounded-full bg-turquoise-300 text-neutral-50 gap-0.5 cursor-pointer"
+        className="flex cursor-pointer flex-row gap-0.5 rounded-full bg-turquoise-300 p-2 text-neutral-50"
         onClick={toggleMenu}
       >
         <Image
@@ -35,9 +33,9 @@ export const ChatFooter = ({
         Menu
       </div>
 
-      <div className="flex-grow flex flex-row bg-neutral-50 rounded-2xl items-center pr-4 pl-2">
+      <div className="flex flex-grow flex-row items-center rounded-2xl bg-neutral-50 pl-2 pr-4">
         <Textarea
-          className="w-full rounded-none px-2 my-1 h-full max-h-32 overflow-y-auto border-0 text-area-scrollbar placeholder:text-blue-200 bg-neutral-50 "
+          className="text-area-scrollbar my-1 h-full max-h-32 w-full overflow-y-auto rounded-none border-0 bg-neutral-50 px-2 placeholder:text-blue-200"
           rows={2}
           value={newMessage}
           onChange={handleTyping}
@@ -45,7 +43,7 @@ export const ChatFooter = ({
         />
         <div className="my-2 ml-4">
           <button
-            className="bg-blue-300 text-white rounded-full w-[24px] h-[24px] items-center flex justify-center"
+            className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-blue-300 text-white"
             onClick={handleSendMessage}
           >
             <Image

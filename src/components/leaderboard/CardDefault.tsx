@@ -23,7 +23,7 @@ export default function CardDefault({
 }: CardDefaultProps) {
   return (
     <button
-      className={`flex flex-row w-[345px] items-center p-2 rounded-[12px] border-[2px] border-[#05A798] gap-2 text-[#006E6F] shadow-[4px_4px_10px_0_#FFBF5180] bg-gradient-to-br ${
+      className={`flex w-[345px] flex-row items-center gap-2 rounded-[12px] border-[2px] border-[#05A798] bg-gradient-to-br p-2 text-[#006E6F] shadow-[4px_4px_10px_0_#FFBF5180] ${
         isUser
           ? 'from-[#0CEBCC99] to-[#05A798]'
           : 'from-[#C5FFF3B2] to-[#99E0FFB2]'
@@ -31,23 +31,23 @@ export default function CardDefault({
       onClick={onClick}
     >
       {/* Rank */}
-      <span className="font-heading w-[46px] text-center text-wrap font-normal">
+      <span className="w-[46px] text-wrap text-center font-heading font-normal">
         #{rank}
       </span>
 
       {/* Profile section*/}
-      <div className="flex gap-2 flex-row items-center flex-grow">
+      <div className="flex flex-grow flex-row items-center gap-2">
         {isIndividual && profileImage ? (
           <>
             <Image
-              className="w-[40px] h-[40px] rounded-full"
+              className="h-[40px] w-[40px] rounded-full"
               src={profileImage}
               alt="profile-image"
               width={40}
               height={40}
             />
             <div className="flex flex-col justify-between text-left">
-              <p className="font-subheading font-bold break-all line-clamp-1">
+              <p className="line-clamp-1 break-all font-subheading font-bold">
                 {name}
               </p>
               <p className="font-body text-sm font-normal">{nim}</p>
@@ -55,16 +55,16 @@ export default function CardDefault({
           </>
         ) : (
           <>
-            <span className="w-10 flex items-center justify-center h-10 rounded-full bg-[#FEFDA3] font-heading font-normal text-xl">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FEFDA3] font-heading text-xl font-normal">
               {name.split('-')[1]}
             </span>
-            <p className="font-subheading font-bold break-all line-clamp-1">{`${name}`}</p>
+            <p className="line-clamp-1 break-all font-subheading font-bold">{`${name}`}</p>
           </>
         )}
       </div>
 
       {/* Points */}
-      <span className="rounded-full px-2 text-wrap font-heading font-normal bg-[#FEFDA3]">
+      <span className="text-wrap rounded-full bg-[#FEFDA3] px-2 font-heading font-normal">
         {point}&nbsp;pts
       </span>
     </button>

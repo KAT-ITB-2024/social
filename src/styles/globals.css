@@ -69,47 +69,47 @@ body {
 }
 
 h1 {
-  @apply text-h1 font-heading;
+  @apply font-heading text-h1;
 }
 
 h2 {
-  @apply text-h2 font-heading;
+  @apply font-heading text-h2;
 }
 
 h3 {
-  @apply text-h3 font-heading;
+  @apply font-heading text-h3;
 }
 
 h4 {
-  @apply text-h4 font-heading;
+  @apply font-heading text-h4;
 }
 
 h5 {
-  @apply text-h5 font-heading;
+  @apply font-heading text-h5;
 }
 
 h6 {
-  @apply text-h6 font-heading;
+  @apply font-heading text-h6;
 }
 
 .sh1 {
-  @apply text-sh1 font-subheading font-bold;
+  @apply font-subheading text-sh1 font-bold;
 }
 
 .sh2 {
-  @apply text-sh2 font-subheading font-bold;
+  @apply font-subheading text-sh2 font-bold;
 }
 
 .sh3 {
-  @apply text-sh3 font-subheading font-bold;
+  @apply font-subheading text-sh3 font-bold;
 }
 
 .sh4 {
-  @apply text-sh4 font-subheading font-bold;
+  @apply font-subheading text-sh4 font-bold;
 }
 
 .sh5 {
-  @apply text-sh5 font-subheading font-bold;
+  @apply font-subheading text-sh5 font-bold;
 }
 
 /* Fonts */

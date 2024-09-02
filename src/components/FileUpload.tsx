@@ -45,9 +45,9 @@ const FileUploader: React.FC<FileUploadProps> = ({
 
       {/* Progress Bar */}
       {progress > 0 && (
-        <div className="w-full bg-gray-200 rounded-full mt-2">
+        <div className="mt-2 w-full rounded-full bg-gray-200">
           <div
-            className="bg-blue-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+            className="rounded-full bg-blue-500 p-0.5 text-center text-xs font-medium leading-none text-blue-100"
             style={{ width: `${progress}%` }}
           >
             {Math.round(progress)}%

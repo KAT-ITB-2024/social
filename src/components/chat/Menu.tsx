@@ -16,13 +16,13 @@ export const ChatMenu = ({
 }: ChatMenuProps) => {
   return (
     <div
-      className={`w-full bg-blue-400 rounded-t-xl h-auto z-20 px-4 py-3 text-white absolute bottom-[72px]  transition-all duration-300 ease-out ${
-        isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'
+      className={`absolute bottom-[72px] z-20 h-auto w-full rounded-t-xl bg-blue-400 px-4 py-3 text-white transition-all duration-300 ease-out ${
+        isMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
       }`}
     >
       <ul className="flex flex-col gap-1">
         <li
-          className="flex flex-row justify-start gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
+          className="flex cursor-pointer flex-row justify-start gap-2 rounded-md p-2 hover:bg-blue-500"
           onClick={() => openModal('isEndConfirmationModalOpen')}
         >
           <Image
@@ -33,11 +33,11 @@ export const ChatMenu = ({
           />
           <span>Stop Pembicaraan</span>
         </li>
-        <div className="w-full bg-white flex h-[0.5px]" />
+        <div className="flex h-[0.5px] w-full bg-white" />
         {!match?.isRevealed && (
           <>
             <li
-              className="flex flex-col gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
+              className="flex cursor-pointer flex-col gap-2 rounded-md p-2 hover:bg-blue-500"
               onClick={handleAskReveal}
             >
               <div className="flex flex-row justify-start gap-2">
@@ -50,11 +50,11 @@ export const ChatMenu = ({
                 <span>Minta Reveal Profile</span>
               </div>
             </li>
-            <div className="w-full bg-white flex h-[1px]" />
+            <div className="flex h-[1px] w-full bg-white" />
           </>
         )}
         <li
-          className="flex flex-row justify-start gap-2 cursor-pointer hover:bg-blue-500 rounded-md p-2"
+          className="flex cursor-pointer flex-row justify-start gap-2 rounded-md p-2 hover:bg-blue-500"
           onClick={() => openModal('isRulesModalOpen')}
         >
           <Image

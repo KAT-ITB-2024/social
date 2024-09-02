@@ -72,7 +72,7 @@ const Messages = ({
 
   return (
     <div
-      className="flex-grow flex flex-col-reverse overflow-y-auto p-4 mt-20 no-scrollbar z-10"
+      className="no-scrollbar z-10 mt-20 flex flex-grow flex-col-reverse overflow-y-auto p-4"
       ref={containerRef}
     >
       {messages.map((msg, index) => (

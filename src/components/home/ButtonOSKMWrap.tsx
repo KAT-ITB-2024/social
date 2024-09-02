@@ -9,9 +9,9 @@ export const ButtonOSKMWrap = () => {
   const userName = 'Jason';
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex items-center justify-center">
       <div
-        className="flex flex-col w-[86%] justify-center items-center py-[24px] px-5 container rounded-xl my-5 gap-3"
+        className="container my-5 flex w-[86%] flex-col items-center justify-center gap-3 rounded-xl px-5 py-[24px]"
         onClick={() => router.push(routePath)}
         style={{
           backgroundImage: "url('/images/home/bg-oskm-wrapped-button.jpeg')",
@@ -20,10 +20,10 @@ export const ButtonOSKMWrap = () => {
           opacity: 0.9,
         }}
       >
-        <div className="font-[700] text-xl text-center leading-[24px] text-[#000D76] px-5">
+        <div className="px-5 text-center text-xl font-[700] leading-[24px] text-[#000D76]">
           {userName}, your OSKM Wrapped is here!
         </div>
-        <div className="text-[#000D76] text-center">
+        <div className="text-center text-[#000D76]">
           Tap to reveal your diving secrets!
         </div>
       </div>

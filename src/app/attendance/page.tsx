@@ -23,27 +23,27 @@ export default function AttendancePage() {
   }
 
   return (
-    <main className="flex min-h-screen w-screen max-w-md flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white z-0">
-      <div className="min-h-screen w-full bg-[url('/images/attendance/Background.png')] bg-center bg-no-repeat bg-cover p-6 pt-28">
+    <main className="z-0 flex min-h-screen w-screen max-w-md flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+      <div className="min-h-screen w-full bg-[url('/images/attendance/Background.png')] bg-cover bg-center bg-no-repeat p-6 pt-28">
         {/* Background Component */}
         <Image
           src={Bubble}
           alt="bubble"
-          className="absolute top-0 right-0 w-[90%] z-10"
+          className="absolute right-0 top-0 z-10 w-[90%]"
         />
         <Image
           src={Coral}
           alt="coral"
-          className="absolute right-0 bottom-0 w-[60%] z-10 opacity-70"
+          className="absolute bottom-0 right-0 z-10 w-[60%] opacity-70"
         />
         <Image
           src={CoralPensu}
           alt="coral pensu"
-          className="absolute left-0 bottom-0 z-10"
+          className="absolute bottom-0 left-0 z-10"
         />
 
         {/* Content */}
-        <h1 className="w-full relative z-20 text-blue-600 text-center font-heading font-normal text-h3 drop-shadow-orange-shadow pb-6">
+        <h1 className="relative z-20 w-full pb-6 text-center font-heading text-h3 font-normal text-blue-600 drop-shadow-orange-shadow">
           Attendance List
         </h1>
         <div className="flex flex-col gap-7">
@@ -52,9 +52,9 @@ export default function AttendancePage() {
             .map((day, index) => (
               <div
                 key={index}
-                className="w-full relative z-20 flex flex-col items-center justify-center gap-4"
+                className="relative z-20 flex w-full flex-col items-center justify-center gap-4"
               >
-                <h1 className="w-full text-blue-600 text-center font-heading font-normal text-h4 drop-shadow-orange-shadow">
+                <h1 className="w-full text-center font-heading text-h4 font-normal text-blue-600 drop-shadow-orange-shadow">
                   {day.day}
                 </h1>
                 {/* Opening */}

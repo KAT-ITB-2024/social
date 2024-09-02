@@ -73,19 +73,19 @@ export default function ClassSelection() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center  bg-turquoise-100 max-h-screen">
-      <div className="fixed-width-container bg-classes bg-center bg-no-repeat bg-cover p-6 pt-32 flex flex-col items-center min-h-screen z-0">
+    <main className="flex max-h-screen flex-col items-center justify-center bg-turquoise-100">
+      <div className="fixed-width-container z-0 flex min-h-screen flex-col items-center bg-classes bg-cover bg-center bg-no-repeat p-6 pt-32">
         <Image
           src={Coral1}
           alt="coral-1"
-          className="absolute bottom-0 left-[12%] w-[29%] z-0"
+          className="absolute bottom-0 left-[12%] z-0 w-[29%]"
         />
         <Image
           src={Coral2}
           alt="coral-2"
-          className="absolute bottom-0 left-0 w-[23%] z-0"
+          className="absolute bottom-0 left-0 z-0 w-[23%]"
         />
-        <div className="z-10 w-full max-w-md overflow-y-scroll py-4 px-6 mt-20 scroll-container md:no-scrollbar">
+        <div className="scroll-container md:no-scrollbar z-10 mt-20 w-full max-w-md overflow-y-scroll px-6 py-4">
           <div className="grid gap-5">
             {allClasses?.map((cls) => (
               <CustomCard

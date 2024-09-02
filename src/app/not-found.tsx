@@ -20,22 +20,22 @@ export default function NotFound() {
           width={300}
           height={300}
         />
-        <p className="text-blue-600 text-center text-5xl px-10 font-heading ">
+        <p className="px-10 text-center font-heading text-5xl text-blue-600">
           {' '}
           UPS!{' '}
         </p>
-        <p className="text-blue-600 text-center text-xl px-10 font-bold">
+        <p className="px-10 text-center text-xl font-bold text-blue-600">
           {' '}
           Kamu menyelam terlalu dalam!{' '}
         </p>
-        <p className="text-blue-600 text-center text-base px-10">
+        <p className="px-10 text-center text-base text-blue-600">
           {' '}
           Jangan khawatir, Aqualings! Kalian bisa{' '}
         </p>
-        <p className="text-blue-600 text-center text-base px-10">
+        <p className="px-10 text-center text-base text-blue-600">
           langsung kembali ke <span> </span>
           <Link href="/" legacyBehavior>
-            <a className="text-pink-400 text-base hover:underline">home</a>
+            <a className="text-base text-pink-400 hover:underline">home</a>
           </Link>
         </p>
       </div>

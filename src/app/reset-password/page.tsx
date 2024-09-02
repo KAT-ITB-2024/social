@@ -77,18 +77,18 @@ const NewPasswordPage = () => {
   }
 
   return (
-    <div className="mt-[120px] flex flex-col gap-2 w-full items-center">
-      <h3 className="text-[60px] text-blue-500 text-center">
+    <div className="mt-[120px] flex w-full flex-col items-center gap-2">
+      <h3 className="text-center text-[60px] text-blue-500">
         Password <br /> Baru
       </h3>
-      <p className="text-blue-500 font-bold text-center">
+      <p className="text-center font-bold text-blue-500">
         Mari masukkan password baru, Aqualings!
       </p>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 z-20 w-full"
+          className="z-20 w-full space-y-2"
         >
           <FormField
             control={form.control}
@@ -104,10 +104,10 @@ const NewPasswordPage = () => {
                       {...field}
                       placeholder="New Password"
                       type={showPassword ? 'text' : 'password'}
-                      className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
+                      className="rounded-lg border-2 border-neutral-400 focus-visible:ring-transparent"
                     />
                     <div
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                       onClick={toggleShowPassword}
                     >
                       <svg
@@ -154,10 +154,10 @@ const NewPasswordPage = () => {
                       {...field}
                       placeholder="Confirm Password"
                       type={showConfirmPassword ? 'text' : 'password'}
-                      className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
+                      className="rounded-lg border-2 border-neutral-400 focus-visible:ring-transparent"
                     />
                     <div
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                       onClick={toggleShowConfirmPassword}
                     >
                       <svg
@@ -191,10 +191,10 @@ const NewPasswordPage = () => {
             )}
           />
           <div className="py-2" />
-          <div className="w-full flex justify-center">
+          <div className="flex w-full justify-center">
             <Button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              className="bg-blue-500 px-8 shadow-lg hover:bg-blue-400"
               disabled={!isValid}
             >
               Send

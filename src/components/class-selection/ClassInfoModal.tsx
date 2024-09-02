@@ -25,12 +25,12 @@ const ClassInfoModal = ({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
         className={cn(
-          'w-[300px] px-4 py-14 bg-white rounded-[12px] shadow-pink-xl',
+          'w-[300px] rounded-[12px] bg-white px-4 py-14 shadow-pink-xl',
           className,
         )}
       >
         <div
-          className="absolute top-4 right-4 text-2x cursor-pointer"
+          className="text-2x absolute right-4 top-4 cursor-pointer"
           onClick={() => setIsOpen(false)}
         >
           <Image src={CloseIcon} alt="Close Icon" width={32} height={32} />
@@ -41,7 +41,7 @@ const ClassInfoModal = ({
             Yeay!
           </p>
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-pink-400 text-center">
+        <AlertDialogDescription className="text-center text-pink-400">
           Kamu berhasil terdaftar di kelas ini
         </AlertDialogDescription>
       </AlertDialogContent>

@@ -8,25 +8,25 @@ export interface JourneyDay2Props {
 
 export const JourneyDay2 = ({ handleClick }: JourneyDay2Props) => {
   return (
-    <div className="relative flex w-full h-[250px]">
-      <div className="absolute w-full flex flex-col items-center">
-        <div className="relative w-full h-[120px]">
+    <div className="relative flex h-[250px] w-full">
+      <div className="absolute flex w-full flex-col items-center">
+        <div className="relative h-[120px] w-full">
           <Image
             src={Bubble1}
             alt="Bubble1"
             width={150}
             height={120}
-            className="absolute top-0 left-28"
+            className="absolute left-28 top-0"
           />
         </div>
-        <div className="relative w-full h-[194px] z-10">
+        <div className="relative z-10 h-[194px] w-full">
           <Image
             src={Day2Image}
             alt="Day 2 Journey"
             width={247}
             height={194}
             onClick={() => handleClick('Day 2')}
-            className="absolute top-[-3rem] left-4"
+            className="absolute left-4 top-[-3rem]"
           />
         </div>
       </div>

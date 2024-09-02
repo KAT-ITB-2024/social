@@ -43,17 +43,17 @@ export default function Journey() {
     return <LoadingSpinnerCustom />;
   }
   return (
-    <div className="w-full h-fit flex flex-col items-center justify-center">
-      <div className="relative w-full h-[194px]">
-        <div className="absolute w-full top-0 flex flex-col items-center h-full">
-          <div className="relative w-full h-[180px] z-10">
+    <div className="flex h-fit w-full flex-col items-center justify-center">
+      <div className="relative h-[194px] w-full">
+        <div className="absolute top-0 flex h-full w-full flex-col items-center">
+          <div className="relative z-10 h-[180px] w-full">
             <Image
               src={Day1Image}
               alt="Day 1 Journey"
               width={247}
               height={194}
               onClick={() => handleJourneyClicked('Day 1')}
-              className="absolute top-0 right-6"
+              className="absolute right-6 top-0"
             />
           </div>
         </div>

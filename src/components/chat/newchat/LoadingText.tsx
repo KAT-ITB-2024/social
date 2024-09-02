@@ -25,7 +25,7 @@ const LoadingText = ({ text, interval = 100 }: LoadingTextProps) => {
     }
   }, [currentIndex, interval, text]);
 
-  return <h3 className="text-blue-500 text-center">{displayText}</h3>;
+  return <h3 className="text-center text-blue-500">{displayText}</h3>;
 };
 
 export default LoadingText;

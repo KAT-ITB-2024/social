@@ -16,22 +16,22 @@ export default function ModalPhoto({
   return (
     <Dialog>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-      <DialogContent className="flex items-center justify-center h-full w-full bg-black">
+      <DialogContent className="flex h-full w-full items-center justify-center bg-black">
         <DialogClose asChild>
           <Image
             src="/images/profile/clear_2.svg"
             alt="Close Icon"
             width={24}
             height={24}
-            className="cursor-pointer absolute top-4 left-4"
+            className="absolute left-4 top-4 cursor-pointer"
           />
         </DialogClose>
-        <div className="flex items-center justify-center max-w-full max-h-[80vh] w-full h-full">
-          <div className="relative w-full h-full">
+        <div className="flex h-full max-h-[80vh] w-full max-w-full items-center justify-center">
+          <div className="relative h-full w-full">
             <Image
               src={photo}
               alt="Profile"
-              className="absolute object-contain max-w-full max-h-full"
+              className="absolute max-h-full max-w-full object-contain"
               fill
             />
           </div>

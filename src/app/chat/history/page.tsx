@@ -32,11 +32,11 @@ const ChatHistory = () => {
   }
 
   return (
-    <div className="bg-black h-screen w-full flex items-center justify-center">
-      <div className="relative h-full w-full bg-white overflow-hidden">
-        <div className="flex flex-col items-center h-full justify-start px-8 relative z-20">
-          <div className="w-full h-full overflow-auto py-24">
-            <div className="w-full h-full flex flex-col gap-[18px] overflow-y-scroll no-scrollbar">
+    <div className="flex h-screen w-full items-center justify-center bg-black">
+      <div className="relative h-full w-full overflow-hidden bg-white">
+        <div className="relative z-20 flex h-full flex-col items-center justify-start px-8">
+          <div className="h-full w-full overflow-auto py-24">
+            <div className="no-scrollbar flex h-full w-full flex-col gap-[18px] overflow-y-scroll">
               {data && data.length > 0 ? (
                 data.map((history) => (
                   <HistoryCard
@@ -48,7 +48,7 @@ const ChatHistory = () => {
                   />
                 ))
               ) : (
-                <p className="text-pink-300 text-sm">
+                <p className="text-sm text-pink-300">
                   No chat history available.
                 </p> // Display a message if no data is available
               )}
@@ -62,7 +62,7 @@ const ChatHistory = () => {
         <Image
           src={MatchBg}
           alt="OSKM Chat Match Background"
-          className="absolute top-0 left-0 object-cover h-full w-full z-10"
+          className="absolute left-0 top-0 z-10 h-full w-full object-cover"
         />
 
         <Image

@@ -62,12 +62,12 @@ const LoginPage = () => {
     });
   }
   return (
-    <div className="mt-[120px] w-full flex flex-col items-center">
+    <div className="mt-[120px] flex w-full flex-col items-center">
       <Image src={OSKMLogo} alt="Logo OSKM" width={100} height={100} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 z-20 w-full"
+          className="z-20 w-full space-y-2"
         >
           <FormField
             control={form.control}
@@ -81,7 +81,7 @@ const LoginPage = () => {
                   <Input
                     {...field}
                     placeholder="NIM"
-                    className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
+                    className="rounded-lg border-2 border-neutral-400 focus-visible:ring-transparent"
                   />
                 </FormControl>
                 {fieldState.error && (
@@ -103,11 +103,11 @@ const LoginPage = () => {
                     <Input
                       {...field}
                       placeholder="Password"
-                      className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
+                      className="rounded-lg border-2 border-neutral-400 focus-visible:ring-transparent"
                       type={showPassword ? 'text' : 'password'}
                     />
                     <div
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                      className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                       onClick={toggleShowPassword}
                     >
                       <svg
@@ -140,15 +140,15 @@ const LoginPage = () => {
           />
           <Link
             href="/login/forgot-password"
-            className="underline text-start text-[12px] text-blue-500"
+            className="text-start text-[12px] text-blue-500 underline"
           >
             Lupa Password?
           </Link>
           <div className="py-2" />
-          <div className="w-full flex justify-center">
+          <div className="flex w-full justify-center">
             <Button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              className="bg-blue-500 px-8 shadow-lg hover:bg-blue-400"
               disabled={!isValid}
             >
               Login

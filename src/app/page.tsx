@@ -39,32 +39,32 @@ export default function Home() {
   }
 
   return (
-    <main className="flex w-screen max-w-md min-h-screen flex-col bg-[url('/images/home/background.png')] bg-center bg-no-repeat bg-cover">
-      <div className="flex flex-row mb-5 max-w-full justify-between mt-24 gap-1 px-6">
+    <main className="flex min-h-screen w-screen max-w-md flex-col bg-[url('/images/home/background.png')] bg-cover bg-center bg-no-repeat">
+      <div className="mb-5 mt-24 flex max-w-full flex-row justify-between gap-1 px-6">
         <MenuButton label="Assignment" variant="Assignment" />
         <MenuButton label="Attendance" variant="Attendance" />
         <MenuButton label="Chat" variant="Chat" />
         <MenuButton label="Leaderboard" variant="Leaderboard" />
       </div>
       {showCoins && (
-        <div className="flex justify-center items-center border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50 bg-turquoise-100 rounded-xl mx-6 p-1">
-          <div className="flex flex-row w-full justify-between">
-            <div className="flex flex-row w-full">
+        <div className="mx-6 flex items-center justify-center rounded-xl border-2 border-solid border-turquoise-100 bg-turquoise-100 p-1 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50">
+          <div className="flex w-full flex-row justify-between">
+            <div className="flex w-full flex-row">
               <Image
                 src="/images/home/coin.png"
                 width={62}
                 height={62}
                 alt="coin"
               />
-              <h5 className=" ml-2 mt-1 text-blue-600">
+              <h5 className="ml-2 mt-1 text-blue-600">
                 {' '}
                 Your coins <br />{' '}
                 <p className="sh3 text-turquoise-400">9999999</p>
               </h5>
             </div>
-            <div className="flex items-center w-full pr-4 justify-end">
+            <div className="flex w-full items-center justify-end pr-4">
               <button
-                className="bg-turquoise-400 text-shade-200 hover:bg-turquoise-300 rounded-[4px] px-5 py-2 flex justify-between"
+                className="flex justify-between rounded-[4px] bg-turquoise-400 px-5 py-2 text-shade-200 hover:bg-turquoise-300"
                 onClick={() => router.push('/get-coins')}
               >
                 <div className="flex flex-row gap-2">
@@ -83,7 +83,7 @@ export default function Home() {
       )}
       {showOSKMWrapped && <ButtonOskmWrap />}
 
-      <div className="w-full justify-center items-center flex">
+      <div className="flex w-full items-center justify-center">
         <h3 className="text-h3 text-blue-600 text-shadow-pink-md">
           OSKM Journey
         </h3>

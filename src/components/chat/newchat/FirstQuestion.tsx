@@ -14,14 +14,14 @@ const FirstQuestion = ({
   setAnonymous,
 }: FirstQuestionProps) => {
   return (
-    <div className="flex flex-col items-center align-center gap-16 p-8">
-      <div className="flex flex-col items-center align-center">
+    <div className="align-center flex flex-col items-center gap-16 p-8">
+      <div className="align-center flex flex-col items-center">
         <Image src={Kepiting} alt="kepiting" width={264} height={190} />
-        <p className="text-sh2 font-subheading font-bold text-white">
+        <p className="font-subheading text-sh2 font-bold text-white">
           MAU ANONIM?
         </p>
       </div>
-      <div className="flex flex-row items-conter justify-evenly gap-3">
+      <div className="items-conter flex flex-row justify-evenly gap-3">
         <BoxButton
           color="pink"
           size="default"

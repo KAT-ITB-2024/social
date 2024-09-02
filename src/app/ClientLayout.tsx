@@ -24,6 +24,8 @@ export default function ClientLayout({
       '/login',
       '/forgot-password',
       '/reset-password',
+      ,
+      '/wrapped',
       '/chat/room',
     ],
     [],
@@ -49,9 +51,9 @@ export default function ClientLayout({
   }, [pathname, routes]);
 
   return (
-    <div className="min-h-screen max-w-md mx-auto flex flex-col w-full">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
       {shouldShowNavbar && <Navbar />}
-      <div className={`absolute max-w-md flex-grow top-0 mx-auto w-full`}>
+      <div className={`absolute top-0 mx-auto w-full max-w-md flex-grow`}>
         {children}
       </div>
     </div>

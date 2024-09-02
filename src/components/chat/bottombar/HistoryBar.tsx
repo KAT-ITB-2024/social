@@ -7,8 +7,8 @@ const HistoryBar = ({ date }: { date: Date }) => {
     return `${day}/${month}/${year}`;
   }
   return (
-    <div className="max-w-md bg-blue-600 rounded-t-[46px] flex justify-center items-center w-full h-20 gap-20 shadow-green-xl p-6">
-      <div className="flex flex-row justify-start bg-white rounded-[20px] pl-[21px] py-3 items-start w-full">
+    <div className="flex h-20 w-full max-w-md items-center justify-center gap-20 rounded-t-[46px] bg-blue-600 p-6 shadow-green-xl">
+      <div className="flex w-full flex-row items-start justify-start rounded-[20px] bg-white py-3 pl-[21px]">
         <p className="text-sm font-normal text-pink-300">
           Percakapan ini berakhir pada {formatDate(date)}
         </p>
