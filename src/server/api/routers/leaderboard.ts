@@ -1,4 +1,4 @@
-import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { groups, profiles, users } from '@katitb2024/database';
 import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
@@ -51,7 +51,7 @@ export const leaderboardRouter = createTRPCRouter({
       };
     }),
 
-  getMyLeaderboard: publicProcedure.query(async ({ ctx }) => {
+  getMyLeaderboard: pesertaProcedure.query(async ({ ctx }) => {
     if (!ctx.session) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -109,7 +109,7 @@ export const leaderboardRouter = createTRPCRouter({
     };
   }),
 
-  getGroupLeaderboard: publicProcedure
+  getGroupLeaderboard: pesertaProcedure
     .input(
       z.object({
         page: z.number().min(1),
@@ -161,7 +161,7 @@ export const leaderboardRouter = createTRPCRouter({
       };
     }),
 
-  getMyGroupLeaderboard: publicProcedure.query(async ({ ctx }) => {
+  getMyGroupLeaderboard: pesertaProcedure.query(async ({ ctx }) => {
     if (!ctx.session) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',

@@ -1,4 +1,4 @@
-import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { classes, groups, profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
@@ -149,7 +149,7 @@ export const classRouter = createTRPCRouter({
       };
     }),
 
-  enrollClass: publicProcedure
+  enrollClass: pesertaProcedure
     .input(EnrollClassPayload)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session?.user.id;
