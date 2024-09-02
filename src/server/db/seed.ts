@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
+import { ClassData } from './classData';
 
 export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
   const password = await bcrypt.hash('password', 10);
@@ -43,6 +44,7 @@ export async function seedGroup(db: PostgresJsDatabase<typeof schema>) {
       await db.insert(schema.groups).values({
         name: `Keluarga-${i}`,
         point: 0,
+        bata: `${i}`,
       });
     } catch (error) {}
   }
@@ -66,11 +68,11 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
     }
     try {
       await db.insert(schema.profiles).values({
-        name: `User ${user.id}`,
+        name: `User ${i + 1}`,
         userId: user.id,
         faculty: 'STEI',
         gender: i % 2 === 0 ? 'Male' : 'Female',
-        profileImage: '',
+        profileImage: null,
         point: 0,
         group: group.name,
         updatedAt: new Date(),
@@ -108,25 +110,34 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       assignmentType: 'Side',
       point: 50,
-      filename: `Side Quest ${i}`,
-      downloadUrl: 'https://google.com/DownloadUrl',
       updatedAt: new Date(),
+      filename: '',
+      downloadUrl: '',
     });
     dayCounter += 1;
   }
 }
 
 export async function seedCharacter(db: PostgresJsDatabase<typeof schema>) {
-  for (let i = 0; i < 4; i++) {
-    try {
-      await db.insert(schema.characters).values({
-        name: `Character ${i}`,
-        characterImage: '',
-      });
-    } catch (error) {
-      console.error(`Error seeding character`);
-    }
-  }
+  await db.insert(schema.characters).values({
+    name: 'Kova',
+    characterImage: '/images/characters/Kovva.png',
+  });
+
+  await db.insert(schema.characters).values({
+    name: 'Ozirron',
+    characterImage: '/images/characters/Ozirron.png',
+  });
+
+  await db.insert(schema.characters).values({
+    name: 'Sylas',
+    characterImage: '/images/characters/Sylas.png',
+  });
+
+  await db.insert(schema.characters).values({
+    name: 'Odra',
+    characterImage: '/images/characters/Odra.png',
+  });
 }
 
 export async function seedEvent(db: PostgresJsDatabase<typeof schema>) {
@@ -138,28 +149,56 @@ export async function seedEvent(db: PostgresJsDatabase<typeof schema>) {
 
   await db.insert(schema.events).values({
     day: 'Day 1',
-    eventDate: new Date('2023-07-25T00:00:00Z'),
+    eventDate: new Date('2024-08-30T00:00:00Z'),
     openingOpenPresenceTime: '09:00:00',
     openingClosePresenceTime: '10:00:00',
     closingOpenPresenceTime: '17:00:00',
     closingClosePresenceTime: '18:00:00',
     updatedAt: new Date(),
-    lore: 'https://google.com',
-    characterName: characters[0]?.name,
+    lore: 'Di tengah kekacauan yang terjadi di Samudra Korionas, Mova mendarat di laut pertama, Laut Krios. Sebagai pusat dari segala kegiatan produksi barang dan teknologi yang digunakan dalam peradaban samudra, laut ini dipimpin oleh Kovva, sang guru besar yang ahli perhitungan. Bersama Kovva, Mova belajar membuat senjata yang dapat digunakan untuk melawan sang makhluk jahat, Odra. Di akhir pembelajarannya, Kovva memberi Mova hadiah sebuah membran untuk melengkapi penampilannya. Siap untuk berpetualang ke laut berikutnya, petualangan apa yang telah menanti Mova? Sebentar, lihat apa yang keluar dari membran yang melekat di tubuh Mova!',
+    characterName: 'Kova',
     guideBook: '',
     youtubeVideo: '',
   });
 
   await db.insert(schema.events).values({
     day: 'Day 2',
-    eventDate: new Date('2023-07-28T00:00:00Z'),
+    eventDate: new Date('2024-08-30T00:00:00Z'),
     openingOpenPresenceTime: '09:00:00',
     openingClosePresenceTime: '10:00:00',
     closingOpenPresenceTime: '17:00:00',
     closingClosePresenceTime: '18:00:00',
     updatedAt: new Date(),
-    lore: 'https://google.com',
-    characterName: characters[0]?.name,
+    lore: 'Mova sampai di Laut Odris yang menjadi pusat segala pengetahuan dan sejarah peradaban Korionas. Lewat pustaka magis yang dijaga oleh Ozirron, sang guru besar, Mova memperdalam ilmunya dan belajar menjadi ahli strategi dalam melawan serangan Odra. Kali ini, Ozirron pun memberikan Mova sebuah membran, menambah koleksi membran yang telah melekat di tubuhnya. Mova siap untuk berpindah, apa yang akan Mova temukan selanjutnya?',
+    characterName: 'Ozirron',
+    guideBook: '',
+    youtubeVideo: '',
+  });
+
+  await db.insert(schema.events).values({
+    day: 'Day 3',
+    eventDate: new Date('2024-08-31T00:00:00Z'),
+    openingOpenPresenceTime: '09:00:00',
+    openingClosePresenceTime: '10:00:00',
+    closingOpenPresenceTime: '17:00:00',
+    closingClosePresenceTime: '18:00:00',
+    updatedAt: new Date(),
+    lore: 'Mendarat tepat di laut ketiga, Laut Sereia, Mova bertemu dengan Sylas, sang guru spiritual penuh kehangatan, yang mengajarkannya cara merapalkan mantra magis yang dapat membentuk tameng perlindungan. Sama seperti dua guru sebelumnya, Sylas memberinya membran ketiga yang kini membuat penampilannya sama dengan penduduk Korionas. Menyelesaikan petualangannya di ketiga laut legendaris, Mova siap meninggalkan Samudra Korionas. Namun, tiba-tiba tubuhnya ditarik oleh sebuah kekuatan misterius! Apa yang sebenarnya terjadi?',
+    characterName: 'Sylas',
+    guideBook: '',
+    youtubeVideo: '',
+  });
+
+  await db.insert(schema.events).values({
+    day: 'Day 4',
+    eventDate: new Date('2024-09-01T00:00:00Z'),
+    openingOpenPresenceTime: '09:00:00',
+    openingClosePresenceTime: '10:00:00',
+    closingOpenPresenceTime: '17:00:00',
+    closingClosePresenceTime: '18:00:00',
+    updatedAt: new Date(),
+    lore: 'Gawat! Sang makhluk jahat, Odra, menculik Mova untuk bertarung dengannya. Tak hanya sendiri, ia dibantu oleh Kovva, Ozirron, dan Sylas secara bergantian. Sayangnya, mereka tidak berhasil melawan Odra yang sangat besar dan ganas. Apa yang harus mereka lakukan? Akankah mereka berhasil melawan Odra dan mengembalikan kedamaian di Samudra Korionas?',
+    characterName: 'Odra',
     guideBook: '',
     youtubeVideo: '',
   });
@@ -183,7 +222,7 @@ export async function seedAssignmentSubmission(
       userNim: users[i]?.nim ?? '',
       filename: `Assignment ${i}`,
       downloadUrl: 'https://google.com/DownloadUrl',
-      point: i % 3 == 0 ? null : assignments[i % 4]?.point ?? 0,
+      point: i % 3 == 0 ? null : (assignments[i % 4]?.point ?? 0),
       updatedAt: new Date(),
     });
   }
@@ -201,32 +240,10 @@ export async function seedPostTest(db: PostgresJsDatabase<typeof schema>) {
     deadline.setDate(deadline.getDate() + 7); // Adds 7 days to the current date
 
     await db.insert(schema.postTests).values({
-      deadline: deadline,
-      description: `Post test day ${i + 1}`,
       eventId: events[i]?.id ?? '',
-      title: `Post Test Day ${i + 1}`,
       googleFormLink: 'https://google.com',
       startTime: new Date(),
-    });
-  }
-}
-
-export async function seedPostTestSubmission(
-  db: PostgresJsDatabase<typeof schema>,
-) {
-  const tests = await db.query.postTests.findMany();
-  const users = await db.query.users.findMany();
-
-  if (tests.length < 2) {
-    throw new Error(
-      'Not enough post tests available to seed post test submissions.',
-    );
-  }
-
-  for (let i = 0; i < 10; i++) {
-    await db.insert(schema.postTestSubmissions).values({
-      postTestId: tests[i % 2]?.id ?? '',
-      userNim: users[i]?.nim ?? '',
+      deadline,
     });
   }
 }
@@ -238,6 +255,67 @@ export async function seedNotifications(db: PostgresJsDatabase<typeof schema>) {
     });
   }
 }
+
+export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
+  for (const classDetails of ClassData) {
+    try {
+      await db.insert(schema.classes).values({
+        title: classDetails.title,
+        topic: `${classDetails.theme}: ${classDetails.topik}`,
+        description: classDetails.desc,
+        speaker: classDetails.speaker,
+        location: classDetails.location,
+        date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
+        totalSeats: classDetails.quota,
+        reservedSeats: classDetails.reserved,
+        type: classDetails.type,
+      });
+    } catch (error) {
+      console.error(
+        `Error seeding class with title ${classDetails.title}:`,
+        error,
+      );
+      continue;
+    }
+  }
+  console.log('Done seeding classes!');
+}
+
+export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
+  const user = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .limit(2);
+  if (!user[0] || !user[1]) {
+    return;
+  }
+  // Data dummy buat yang udah test
+  await db.insert(schema.wrappedProfiles).values({
+    userId: user[0].id,
+    name: 'User 0',
+    submittedQuest: 10,
+    totalMatch: 20,
+    character: 'Odra',
+    personality: 'IIII',
+    personalityDesc: 'Ini iiiiii',
+    favTopics: ['General', 'Game', 'Olahraga'],
+    rank: 129,
+    rankPercentage: 12,
+    updatedAt: new Date(),
+  });
+
+  await db.insert(schema.wrappedProfiles).values({
+    userId: user[1].id,
+    name: 'User 1',
+    updatedAt: new Date(),
+    favTopics: ['General'],
+    submittedQuest: 8,
+    totalMatch: 0,
+    rank: 80,
+    rankPercentage: 90,
+  });
+}
+
 export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
@@ -258,21 +336,23 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding assignment submission');
   await seedPostTest(db);
   console.log('Done seeding post test');
-  await seedPostTestSubmission(db);
-  console.log('Done seeding post test submission');
   await seedNotifications(db);
   console.log('Done seeding notifications!');
+  await seedClasses(db);
+  console.log('Done seeding classes!');
+  await seedOskmWrapped(db);
+  console.log('Done seeding oskm wrapped!');
   await migrationClient.end();
 }
+
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
-  console.error('No databse url provided!');
-} else {
-  await seed(dbUrl)
-    .catch((err) => {
-      console.log(err);
-    })
-    .then(() => console.log('Done seeding data!'));
-}
+
+const seeding = async () => {
+  await seed(dbUrl ?? '');
+};
+
+seeding().catch((err) => {
+  console.error(err);
+});

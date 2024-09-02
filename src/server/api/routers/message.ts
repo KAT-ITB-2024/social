@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, isNotNull, lte, or } from 'drizzle-orm';
 import { messages, profiles, userMatches } from '@katitb2024/database';
@@ -11,16 +11,17 @@ import {
   type ChatHeader,
   type ChatHeaderData,
 } from '~/types/enums/message';
+import ProfilePage from '~/app/profile/page';
 
 export const messageRouter = createTRPCRouter({
   /**
    * Get messages based on cursor, take, and userMatchId
    */
-  getChat: publicProcedure
+  getChat: pesertaProcedure
     .input(
       z.object({
         cursor: z.date().optional(),
-        take: z.number().min(1).max(50).default(25),
+        take: z.number().min(1).max(50).default(15),
         userMatchId: z.string(),
       }),
     )
@@ -32,10 +33,12 @@ export const messageRouter = createTRPCRouter({
       }
 
       const userMatchData = await ctx.db
-        .select()
+        .select({
+          firstUserId: userMatches.firstUserId,
+          secondUserId: userMatches.secondUserId,
+        })
         .from(userMatches)
         .where(eq(userMatches.id, input.userMatchId));
-
       if (!userMatchData[0]) {
         throw new TRPCError({
           code: 'NOT_FOUND',
@@ -90,7 +93,7 @@ export const messageRouter = createTRPCRouter({
   /**
    * Procedure for manually creating message (only for testing)
    */
-  createMessage: publicProcedure
+  createMessage: pesertaProcedure
     .input(createMessagePayload)
     .mutation(async ({ ctx, input }) => {
       try {
@@ -115,7 +118,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  sendMessage: publicProcedure
+  sendMessage: pesertaProcedure
     .input(sendMessagePayload)
     .mutation(async ({ ctx, input }) => {
       if (ctx.session === null) {
@@ -162,12 +165,12 @@ export const messageRouter = createTRPCRouter({
           content: input.content,
         });
 
-        await ctx.db
-          .update(userMatches)
-          .set({
-            lastMessage: input.content,
-          })
-          .where(eq(userMatches.id, input.userMatchId));
+        // await ctx.db
+        //   .update(userMatches)
+        //   .set({
+        //     lastMessage: input.content,
+        //   })
+        //   .where(eq(userMatches.id, input.userMatchId));
 
         return {
           status: 200,
@@ -182,7 +185,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  chatHeader: publicProcedure
+  chatHeaders: pesertaProcedure
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
@@ -239,6 +242,7 @@ export const messageRouter = createTRPCRouter({
           isRevealed: userMatches.isRevealed,
           isAnonymous: userMatches.isAnonymous,
           endedAt: userMatches.endedAt,
+          id: userMatches.id,
         })
         .from(userMatches)
         .innerJoin(profiles1, eq(profiles1.userId, userMatches.firstUserId))
@@ -252,7 +256,7 @@ export const messageRouter = createTRPCRouter({
             isNotNull(userMatches.endedAt),
           ),
         )
-        .orderBy(desc(userMatches.createdAt))
+        .orderBy(desc(userMatches.endedAt))
         .limit(input.limit)
         .offset(input.limit * (input.cursor - 1));
 
@@ -274,7 +278,7 @@ export const messageRouter = createTRPCRouter({
             id: otherUser.id,
             name:
               chatHeader.isAnonymous && !chatHeader.isRevealed
-                ? 'Anynomous'
+                ? 'Anonymous'
                 : otherUser.name,
             profileImage:
               chatHeader.isAnonymous && !chatHeader.isRevealed
@@ -282,6 +286,7 @@ export const messageRouter = createTRPCRouter({
                 : otherUser.profileImage,
           },
           endedAt: chatHeader.endedAt,
+          userMatchId: chatHeader.id,
         };
       });
 
@@ -293,8 +298,158 @@ export const messageRouter = createTRPCRouter({
       };
     }),
 
+  chatHeadersAll: pesertaProcedure.query(async ({ ctx }) => {
+    if (ctx.session === null) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+    const userId = ctx.session.user.id;
+
+    // rename profile for table join
+    const profiles1 = alias(profiles, 'profiles1');
+    const profiles2 = alias(profiles, 'profiles2');
+
+    const chatHeaders: ChatHeaderData[] = await ctx.db
+      .select({
+        firstUser: {
+          id: userMatches.firstUserId,
+          name: profiles1.name,
+          profileImage: profiles1.profileImage,
+        },
+        secondUser: {
+          id: userMatches.secondUserId,
+          name: profiles2.name,
+          profileImage: profiles2.profileImage,
+        },
+        lastMessage: userMatches.lastMessage,
+        isRevealed: userMatches.isRevealed,
+        isAnonymous: userMatches.isAnonymous,
+        endedAt: userMatches.endedAt,
+        id: userMatches.id,
+      })
+      .from(userMatches)
+      .innerJoin(profiles1, eq(profiles1.userId, userMatches.firstUserId))
+      .innerJoin(profiles2, eq(profiles2.userId, userMatches.secondUserId))
+      .where(
+        and(
+          or(
+            eq(userMatches.firstUserId, userId),
+            eq(userMatches.secondUserId, userId),
+          ),
+          isNotNull(userMatches.endedAt),
+        ),
+      )
+      .orderBy(desc(userMatches.endedAt));
+
+    const data: ChatHeader[] = chatHeaders.map((chatHeader) => {
+      const otherUser =
+        chatHeader.firstUser.id === userId
+          ? chatHeader.secondUser
+          : chatHeader.firstUser;
+      if (!otherUser) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Other user profile not found',
+        });
+      }
+
+      return {
+        lastMessage: chatHeader.lastMessage,
+        user: {
+          id: otherUser.id,
+          name:
+            chatHeader.isAnonymous && !chatHeader.isRevealed
+              ? 'Anonymous'
+              : otherUser.name,
+          profileImage:
+            chatHeader.isAnonymous && !chatHeader.isRevealed
+              ? null
+              : otherUser.profileImage,
+        },
+        endedAt: chatHeader.endedAt,
+        userMatchId: chatHeader.id,
+      };
+    });
+
+    return data;
+  }),
+
+  getSpecificChatHeader: pesertaProcedure
+    .input(updateVisibilityPayload)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      if (!userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You must be loggedin first!',
+        });
+      }
+
+      const SpecificChat = await ctx.db
+        .select({
+          endedAt: userMatches.endedAt,
+          isAnonymous: userMatches.isAnonymous,
+          firstId: userMatches.firstUserId,
+          secondId: userMatches.secondUserId,
+        })
+        .from(userMatches)
+        .where(eq(userMatches.id, input.userMatchId))
+        .then((res) => res[0]);
+      if (!SpecificChat) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Chat history not found',
+        });
+      }
+
+      const { firstId, secondId } = SpecificChat;
+
+      if (firstId != userId && secondId != userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'This is not your chat',
+        });
+      }
+
+      if (SpecificChat.endedAt == null) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You have not end your chat',
+        });
+      }
+
+      if (SpecificChat.isAnonymous) {
+        return {
+          name: 'Anonymous',
+          profilePic: null,
+          endedAt: SpecificChat.endedAt,
+        };
+      } else {
+        const otherUserId = userId == firstId ? secondId : firstId;
+
+        const otherProfile = await ctx.db
+          .select({
+            name: profiles.name,
+            profilePic: profiles.profileImage,
+            userId: profiles.userId,
+          })
+          .from(profiles)
+          .where(eq(profiles.userId, otherUserId))
+          .then((res) => res[0]);
+
+        return {
+          name: otherProfile?.name,
+          profilePic: otherProfile?.profilePic,
+          endedAt: SpecificChat.endedAt,
+          userId: otherProfile?.userId,
+        };
+      }
+    }),
+
   // update visibility for anonymous chat
-  updateVisibility: publicProcedure
+  updateVisibility: pesertaProcedure
     .input(updateVisibilityPayload)
     .mutation(async ({ ctx, input }) => {
       try {
@@ -318,7 +473,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  updateIsRead: publicProcedure
+  updateIsRead: pesertaProcedure
     .input(
       z.object({
         userMatchId: z.string(),
@@ -340,7 +495,7 @@ export const messageRouter = createTRPCRouter({
         );
     }),
 
-  updateIsReadCurrUser: publicProcedure
+  updateIsReadCurrUser: pesertaProcedure
     .input(
       z.object({
         userMatchId: z.string(),
@@ -366,6 +521,43 @@ export const messageRouter = createTRPCRouter({
             ),
             eq(messages.isRead, false),
           ),
+        );
+    }),
+
+  updateOneIsRead: pesertaProcedure
+    .input(
+      z.object({
+        messageId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session === null) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+        });
+      }
+
+      const message = await ctx.db
+        .select()
+        .from(messages)
+        .where(
+          and(eq(messages.id, input.messageId), eq(messages.isRead, false)),
+        );
+
+      if (!message) {
+        throw new TRPCError({
+          message: 'Message not found',
+          code: 'BAD_REQUEST',
+        });
+      }
+
+      await ctx.db
+        .update(messages)
+        .set({
+          isRead: true,
+        })
+        .where(
+          and(eq(messages.id, input.messageId), eq(messages.isRead, false)),
         );
     }),
 });

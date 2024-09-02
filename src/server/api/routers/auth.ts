@@ -1,7 +1,7 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { generateHash, generateResetToken } from '~/utils/auth';
 import { TRPCError } from '@trpc/server';
-import { env } from '~/env.js';
+import { env } from '~/env.cjs';
 import { users, resetTokens } from '@katitb2024/database';
 import { eq, and } from 'drizzle-orm';
 import {
@@ -11,7 +11,7 @@ import {
 import { transporter } from '~/server/mail';
 
 export const authRouter = createTRPCRouter({
-  requestResetPassword: publicProcedure
+  requestResetPassword: pesertaProcedure
     .input(RequestResetPasswordPayload)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db
@@ -78,7 +78,7 @@ export const authRouter = createTRPCRouter({
       return 'Email telah dikirim!';
     }),
 
-  resetPassword: publicProcedure
+  resetPassword: pesertaProcedure
     .input(ResetPasswordPayload)
     .mutation(async ({ ctx, input }) => {
       const tokenData = await ctx.db

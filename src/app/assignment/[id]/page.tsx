@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Chip } from '~/components/Chip';
 import AttachmentButton from '~/components/Attachment';
@@ -16,8 +16,12 @@ import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale/id';
 import { AssignmentConfirmationModal } from '~/components/assignment/ConfirmationModal';
 import { AssingmentInfoModal } from '~/components/assignment/InfoModal';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
+  const { data: session, status } = useSession();
+
   const router = useRouter();
   const uploadFileMutation = api.storage.generateUploadUrl.useMutation();
   const downloadFileMutation = api.storage.generateDownloadUrl.useMutation();
@@ -27,9 +31,15 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   const [downloadUrl, setDownloadUrl] = useState<string | null>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [isOverDeadline, setIsOverDeadline] = useState(false);
   const [assignmentStatus, setAssignmentStatus] =
     useState<AssignmentSubmission | null>(null);
-  const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
+  const [sudahKumpul, setSudahKumpul] = useState(false);
+  const {
+    data: assignment,
+    isLoading,
+    refetch,
+  } = api.assignment.getQuestById.useQuery({
     id: params.id,
   });
 
@@ -50,13 +60,22 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       }
 
       if (assignment) {
+        setIsOverDeadline(assignment.assignments.deadline < new Date());
         if (assignment.assignmentSubmissions !== null) {
           try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             setFilename(assignment.assignmentSubmissions.filename);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             setDownloadUrl(assignment.assignmentSubmissions.downloadUrl);
-            setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+            if (
+              assignment.assignmentSubmissions.createdAt >
+              assignment.assignments.deadline
+            ) {
+              setAssignmentStatus(AssignmentSubmission.TERLAMBAT);
+            } else {
+              setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+            }
+            setSudahKumpul(true);
           } catch (error) {}
         } else {
           if (assignment.assignments.deadline < new Date()) {
@@ -93,16 +112,13 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   }
 
   const handleDelete = () => {
-    if (
-      assignmentStatus === AssignmentSubmission.TERKUMPUL ||
-      assignmentStatus === AssignmentSubmission.BELUM_KUMPUL
-    ) {
+    if (assignmentStatus === AssignmentSubmission.TERKUMPUL) {
       setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
-      localStorage.removeItem(`assignment_${params.id}_fileName`);
-      localStorage.removeItem(`assignment_${params.id}_downloadUrl`);
-      setFilename('');
-      setDownloadUrl('');
     }
+    localStorage.removeItem(`assignment_${params.id}_fileName`);
+    localStorage.removeItem(`assignment_${params.id}_downloadUrl`);
+    setFilename('');
+    setDownloadUrl('');
   };
 
   const handleSubmit = async () => {
@@ -128,12 +144,19 @@ export default function DetailPage({ params }: { params: { id: string } }) {
           filename,
           downloadUrl,
         });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         await uploadFile(url, file, AllowableFileTypeEnum.PDF);
         setProgress(0);
-        setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        if (assignmentStatus === AssignmentSubmission.BELUM_KUMPUL) {
+          setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setDownloadUrl(downloadUrl);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setFilename(filename);
+        setSudahKumpul(true);
         setShowInfoModal(true);
+        void refetch();
       } catch (error) {
         toast(<ErrorToast desc="Silakan coba submit ulang!" />);
       }
@@ -148,6 +171,12 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   if (isLoading || !assignment || isSubmitting) {
     return <LoadingSpinnerCustom />;
   }
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <div
@@ -160,7 +189,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
         }}
       >
         {/* {isUploading && <LoadingSpinnerCustom />} */}
-        <div className="mx-6 mt-20 overflow-y-scroll no-scrollbar">
+        <div className="no-scrollbar mx-6 mt-20 overflow-y-scroll">
           <button onClick={handleBack}>
             <Image
               src="/images/detail/arrow-back.svg"
@@ -169,14 +198,14 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               height={40}
             />
           </button>
-          <div className="mt-[20px] flex flex-col gap-8 lg:gap-4 text-pink-400">
+          <div className="mt-[20px] flex flex-col gap-8 text-pink-400 lg:gap-4">
             <div className="flex flex-col gap-2">
               <div>
                 <h3>{assignment.assignments.title}</h3>
                 <div className="flex flex-row">
                   <p className="text-b4">
                     <b>Deadline :</b>{' '}
-                    {format(assignment.assignments.deadline, 'PPPP', {
+                    {format(assignment.assignments.deadline, 'PPPP - HH:mm', {
                       locale: idLocale,
                     })}
                   </p>
@@ -204,7 +233,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             )}
 
             <div
-              className={`flex flex-col overflow-visible w-full justify-center ${filename === '' ? 'min-h-36 items-center py-3' : 'min-h-24 p-3'} border-2 border-blue-300 rounded-[14px]`}
+              className={`flex w-full flex-col justify-center overflow-visible ${filename === '' ? 'min-h-36 items-center py-3' : 'min-h-24 p-3'} rounded-[14px] border-2 border-blue-300`}
               style={{
                 background:
                   'linear-gradient(to right, rgba(12,188,204,0.6), rgba(100,177,247,0.6))',
@@ -217,36 +246,46 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   isUserSubmit={true}
                   onDelete={handleDelete}
                   isDeleteable={
-                    assignment.assignmentSubmissions?.point === null
+                    assignmentStatus === AssignmentSubmission.TERLAMBAT
+                      ? assignment.assignmentSubmissions
+                        ? false
+                        : true
+                      : assignmentStatus === AssignmentSubmission.TERKUMPUL &&
+                          isOverDeadline
+                        ? false
+                        : true
                   }
                 />
               ) : (
-                assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
-                  <div className="relative">
-                    <Image
-                      src="/images/detail/ubur-ubur.png"
-                      alt="Ubur-Ubur"
-                      width={120}
-                      height={90}
-                    />
-                    <FileUpload
-                      className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
-                      progress={progress}
-                      setFile={setFile}
-                      setFilename={setFilename}
-                    />
-                  </div>
-                )
+                <div className="relative">
+                  <Image
+                    src="/images/detail/ubur-ubur.png"
+                    alt="Ubur-Ubur"
+                    width={120}
+                    height={90}
+                  />
+                  <FileUpload
+                    className="h-8 w-32 rounded-[4px] bg-blue-500 px-5 py-2 text-b5 text-[#FFFEFE]"
+                    progress={progress}
+                    setFile={setFile}
+                    setFilename={setFilename}
+                  />
+                </div>
               )}
             </div>
-            {assignmentStatus === AssignmentSubmission.BELUM_KUMPUL && (
+            {(assignmentStatus === AssignmentSubmission.BELUM_KUMPUL ||
+              (assignmentStatus === AssignmentSubmission.TERLAMBAT &&
+                !filename) ||
+              (assignmentStatus === AssignmentSubmission.TERLAMBAT &&
+                filename &&
+                !sudahKumpul)) && (
               <AssignmentConfirmationModal
                 handleSubmit={handleSubmit}
                 customTriggerButton={
                   <button
-                    className={`w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5 ${
+                    className={`h-8 w-20 rounded-[4px] bg-blue-500 px-5 py-2 text-b5 text-[#FFFEFE] ${
                       filename === ''
-                        ? 'opacity-50 cursor-not-allowed'
+                        ? 'cursor-not-allowed opacity-50'
                         : 'opacity-100'
                     }`}
                     disabled={filename === ''}

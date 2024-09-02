@@ -19,11 +19,9 @@ function useEmit<
 ) {
   return useMutation({
     mutationFn: (data: TData) => {
-      console.log('iNi data', data, event);
       return new Promise<GetReturn<T>>((resolve, reject) => {
         // @ts-expect-error type lying so inference can be easy
         socket.emit(event, data, (res: SocketResponse) => {
-          console.log('Socket response', res);
           if (res.success) {
             resolve(res.data as GetReturn<T>);
           } else {

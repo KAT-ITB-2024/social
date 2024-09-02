@@ -2,11 +2,7 @@ import { Message, type UserMatch } from '@katitb2024/database';
 import { type Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { type Server, type Socket } from 'socket.io';
-import {
-  RevealStatusEvent,
-  type RoomChat,
-  type UserQueue,
-} from '~/types/enums/message';
+import { RevealStatusEvent, type RoomChat } from '~/types/enums/message';
 import {
   cancelMatchEvent,
   checkMatchEvent,
@@ -22,6 +18,7 @@ import {
   isTypingEvent,
   messageEvent,
 } from './events/message';
+import { UserQueue } from '~/types/payloads/message';
 const serverEvents = [
   findMatchEvent,
   checkMatchEvent,

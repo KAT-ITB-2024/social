@@ -1,6 +1,6 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import {
-  Assignment,
+  type Assignment,
   assignmentSubmissions,
   assignmentTypeEnum,
   assignments,
@@ -13,7 +13,7 @@ import { and, eq, inArray, sql } from 'drizzle-orm';
 import { submissionPayload } from '~/types/payloads/submission';
 
 export const submissionRouter = createTRPCRouter({
-  postSubmission: publicProcedure
+  postSubmission: pesertaProcedure
     .input(submissionPayload)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
@@ -151,9 +151,6 @@ export const submissionRouter = createTRPCRouter({
                 message: 'Group not found',
               });
             }
-
-            console.log('Group point:', group.point);
-            console.log('New point:', newPoint);
 
             await transaction
               .update(groups)
