@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { CustomPagination } from '~/components/leaderboard/Pagination';
 import CardDefault from '~/components/leaderboard/CardDefault';
 import TopThreeContainer from '~/components/leaderboard/TopThreeContainer';
@@ -15,10 +15,15 @@ import { useSession } from 'next-auth/react';
 
 function LeaderBoardContent() {
   const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const searchParams = useSearchParams();
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
+  if (!session || session.user.role !== 'Peserta') redirect('/login');
+
   const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
 
@@ -44,8 +49,7 @@ function LeaderBoardContent() {
   if (
     leaderboardData.isLoading ||
     groupLeaderboardData.isLoading ||
-    userData.isLoading ||
-    status === 'loading'
+    userData.isLoading
   ) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
@@ -58,27 +62,6 @@ function LeaderBoardContent() {
           }}
         >
           <LoadingSpinnerCustom />
-        </div>
-      </main>
-    );
-  }
-
-  if (leaderboardData.error ?? groupLeaderboardData.error ?? userData.error) {
-    const errorMessage =
-      leaderboardData.error?.message ??
-      groupLeaderboardData.error?.message ??
-      userData.error?.message;
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <div
-          className="flex min-h-[100vh] w-[100%] max-w-[450px] flex-col bg-[transparent] p-0"
-          style={{
-            backgroundImage: "url('/images/leaderboard/bg-leaderboard.png')",
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '100% 100%',
-          }}
-        >
-          <p className="mt-[86px] text-center">Error: {errorMessage}</p>
         </div>
       </main>
     );
