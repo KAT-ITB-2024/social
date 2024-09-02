@@ -311,12 +311,11 @@ export async function seed(dbUrl: string) {
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
-  console.error('No databse url provided!');
-} else {
-  await seed(dbUrl)
-    .catch((err) => {
-      console.log(err);
-    })
-    .then(() => console.log('Done seeding data!'));
-}
+
+const seeding = async () => {
+  await seed(dbUrl ?? '');
+};
+
+seeding().catch((err) => {
+  console.error(err);
+});

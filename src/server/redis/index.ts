@@ -1,7 +1,6 @@
-// @ts-expect-error type not exporteed
 import Redlock, { ResourceLockedError } from 'redlock';
 import RedisClient from 'ioredis';
-import { env } from '~/env';
+import { env } from '~/env.cjs';
 
 export class Redis {
   private static client: RedisClient;

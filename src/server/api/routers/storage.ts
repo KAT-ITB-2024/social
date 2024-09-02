@@ -1,6 +1,6 @@
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { env } from '~/env';
+import { env } from '~/env.cjs';
 import { s3Client } from '~/server/db/storage';
 import { TRPCError } from '@trpc/server';
 import { v4 as uuidv4 } from 'uuid';
