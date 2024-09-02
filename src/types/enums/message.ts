@@ -1,9 +1,5 @@
 import { z } from 'zod';
 
-export type UserQueue = {
-  userId: string;
-};
-
 export type RoomChat = {
   id: string;
   firstUserId: string;
@@ -31,6 +27,7 @@ export type ChatHeaderData = {
   isRevealed: boolean;
   isAnonymous: boolean;
   endedAt: Date | null;
+  id: string;
 };
 
 export type ChatHeader = {
@@ -41,6 +38,7 @@ export type ChatHeader = {
     name: string;
     profileImage: string | null;
   };
+  userMatchId: string;
 };
 
 export const createMessagePayload = z.object({

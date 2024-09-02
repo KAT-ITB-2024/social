@@ -32,6 +32,7 @@ export const leaderboardRouter = createTRPCRouter({
 
       const results = await ctx.db
         .select({
+          id: profiles.userId,
           name: profiles.name,
           nim: users.nim,
           profileImage: profiles.profileImage,

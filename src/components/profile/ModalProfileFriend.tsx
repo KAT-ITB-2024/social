@@ -1,23 +1,39 @@
+'use client';
+
 import Image from 'next/image';
 import Person from 'public/images/profile/person.png';
 import {
   Dialog,
   DialogContent,
-  DialogTrigger,
   DialogClose,
 } from '../ui/dialog-profile-friend';
+import { api } from '~/trpc/react';
 
-interface ProfileDetailProps {
+export interface ProfileDetailProps {
+  profilePic?: string | null | undefined;
   nama?: string;
   nim?: string;
-  fakultas?: string;
-  jenisKelamin?: string;
+  fakultas?:
+    | 'FITB'
+    | 'FMIPA'
+    | 'FSRD'
+    | 'FTMD'
+    | 'FTTM'
+    | 'FTSL'
+    | 'FTI'
+    | 'SAPPK'
+    | 'SBM'
+    | 'SF'
+    | 'SITH'
+    | 'STEI';
+  jenisKelamin?: 'Male' | 'Female';
   bio?: string | null;
   instagram?: string | null;
   email?: string | null;
 }
 
 function ProfileFriend({
+  profilePic,
   nama,
   nim,
   fakultas,
@@ -30,7 +46,7 @@ function ProfileFriend({
     <div className="flex flex-col px-4 pt-6">
       <div className="mb-4 flex flex-col items-center justify-center gap-x-8">
         <Image
-          src={Person}
+          src={profilePic ? profilePic : Person}
           alt="Profile"
           className="mb-4 h-28 w-28 cursor-pointer"
         />
@@ -71,17 +87,23 @@ function ProfileFriend({
 }
 
 export default function ProfileFriendModal({
-  profile,
-  triggerButton,
+  userId,
+  isDialogOpen = false,
+  setIsDialogOpen,
 }: {
-  profile: ProfileDetailProps;
-  triggerButton: JSX.Element;
+  userId: string;
+  isDialogOpen?: boolean;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const data = api.profile.getFriendProfile.useQuery({ userId });
+  const { data: userProfile } = data;
+  if (!userProfile) {
+    return null;
+  }
   return (
-    <Dialog>
-      <DialogTrigger asChild>{triggerButton}</DialogTrigger>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent
-        className="flex w-[80] flex-col items-center rounded-lg"
+        className="flex w-[343px] flex-col items-center rounded-lg"
         style={{
           backgroundImage: 'url(/images/profile/BackgroundProfile.jpeg)',
           backgroundSize: 'cover',
@@ -117,8 +139,8 @@ export default function ProfileFriendModal({
             />
           </DialogClose>
         </div>
-        <div className="z-10">
-          <ProfileFriend {...profile} />
+        <div className="z-10 overflow-y-auto">
+          <ProfileFriend {...userProfile} />
         </div>
       </DialogContent>
     </Dialog>

@@ -68,11 +68,11 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
     }
     try {
       await db.insert(schema.profiles).values({
-        name: `User ${user.id}`,
+        name: `User ${i + 1}`,
         userId: user.id,
         faculty: 'STEI',
         gender: i % 2 === 0 ? 'Male' : 'Female',
-        profileImage: '',
+        profileImage: null,
         point: 0,
         group: group.name,
         updatedAt: new Date(),
@@ -110,9 +110,9 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       assignmentType: 'Side',
       point: 50,
-      filename: `Side Quest ${i}`,
-      downloadUrl: 'https://google.com/DownloadUrl',
       updatedAt: new Date(),
+      filename: '',
+      downloadUrl: '',
     });
     dayCounter += 1;
   }
@@ -240,10 +240,10 @@ export async function seedPostTest(db: PostgresJsDatabase<typeof schema>) {
     deadline.setDate(deadline.getDate() + 7); // Adds 7 days to the current date
 
     await db.insert(schema.postTests).values({
-      deadline: deadline,
       eventId: events[i]?.id ?? '',
       googleFormLink: 'https://google.com',
       startTime: new Date(),
+      deadline,
     });
   }
 }

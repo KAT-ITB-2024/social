@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <div className="relative">
       {!isSidebarOpen && (
-        <div className="fixed z-20 w-full max-w-md justify-center">
+        <div className="fixed z-50 w-full max-w-md justify-center">
           <div
             className="relative top-4 mx-6 flex items-center justify-between rounded-full bg-blue-600 py-3 pl-3 pr-5 shadow-green-sm"
             style={{
@@ -76,36 +76,46 @@ const Navbar = () => {
                     <div className="h-0 w-0 border-b-[14px] border-l-[15px] border-r-[15px] border-b-turquoise-100 border-l-transparent border-r-transparent" />
                   </div>
                   <DropdownMenuGroup>
-                    {notifications.map((notification, index) => (
-                      <div key={index}>
-                        <DropdownMenuItem
-                          className={`bg-turquoise-100 ${index === 0 ? 'rounded-t-sm' : ''}`}
-                        >
-                          <div className="flex flex-row gap-3">
-                            {/* Indicator */}
-                            {/* <div>
+                    {notifications.length === 0 ? (
+                      <DropdownMenuItem
+                        className={`rounded-t-sm bg-turquoise-100`}
+                      >
+                        <div className="p-4 text-center">
+                          Tidak ada Notifikasi
+                        </div>
+                      </DropdownMenuItem>
+                    ) : (
+                      notifications.map((notification, index) => (
+                        <div key={index}>
+                          <DropdownMenuItem
+                            className={`bg-turquoise-100 ${index === 0 ? 'rounded-t-sm' : ''}`}
+                          >
+                            <div className="flex flex-row gap-3">
+                              {/* Indicator */}
+                              {/* <div>
                               <div
                                 className={`my-[8px] w-[8px] h-[8px] rounded-full ${notification.isRead ? 'bg-neutral-400' : 'bg-success-500'}`}
                               />
                             </div> */}
-                            {/* Content */}
-                            <div className="flex flex-col gap-3">
-                              <span className="text-b4">
-                                {notification.description}
-                              </span>
-                              <span className="text-b5 text-neutral-400">
-                                {notification.date}
-                              </span>
+                              {/* Content */}
+                              <div className="flex flex-col gap-3">
+                                <span className="text-b4">
+                                  {notification.description}
+                                </span>
+                                <span className="text-b5 text-neutral-400">
+                                  {notification.date}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        </DropdownMenuItem>
-                        {index < notifications.length - 1 && (
-                          <div className="bg-turquoise-100 py-1">
-                            <DropdownMenuSeparator className="bg-turquoise-200" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                          </DropdownMenuItem>
+                          {index < notifications.length - 1 && (
+                            <div className="bg-turquoise-100 py-1">
+                              <DropdownMenuSeparator className="bg-turquoise-200" />
+                            </div>
+                          )}
+                        </div>
+                      ))
+                    )}
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>

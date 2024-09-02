@@ -1,5 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
+import { signOut } from 'next-auth/react';
+import { SuccessToast } from '~/components/ui/success-toast';
+import { ErrorToast } from '~/components/ui/error-toast';
+import { toast } from 'sonner';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -7,6 +11,73 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
+  const sidebarItems = [
+    {
+      href: '/',
+      src: '/icons/sidebar/home.svg',
+      text: 'Home',
+    },
+    {
+      href: '/assignment',
+      src: '/icons/sidebar/assignment.svg',
+      text: 'Assignment',
+    },
+    {
+      href: '/attendance',
+      src: '/icons/sidebar/attendance.svg',
+      text: 'Attendance',
+    },
+    {
+      href: '/chat',
+      src: '/icons/sidebar/chat.svg',
+      text: 'Chat',
+    },
+    {
+      href: '/leaderboard',
+      src: '/icons/sidebar/leaderboard.svg',
+      text: 'Leaderboard',
+    },
+    {
+      href: '/class-selection',
+      src: '/icons/sidebar/class-selection.svg',
+      text: 'Class Selection',
+    },
+    {
+      href: '#',
+      src: '/icons/sidebar/oskm-mbti.svg',
+      text: 'OSKM MBTI',
+    },
+    // {
+    //   href: '#',
+    //   src: '/icons/sidebar/get-coins.svg',
+    //   text: 'Get Coins',
+    // },
+    // {
+    //   href: '#',
+    //   src: '/icons/sidebar/request-merch.svg',
+    //   text: 'Request Merch',
+    // },
+    {
+      href: '/profile',
+      src: '/icons/sidebar/profile.svg',
+      text: 'Profile',
+    },
+  ];
+
+  async function onLogout() {
+    try {
+      await signOut({
+        callbackUrl: '/login',
+      });
+      toast(
+        <SuccessToast title="Logout success!" desc="Logged out successfully" />,
+      );
+    } catch (error) {
+      toast(
+        <ErrorToast desc="There was an error logging out. Please try again." />,
+      );
+    }
+  }
   return (
     <div className="fixed left-[50%] w-full translate-x-[-50%] lg:w-[450px]">
       <div
@@ -35,50 +106,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               />
               <nav className="no-scrollbar flex flex-col gap-2 overflow-y-auto">
                 {/* TODO: update page routes and auth logic */}
-                {[
-                  { href: '#', src: '/icons/sidebar/home.svg', text: 'Home' },
-                  {
-                    href: '/assignment',
-                    src: '/icons/sidebar/assignment.svg',
-                    text: 'Assignment',
-                  },
-                  {
-                    href: '/attendance',
-                    src: '/icons/sidebar/attendance.svg',
-                    text: 'Attendance',
-                  },
-                  { href: '#', src: '/icons/sidebar/chat.svg', text: 'Chat' },
-                  {
-                    href: '/leaderboard',
-                    src: '/icons/sidebar/leaderboard.svg',
-                    text: 'Leaderboard',
-                  },
-                  {
-                    href: '#',
-                    src: '/icons/sidebar/class-selection.svg',
-                    text: 'Class Selection',
-                  },
-                  {
-                    href: '#',
-                    src: '/icons/sidebar/oskm-mbti.svg',
-                    text: 'OSKM MBTI',
-                  },
-                  {
-                    href: '#',
-                    src: '/icons/sidebar/get-coins.svg',
-                    text: 'Get Coins',
-                  },
-                  {
-                    href: '#',
-                    src: '/icons/sidebar/request-merch.svg',
-                    text: 'Request Merch',
-                  },
-                  {
-                    href: '#',
-                    src: '/icons/sidebar/profile.svg',
-                    text: 'Profile',
-                  },
-                ].map((item, index) => (
+                {sidebarItems.map((item, index) => (
                   <a
                     key={index}
                     href={item.href}
@@ -96,7 +124,10 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                 ))}
               </nav>
               <div className="mt-7 py-4">
-                <button className="flex w-full items-center justify-center rounded bg-blue-200 py-2 text-white hover:bg-blue-100">
+                <button
+                  className="flex w-full items-center justify-center rounded bg-blue-200 py-2 text-white hover:bg-blue-100"
+                  onClick={() => onLogout()}
+                >
                   <Image
                     src={'/icons/logout-icon.svg'}
                     alt="logout"
