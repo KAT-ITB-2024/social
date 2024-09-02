@@ -31,10 +31,15 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   const [downloadUrl, setDownloadUrl] = useState<string | null>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [isOverDeadline, setIsOverDeadline] = useState(false);
   const [assignmentStatus, setAssignmentStatus] =
     useState<AssignmentSubmission | null>(null);
   const [sudahKumpul, setSudahKumpul] = useState(false);
-  const { data: assignment, isLoading } = api.assignment.getQuestById.useQuery({
+  const {
+    data: assignment,
+    isLoading,
+    refetch,
+  } = api.assignment.getQuestById.useQuery({
     id: params.id,
   });
 
@@ -55,6 +60,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       }
 
       if (assignment) {
+        setIsOverDeadline(assignment.assignments.deadline < new Date());
         if (assignment.assignmentSubmissions !== null) {
           try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -106,16 +112,13 @@ export default function DetailPage({ params }: { params: { id: string } }) {
   }
 
   const handleDelete = () => {
-    if (
-      assignmentStatus === AssignmentSubmission.TERKUMPUL ||
-      assignmentStatus === AssignmentSubmission.BELUM_KUMPUL
-    ) {
+    if (assignmentStatus === AssignmentSubmission.TERKUMPUL) {
       setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
-      localStorage.removeItem(`assignment_${params.id}_fileName`);
-      localStorage.removeItem(`assignment_${params.id}_downloadUrl`);
-      setFilename('');
-      setDownloadUrl('');
     }
+    localStorage.removeItem(`assignment_${params.id}_fileName`);
+    localStorage.removeItem(`assignment_${params.id}_downloadUrl`);
+    setFilename('');
+    setDownloadUrl('');
   };
 
   const handleSubmit = async () => {
@@ -144,12 +147,16 @@ export default function DetailPage({ params }: { params: { id: string } }) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         await uploadFile(url, file, AllowableFileTypeEnum.PDF);
         setProgress(0);
-        setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        if (assignmentStatus === AssignmentSubmission.BELUM_KUMPUL) {
+          setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+        }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setDownloadUrl(downloadUrl);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         setFilename(filename);
+        setSudahKumpul(true);
         setShowInfoModal(true);
+        void refetch();
       } catch (error) {
         toast(<ErrorToast desc="Silakan coba submit ulang!" />);
       }
@@ -239,9 +246,14 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   isUserSubmit={true}
                   onDelete={handleDelete}
                   isDeleteable={
-                    (assignment.assignmentSubmissions?.point === null ||
-                      assignment.assignmentSubmissions?.point === undefined) &&
-                    assignmentStatus !== AssignmentSubmission.TERLAMBAT
+                    assignmentStatus === AssignmentSubmission.TERLAMBAT
+                      ? assignment.assignmentSubmissions
+                        ? false
+                        : true
+                      : assignmentStatus === AssignmentSubmission.TERKUMPUL &&
+                          isOverDeadline
+                        ? false
+                        : true
                   }
                 />
               ) : (
