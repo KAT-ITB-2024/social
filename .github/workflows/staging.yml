@@ -69,6 +69,11 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Remove yarn.lock
         run: rm -f yarn.lock
+      - name: Remove untracked files
+        run: |
+          git clean -f -d
+      - name: Clean yarn cache
+        run: yarn cache clean
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
