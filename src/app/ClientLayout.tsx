@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from '~/components/Navbar';
 import { useSession } from 'next-auth/react';
 import { socket } from '~/utils/socket';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 export default function ClientLayout({
   children,
@@ -30,6 +31,17 @@ export default function ClientLayout({
     ],
     [],
   );
+  useEffect(() => {
+    if (
+      routes.includes(pathname) ||
+      (pathname.startsWith('/chat/history/') && pathname !== '/chat/history') ||
+      status === 'unauthenticated'
+    ) {
+      setShouldShowNavbar(false);
+    } else {
+      setShouldShowNavbar(true);
+    }
+  }, [pathname, routes, status]);
 
   useEffect(() => {
     if (status === 'authenticated' && !socket.connected) {
@@ -39,16 +51,9 @@ export default function ClientLayout({
     }
   }, [status]);
 
-  useEffect(() => {
-    if (
-      routes.includes(pathname) ||
-      (pathname.startsWith('/chat/history/') && pathname !== '/chat/history')
-    ) {
-      setShouldShowNavbar(false);
-    } else {
-      setShouldShowNavbar(true);
-    }
-  }, [pathname, routes]);
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">

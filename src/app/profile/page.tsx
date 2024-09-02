@@ -2,12 +2,12 @@ import ProfileDetails from '~/components/profile/ProfileDetails';
 import ProfileHeader from '~/components/profile/ProfileHeader';
 import Image from 'next/image';
 import { api } from '~/trpc/server';
-import { notFound } from 'next/navigation';
+import NotFound from '../not-found';
 
 export default async function ProfilePage() {
   const userProfile = await api.profile.getUserProfile();
   if (!userProfile) {
-    return notFound;
+    return <NotFound />;
   }
   const { profilePic } = userProfile;
   return (

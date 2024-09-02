@@ -14,10 +14,7 @@ export const profileRouter = createTRPCRouter({
     const userId = ctx.session?.user.id;
 
     if (!userId) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'Unauthorized',
-      });
+      return null;
     }
 
     const profile = await ctx.db
