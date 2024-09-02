@@ -7,6 +7,7 @@ interface CardTopScoreProps {
   nim?: string;
   point: number | null;
   isIndividual?: boolean;
+  isUser?: boolean;
 }
 
 export default function CardTopScore({
@@ -16,6 +17,7 @@ export default function CardTopScore({
   nim,
   point,
   isIndividual = true,
+  isUser = false,
 }: CardTopScoreProps) {
   let profilePicture = profileImage;
   if (isIndividual)
@@ -25,7 +27,13 @@ export default function CardTopScore({
         : '/images/leaderboard/no-profile.png';
 
   return (
-    <div className="flex w-[110px] flex-col items-center justify-center gap-3 rounded-[12px] border-2 border-[#05A798] bg-gradient-to-br from-[#C5FFF3B2] to-[#99E0FFB2] p-2 text-[#006E6F] shadow-[4px_4px_10px_0_#FFBF5180]">
+    <div
+      className={`flex w-[110px] flex-col items-center justify-center gap-3 rounded-[12px] border-2 border-[#05A798] bg-gradient-to-br ${
+        isUser
+          ? 'from-[#0CEBCC99] to-[#05A798]'
+          : 'from-[#C5FFF3B2] to-[#99E0FFB2]'
+      } p-2 text-[#006E6F] shadow-[4px_4px_10px_0_#FFBF5180]`}
+    >
       {/* Rank and Profile*/}
       <div className="relative mt-1">
         <span className="absolute -left-4 -top-1 z-[2] flex h-8 w-8 items-center justify-center rounded-full bg-[#006E6F] font-heading font-normal text-[#FEFDA3]">

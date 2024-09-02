@@ -387,8 +387,6 @@ export const messageRouter = createTRPCRouter({
         });
       }
 
-      console.log('Ayam');
-
       const SpecificChat = await ctx.db
         .select({
           endedAt: userMatches.endedAt,

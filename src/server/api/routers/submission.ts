@@ -152,9 +152,6 @@ export const submissionRouter = createTRPCRouter({
               });
             }
 
-            console.log('Group point:', group.point);
-            console.log('New point:', newPoint);
-
             await transaction
               .update(groups)
               .set({

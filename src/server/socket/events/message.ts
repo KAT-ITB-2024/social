@@ -12,7 +12,6 @@ export const messageEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx, input }) => {
-    console.log('MASUK KE MESSAGE EVENT');
     const userSession = ctx.client.data.session;
     const senderId = userSession.user.id;
     const currentMatch = ctx.client.data.match;
