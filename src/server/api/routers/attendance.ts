@@ -12,7 +12,6 @@ import { getCurrentWIBTime, isAllowedToPresence } from '../helpers/utils';
 
 export const attendanceRouter = createTRPCRouter({
   getAllAttendances: publicProcedure.query(async ({ ctx }) => {
-    console.log('Ayam');
     if (!ctx.session) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -54,6 +53,7 @@ export const attendanceRouter = createTRPCRouter({
         };
       });
     } catch (error) {
+      console.log('iNi error', error);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to fetch attendances!',

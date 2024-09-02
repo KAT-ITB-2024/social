@@ -30,7 +30,7 @@ const InformationModal = ({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       {/* Ukuran, Warna, Typography Mengikuti Figma, Tidak Bisa Rounded :( */}
-      <AlertDialogContent className="w-[343px] rounded-[32px] border-none bg-blue-600 text-white flex flex-col items-center shadow-blue-xl overflow-hidden">
+      <AlertDialogContent className="flex w-[343px] flex-col items-center overflow-hidden rounded-[32px] border-none bg-blue-600 text-white shadow-blue-xl">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-center font-subheading text-2xl uppercase">
             {title}
@@ -39,18 +39,18 @@ const InformationModal = ({
         <AlertDialogFooter>
           <div className="flex flex-col items-center gap-y-4 space-y-4">
             <AlertDialogCancel
-              className="bg-pink-300 hover:bg-pink-400 border-white text-neutral-50 hover:text-neutral-100 rounded-[13px] font-body focus-visible:ring-transparent w-[192px] text-xl"
+              className="w-[192px] rounded-[13px] border-white bg-pink-300 font-body text-xl text-neutral-50 hover:bg-pink-400 hover:text-neutral-100 focus-visible:ring-transparent"
               onClick={onClose}
             >
               {buttonLabel}
             </AlertDialogCancel>
-            <p className="text-center text-md px-8">{description}</p>
+            <p className="text-md px-8 text-center">{description}</p>
           </div>
         </AlertDialogFooter>
         <Image
           src={Ombak}
           alt="Ombak"
-          className="absolute bottom-0 w-full translate-y-[150px] -z-20 rounded-[10px] opacity-50"
+          className="absolute bottom-0 -z-20 w-full translate-y-[150px] rounded-[10px] opacity-50"
         />
       </AlertDialogContent>
     </AlertDialog>

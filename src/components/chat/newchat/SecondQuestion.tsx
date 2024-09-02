@@ -30,12 +30,12 @@ const SecondQuestion = ({
   };
 
   return (
-    <div className="flex flex-col items-center align-center gap-8 w-full p-6">
-      <p className="text-white font-subheading text-sh3 font-bold">
+    <div className="align-center flex w-full flex-col items-center gap-8 p-6">
+      <p className="font-subheading text-sh3 font-bold text-white">
         PILIH TOPIK KUY!
       </p>
       <ScrollArea className="h-52 w-full rounded-md">
-        <div className="flex flex-col items-center justify-evenly gap-3 h-52 w-full">
+        <div className="flex h-52 w-full flex-col items-center justify-evenly gap-3">
           {Object.entries(topicLabels).map(([key, label]) => {
             const chatTopic = Number(key) as ChatTopic;
             return (

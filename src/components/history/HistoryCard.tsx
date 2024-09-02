@@ -22,10 +22,10 @@ export const HistoryCard = ({
         background:
           'linear-gradient(95deg, #0CEBCCE6 -31.4%, #3678FFE6 119.25%)',
       }}
-      className=" w-full flex justify-between items-center rounded-[12px] px-[22px] py-[15px] hover:cursor-pointer"
+      className="flex w-full items-center justify-between rounded-[12px] px-[22px] py-[15px] hover:cursor-pointer"
       onClick={() => router.push(`/chat/history/${id}`)}
     >
-      <div className="w-fit flex gap-[10px] items-center">
+      <div className="flex w-fit items-center gap-[10px]">
         <Image
           src={
             profile != null && profile != ''
@@ -36,7 +36,7 @@ export const HistoryCard = ({
           width={48}
           height={48}
         />
-        <h4 className="text-white font-normal truncate max-w-[140px]">
+        <h4 className="max-w-[140px] truncate font-normal text-white">
           {name}
         </h4>
       </div>

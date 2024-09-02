@@ -173,7 +173,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
         }}
       >
         {/* {isUploading && <LoadingSpinnerCustom />} */}
-        <div className="mx-6 mt-20 overflow-y-scroll no-scrollbar">
+        <div className="no-scrollbar mx-6 mt-20 overflow-y-scroll">
           <button onClick={handleBack}>
             <Image
               src="/images/detail/arrow-back.svg"
@@ -182,7 +182,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
               height={40}
             />
           </button>
-          <div className="mt-[20px] flex flex-col gap-8 lg:gap-4 text-pink-400">
+          <div className="mt-[20px] flex flex-col gap-8 text-pink-400 lg:gap-4">
             <div className="flex flex-col gap-2">
               <div>
                 <h3>{assignment.assignments.title}</h3>
@@ -217,7 +217,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             )}
 
             <div
-              className={`flex flex-col overflow-visible w-full justify-center ${filename === '' ? 'min-h-36 items-center py-3' : 'min-h-24 p-3'} border-2 border-blue-300 rounded-[14px]`}
+              className={`flex w-full flex-col justify-center overflow-visible ${filename === '' ? 'min-h-36 items-center py-3' : 'min-h-24 p-3'} rounded-[14px] border-2 border-blue-300`}
               style={{
                 background:
                   'linear-gradient(to right, rgba(12,188,204,0.6), rgba(100,177,247,0.6))',
@@ -243,7 +243,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                       height={90}
                     />
                     <FileUpload
-                      className="w-32 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5"
+                      className="h-8 w-32 rounded-[4px] bg-blue-500 px-5 py-2 text-b5 text-[#FFFEFE]"
                       progress={progress}
                       setFile={setFile}
                       setFilename={setFilename}
@@ -257,9 +257,9 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                 handleSubmit={handleSubmit}
                 customTriggerButton={
                   <button
-                    className={`w-20 h-8 py-2 px-5 rounded-[4px] bg-blue-500 text-[#FFFEFE] text-b5 ${
+                    className={`h-8 w-20 rounded-[4px] bg-blue-500 px-5 py-2 text-b5 text-[#FFFEFE] ${
                       filename === ''
-                        ? 'opacity-50 cursor-not-allowed'
+                        ? 'cursor-not-allowed opacity-50'
                         : 'opacity-100'
                     }`}
                     disabled={filename === ''}

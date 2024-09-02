@@ -25,7 +25,7 @@ export default async function ProfilePage() {
         alt="Wave"
         width={300}
         height={100}
-        className="absolute left-0 translate-y-[-60px] rotate-[10deg] z-0 w-auto h-auto"
+        className="absolute left-0 z-0 h-auto w-auto translate-y-[-60px] rotate-[10deg]"
       />
       <Image
         src="/images/profile/turtle.png"
@@ -40,10 +40,10 @@ export default async function ProfilePage() {
         alt="Starfish"
         width={250}
         height={250}
-        className="absolute top-96 right-0 z-0"
+        className="absolute right-0 top-96 z-0"
       />
 
-      <div className="relative z-1">
+      <div className="z-1 relative">
         <ProfileHeader profilePic={profilePic} />
         <ProfileDetails {...userProfile} />
       </div>

@@ -105,14 +105,14 @@ export default function ProfileDetails({
   }
 
   return (
-    <div className="text-center max-w-sm mx-auto mt-4">
+    <div className="mx-auto mt-4 max-w-sm text-center">
       {isEditing ? (
-        <div className="text-left space-y-4">
+        <div className="space-y-4 text-left">
           <div>
-            <p className="text-turquoise-400 text-b4 mb-1">Bio</p>
+            <p className="mb-1 text-b4 text-turquoise-400">Bio</p>
             <Input
               placeholder="Bio"
-              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 "
+              className="w-full rounded border-2 border-turquoise-400 p-2 text-turquoise-400"
               type="text"
               name="bio"
               value={editProfile.bio ?? ''}
@@ -120,10 +120,10 @@ export default function ProfileDetails({
             />
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4 mb-1">Instagram</p>
+            <p className="mb-1 text-b4 text-turquoise-400">Instagram</p>
             <Input
               placeholder="Instagram"
-              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 "
+              className="w-full rounded border-2 border-turquoise-400 p-2 text-turquoise-400"
               type="text"
               name="instagram"
               value={editProfile.instagram ?? ''}
@@ -131,10 +131,10 @@ export default function ProfileDetails({
             />
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4 mb-1">Email</p>
+            <p className="mb-1 text-b4 text-turquoise-400">Email</p>
             <Input
               placeholder="Email"
-              className="w-full p-2 border-2 border-turquoise-400 rounded text-turquoise-400 "
+              className="w-full rounded border-2 border-turquoise-400 p-2 text-turquoise-400"
               type="text"
               name="email"
               value={editProfile.email ?? ''}
@@ -142,15 +142,15 @@ export default function ProfileDetails({
             />
           </div>
 
-          <div className="flex justify-center space-x-4 mt-6">
+          <div className="mt-6 flex justify-center space-x-4">
             <Button
-              className="bg-lightYellow px-8 border-2 border-blue-600 text-purple w-20"
+              className="w-20 border-2 border-blue-600 bg-lightYellow px-8 text-purple"
               onClick={handleCancel}
             >
               Cancel
             </Button>
             <Button
-              className="bg-blue-600 px-8 text-shade-200 w-20"
+              className="w-20 bg-blue-600 px-8 text-shade-200"
               onClick={handleSave}
             >
               Save
@@ -158,52 +158,52 @@ export default function ProfileDetails({
           </div>
         </div>
       ) : (
-        <div className="text-left space-y-4">
+        <div className="space-y-4 text-left">
           <div>
-            <p className="text-turquoise-400 text-b4">Nama</p>
-            <p className="text-turquoise-400 text-sh4 font-bold mb-4">
+            <p className="text-b4 text-turquoise-400">Nama</p>
+            <p className="mb-4 text-sh4 font-bold text-turquoise-400">
               {profile.nama}
             </p>
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4">NIM</p>
-            <p className="text-turquoise-400 text-sh4 font-bold mb-4">
+            <p className="text-b4 text-turquoise-400">NIM</p>
+            <p className="mb-4 text-sh4 font-bold text-turquoise-400">
               {profile.nim}
             </p>
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4">Fakultas</p>
-            <p className="text-turquoise-400 text-sh4 font-bold mb-4">
+            <p className="text-b4 text-turquoise-400">Fakultas</p>
+            <p className="mb-4 text-sh4 font-bold text-turquoise-400">
               {profile.fakultas}
             </p>
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4">Jenis Kelamin</p>
-            <p className="text-turquoise-400 text-sh4 font-bold mb-4">
+            <p className="text-b4 text-turquoise-400">Jenis Kelamin</p>
+            <p className="mb-4 text-sh4 font-bold text-turquoise-400">
               {profile.jenisKelamin}
             </p>
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4">Bio</p>
-            <p className="text-turquoise-400 text-sh4 font-bold mb-4">
+            <p className="text-b4 text-turquoise-400">Bio</p>
+            <p className="mb-4 text-sh4 font-bold text-turquoise-400">
               {sanitizeValue(profile.bio)}
             </p>
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4">Instagram</p>
-            <p className="text-turquoise-400 text-sh4 font-bold mb-4">
+            <p className="text-b4 text-turquoise-400">Instagram</p>
+            <p className="mb-4 text-sh4 font-bold text-turquoise-400">
               {sanitizeValue(profile.instagram)}
             </p>
           </div>
           <div>
-            <p className="text-turquoise-400 text-b4">Email</p>
-            <p className="text-turquoise-400 text-sh4 font-bold">
+            <p className="text-b4 text-turquoise-400">Email</p>
+            <p className="text-sh4 font-bold text-turquoise-400">
               {sanitizeValue(profile.email)}
             </p>
           </div>
           <div className="flex justify-center">
             <Button
-              className="bg-blue-600 mt-2 px-8 mb-20"
+              className="mb-20 mt-2 bg-blue-600 px-8"
               onClick={toggleEditMode}
             >
               Edit Profile

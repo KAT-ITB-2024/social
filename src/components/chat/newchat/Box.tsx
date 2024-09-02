@@ -10,15 +10,15 @@ type BoxComponentProps = {
 const BoxComponent = ({ children, className }: BoxComponentProps) => {
   return (
     <div
-      className={`relative flex flex-col items-center ${className} w-[343px] h-[465px] rounded-[43px] bg-blue-turquoise shadow-green-lg overflow-hidden`}
+      className={`relative flex flex-col items-center ${className} h-[465px] w-[343px] overflow-hidden rounded-[43px] bg-blue-turquoise shadow-green-lg`}
     >
-      <div className="relative w-full z-10">{children}</div>
+      <div className="relative z-10 w-full">{children}</div>
       <Image
         src={Frame}
         alt="frame"
         width={343}
         height={465}
-        className="absolute inset-0 rounded-[43px] z-0" // Positioned behind children
+        className="absolute inset-0 z-0 rounded-[43px]" // Positioned behind children
       />
     </div>
   );

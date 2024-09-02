@@ -25,7 +25,7 @@ const BubbleChat: React.FC<BubbleChatProps> = ({
       ref={chatRef ?? null}
     >
       <div className={bubbleClasses}>
-        <div className="pb-[10px] text-md break-words">{text}</div>
+        <div className="text-md break-words pb-[10px]">{text}</div>
         <div
           className={`text-xs text-opacity-75 ${
             variant === 'sent' ? 'text-right' : 'text-left'
@@ -34,10 +34,10 @@ const BubbleChat: React.FC<BubbleChatProps> = ({
           {date}
         </div>
         <div
-          className={`absolute w-0 h-0 border-[10px] ${
+          className={`absolute h-0 w-0 border-[10px] ${
             variant === 'sent'
-              ? 'border-blue-300 border-t-transparent border-r-transparent right-0 bottom-0 transform translate-x-1/2 -translate-y-1/3'
-              : 'border-gray-100 border-t-transparent border-l-transparent left-0 bottom-0 transform -translate-x-1/2 -translate-y-1/3'
+              ? 'bottom-0 right-0 -translate-y-1/3 translate-x-1/2 transform border-blue-300 border-r-transparent border-t-transparent'
+              : 'bottom-0 left-0 -translate-x-1/2 -translate-y-1/3 transform border-gray-100 border-l-transparent border-t-transparent'
           }`}
         />
       </div>

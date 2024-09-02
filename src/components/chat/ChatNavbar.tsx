@@ -29,10 +29,10 @@ const ChatNavbar = ({
 
   return (
     <div className="relative">
-      <div className="fixed top-4 z-20 flex flex-row items-center justify-between gap-x-2 w-full max-w-md px-8">
-        <div className="bg-blue-600 rounded-full py-2 pl-4 pr-12 flex items-center gap-x-2 text-white w-full">
-          <div className="rounded-full text-blue-600 bg-white p-1">
-            <MoveLeft className="w-4 h-4" onClick={() => router.back()} />
+      <div className="fixed top-4 z-20 flex w-full max-w-md flex-row items-center justify-between gap-x-2 px-8">
+        <div className="flex w-full items-center gap-x-2 rounded-full bg-blue-600 py-2 pl-4 pr-12 text-white">
+          <div className="rounded-full bg-white p-1 text-blue-600">
+            <MoveLeft className="h-4 w-4" onClick={() => router.back()} />
           </div>
           <Image
             src={
@@ -46,7 +46,7 @@ const ChatNavbar = ({
             onClick={() => opponentId && setIsModalOpen(true)}
           />
           <div className="flex flex-col overflow-hidden">
-            <h1 className="font-medium text-[20px] truncate max-w-[140px]">
+            <h1 className="max-w-[140px] truncate text-[20px] font-medium">
               {name ?? 'Anonymous'}
             </h1>
             {isTyping && (
@@ -54,9 +54,9 @@ const ChatNavbar = ({
             )}
           </div>
         </div>
-        <div className="relative bg-blue-600 w-[100px] py-[7px] flex items-center justify-center rounded-full overflow-hidden">
+        <div className="relative flex w-[100px] items-center justify-center overflow-hidden rounded-full bg-blue-600 py-[7px]">
           <button
-            className="bg-turquoise-100 px-[7px] py-[10px] rounded-lg border-2 border-blue-600 shadow-green-sm z-10"
+            className="z-10 rounded-lg border-2 border-blue-600 bg-turquoise-100 px-[7px] py-[10px] shadow-green-sm"
             onClick={handleToggleSidebar}
           >
             <Image
@@ -72,7 +72,7 @@ const ChatNavbar = ({
 
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 z-30 w-screen h-screen"
+          className="fixed inset-0 z-30 h-screen w-screen bg-black bg-opacity-80"
           onClick={handleToggleSidebar}
         >
           <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />

@@ -79,15 +79,15 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     }
   }
   return (
-    <div className="fixed left-[50%] translate-x-[-50%] w-full lg:w-[450px]">
+    <div className="fixed left-[50%] w-full translate-x-[-50%] lg:w-[450px]">
       <div
-        className={`absolute top-0 h-[100vh] right-0 lg:-auto ease-in-out duration-200 z-30 ${isOpen ? 'opacity-100 w-[60%] lg:max-w-[270px]' : 'opacity-0 w-0'} mx-auto`}
+        className={`lg:-auto absolute right-0 top-0 z-30 h-[100vh] duration-200 ease-in-out ${isOpen ? 'w-[60%] opacity-100 lg:max-w-[270px]' : 'w-0 opacity-0'} mx-auto`}
       >
-        <div className="relative w-full h-full ">
+        <div className="relative h-full w-full">
           <div
-            className={`absolute top-0 right-0 h-full ease-in-out duration-200 ${isOpen ? 'w-full' : 'w-0'} bg-[url('/images/navbar/sidebar-background.png')] bg-no-repeat bg-cover bg-center`}
+            className={`absolute right-0 top-0 h-full duration-200 ease-in-out ${isOpen ? 'w-full' : 'w-0'} bg-[url('/images/navbar/sidebar-background.png')] bg-cover bg-center bg-no-repeat`}
           >
-            <div className="flex flex-col h-full w-full py-6 px-4 gap-2">
+            <div className="flex h-full w-full flex-col gap-2 px-4 py-6">
               <div className="flex items-center justify-end">
                 <button className="text-white" onClick={toggleSidebar}>
                   <Image
@@ -104,13 +104,13 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                 width={110}
                 height={40}
               />
-              <nav className="flex flex-col gap-2 overflow-y-auto no-scrollbar">
+              <nav className="no-scrollbar flex flex-col gap-2 overflow-y-auto">
                 {/* TODO: update page routes and auth logic */}
                 {sidebarItems.map((item, index) => (
                   <a
                     key={index}
                     href={item.href}
-                    className="flex items-center text-white rounded-[9px] hover:bg-blue-400"
+                    className="flex items-center rounded-[9px] text-white hover:bg-blue-400"
                   >
                     <Image
                       src={item.src}
@@ -125,7 +125,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               </nav>
               <div className="mt-7 py-4">
                 <button
-                  className="flex items-center justify-center w-full py-2 bg-blue-200 text-white hover:bg-blue-100 rounded"
+                  className="flex w-full items-center justify-center rounded bg-blue-200 py-2 text-white hover:bg-blue-100"
                   onClick={() => onLogout()}
                 >
                   <Image

@@ -21,7 +21,7 @@ export default function TopThreeContainer({
   isIndividual = true,
 }: TopScoreProps) {
   return (
-    <div className="relative grid my-2 grid-cols-3 gap-2 w-[346px]">
+    <div className="relative my-2 grid w-[346px] grid-cols-3 gap-2">
       <div>
         <div className="h-16"></div>
         <CardTopScore

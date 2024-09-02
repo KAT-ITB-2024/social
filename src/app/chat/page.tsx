@@ -146,9 +146,9 @@ export default function MatchPage() {
 
   if (isLoading) {
     return (
-      <div className="bg-black h-screen w-full flex items-center justify-center">
-        <div className="relative h-full w-full bg-white overflow-hidden">
-          <div className="flex flex-col items-center h-full justify-start px-8 relative z-20">
+      <div className="flex h-screen w-full items-center justify-center bg-black">
+        <div className="relative h-full w-full overflow-hidden bg-white">
+          <div className="relative z-20 flex h-full flex-col items-center justify-start px-8">
             <div className="flex flex-col items-center justify-center py-40">
               <Image src={Match} alt="match" width={300} height={300} />
               <div className="flex flex-col items-center justify-center gap-5">
@@ -168,7 +168,7 @@ export default function MatchPage() {
           <Image
             src={MatchBg}
             alt="OSKM Chat Match Background"
-            className="absolute top-0 left-0 object-cover h-full w-full z-10"
+            className="absolute left-0 top-0 z-10 h-full w-full object-cover"
           />
 
           <Image
@@ -189,9 +189,9 @@ export default function MatchPage() {
     redirect('/login');
   }
   return (
-    <div className="bg-black h-screen w-full flex items-center justify-center">
-      <div className="relative h-full w-full bg-white overflow-hidden">
-        <div className="flex flex-col items-center h-full justify-center px-8 relative z-20">
+    <div className="flex h-screen w-full items-center justify-center bg-black">
+      <div className="relative h-full w-full overflow-hidden bg-white">
+        <div className="relative z-20 flex h-full flex-col items-center justify-center px-8">
           <div className="flex flex-col items-center justify-center">
             {showForm ? (
               <NewChatForm
@@ -204,11 +204,11 @@ export default function MatchPage() {
               <div className="flex flex-col items-center justify-evenly">
                 <Image src={Coral} alt="coral" width={300} height={300} />
                 <div className="flex flex-col items-center justify-center gap-8">
-                  <h3 className="text-blue-500 text-center">
+                  <h3 className="text-center text-blue-500">
                     MULAI CHAT BARU <br /> DULU YUK!
                   </h3>
                   <Button
-                    className="bg-pink-300 rounded-full px-6 shadow-pink-md hover:bg-pink-400"
+                    className="rounded-full bg-pink-300 px-6 shadow-pink-md hover:bg-pink-400"
                     onClick={showChatForm}
                   >
                     <Image src={AddIcon} alt="addicon" width={40} height={40} />
@@ -225,7 +225,7 @@ export default function MatchPage() {
         <Image
           src={MatchBg}
           alt="OSKM Chat Match Background"
-          className="absolute top-0 left-0 object-cover h-full w-full z-10"
+          className="absolute left-0 top-0 z-10 h-full w-full object-cover"
         />
 
         <Image

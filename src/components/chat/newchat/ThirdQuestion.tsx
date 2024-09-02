@@ -17,14 +17,14 @@ const ThirdQuestion = ({ findMatch, setJodoh }: ThirdQuestionProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center align-center gap-8 w-full p-8">
-      <div className="flex flex-col items-center align-center">
-        <p className="text-white font-subheading text-sh3 font-bold">
+    <div className="align-center flex w-full flex-col items-center gap-8 p-8">
+      <div className="align-center flex flex-col items-center">
+        <p className="font-subheading text-sh3 font-bold text-white">
           LAGI NYARI
         </p>
-        <p className="text-white font-heading text-h1 ">JODOH?</p>
+        <p className="font-heading text-h1 text-white">JODOH?</p>
       </div>
-      <div className="flex flex-col items-center justify-evenly gap-3 w-full">
+      <div className="flex w-full flex-col items-center justify-evenly gap-3">
         <BoxButton
           color="pink"
           size="large"
