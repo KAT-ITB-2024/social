@@ -45,7 +45,6 @@ export const leaderboardRouter = createTRPCRouter({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ({ totalProfiles, ...rest }) => rest,
       );
-      console.log('Ini leaderboard', leaderboard);
       return {
         leaderboard,
         totalProfiles,
@@ -161,4 +160,53 @@ export const leaderboardRouter = createTRPCRouter({
         totalGroups,
       };
     }),
+
+  getMyGroupLeaderboard: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.session) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User not logged in',
+      });
+    }
+
+    const sessionUser = ctx.session?.user;
+
+    if (!sessionUser) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'User not found',
+      });
+    }
+
+    const userGroup: string = sessionUser.group;
+
+    const currentUserGroup = await ctx.db
+      .select({
+        name: sql`gr.name`,
+        point: sql`gr.point`,
+        rank: sql`gr.rank`,
+      })
+      .from(
+        sql`(
+        SELECT
+          g."groupName" as name,
+          g."point",
+          RANK() OVER (ORDER BY g."point" DESC) AS rank
+          FROM ${groups} g
+      ) AS gr`,
+      )
+      .where(eq(sql`gr.name`, userGroup))
+      .then((result) => result[0] ?? null);
+
+    if (!currentUserGroup) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Current user group not found',
+      });
+    }
+
+    return {
+      currentUserGroup,
+    };
+  }),
 });

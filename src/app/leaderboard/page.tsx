@@ -23,45 +23,53 @@ function LeaderBoardContent() {
 
   const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
+
   const leaderboardData = api.leaderboard.getLeaderboard.useQuery(
     { page: currentPage },
     { enabled: currentContent === 'Individu' },
+  );
+  const groupLeaderboardData = api.leaderboard.getGroupLeaderboard.useQuery(
+    { page: currentPage },
+    { enabled: currentContent === 'Kelompok' },
   );
 
   const userData = api.leaderboard.getMyLeaderboard.useQuery(undefined, {
     enabled: currentContent === 'Individu',
   });
 
-  const groupLeaderboardData = api.leaderboard.getGroupLeaderboard.useQuery(
-    { page: currentPage },
+  const userGroupData = api.leaderboard.getMyGroupLeaderboard.useQuery(
+    undefined,
     { enabled: currentContent === 'Kelompok' },
   );
   useEffect(() => {
-    const topThree = leaderboardData.data?.leaderboard.slice(
-      0,
-      Math.min(3, leaderboardData.data.totalProfiles),
-    );
-    const hasNim = topThree?.some((item) => item.nim === session?.user.nim);
-    if (hasNim) {
-      setIsTopThree(true);
-    } else {
-      setIsTopThree(false);
+    if (!leaderboardData?.data || !session?.user?.nim) {
+      return;
     }
-  }, [leaderboardData]);
+
+    const { totalProfiles, leaderboard } = leaderboardData.data;
+
+    const topThree = leaderboard.slice(0, Math.min(3, totalProfiles));
+
+    const hasNim = topThree.some((item) => item.nim === session.user.nim);
+
+    setIsTopThree(hasNim);
+  }, [leaderboardData, session]);
 
   useEffect(() => {
-    const topThree = groupLeaderboardData.data?.groupLeaderboard.slice(
-      Math.min(3, groupLeaderboardData.data.totalGroups),
-    );
-    const isGroupMember = topThree?.some(
-      (item) => item.name === session?.user.group,
-    );
-    if (isGroupMember) {
-      setIsGroupTopThree(true);
-    } else {
-      setIsGroupTopThree(false);
+    if (!groupLeaderboardData?.data || !session?.user.group) {
+      return;
     }
-  }, [groupLeaderboardData]);
+
+    const { totalGroups, groupLeaderboard } = groupLeaderboardData.data;
+
+    const groupTopThree = groupLeaderboard.slice(0, Math.min(3, totalGroups));
+
+    const isGroupMember = groupTopThree.some(
+      (item) => item.name === session.user.group,
+    );
+
+    setIsGroupTopThree(isGroupMember);
+  }, [groupLeaderboardData, session]);
 
   if (status === 'loading') {
     return <LoadingSpinnerCustom />;
@@ -76,7 +84,8 @@ function LeaderBoardContent() {
   if (
     leaderboardData.isLoading ||
     groupLeaderboardData.isLoading ||
-    userData.isLoading
+    userData.isLoading ||
+    userGroupData.isLoading
   ) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center">
@@ -96,7 +105,7 @@ function LeaderBoardContent() {
 
   const totalPages =
     currentContent === 'Individu'
-      ? Math.ceil(leaderboardData.data!.totalProfiles / 20)
+      ? Math.ceil(leaderboardData.data!.totalProfiles / 4)
       : Math.ceil(groupLeaderboardData.data!.totalGroups / 20);
 
   if (!session || session.user.role !== 'Peserta') {
@@ -137,32 +146,40 @@ function LeaderBoardContent() {
                       />
                     )}
                     <div className="no-scrollbar flex h-[15vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[25vh] [@media(min-height:800px)]:h-[30vh] [@media(min-height:900px)]:h-[35vh]">
-                      {userData.data?.currentUserProfile && !isTopThree && (
-                        <CardDefault
-                          rank={userData.data.currentUserProfile.rank as number}
-                          name={
-                            userData.data?.currentUserProfile.name as string
-                          }
-                          point={Number(userData.data?.currentUserProfile) || 0}
-                          isIndividual
-                          isUser
-                          nim={userData.data?.currentUserProfile.nim as string}
-                          profileImage={
-                            userData.data?.currentUserProfile.profileImage &&
-                            userData.data?.currentUserProfile.profileImage !==
-                              ''
-                              ? (userData.data?.currentUserProfile
-                                  .profileImage as string)
-                              : '/images/leaderboard/no-profile.png'
-                          }
-                        />
-                      )}
+                      {userData.data?.currentUserProfile &&
+                        (!isTopThree || currentPage !== 1) && (
+                          <CardDefault
+                            rank={
+                              userData.data.currentUserProfile.rank as number
+                            }
+                            name={
+                              userData.data?.currentUserProfile.name as string
+                            }
+                            point={
+                              Number(userData.data?.currentUserProfile) || 0
+                            }
+                            isIndividual
+                            isUser
+                            nim={
+                              userData.data?.currentUserProfile.nim as string
+                            }
+                            profileImage={
+                              userData.data?.currentUserProfile.profileImage &&
+                              userData.data?.currentUserProfile.profileImage !==
+                                ''
+                                ? (userData.data?.currentUserProfile
+                                    .profileImage as string)
+                                : '/images/leaderboard/no-profile.png'
+                            }
+                          />
+                        )}
                       {leaderboardData
                         .data!.leaderboard.slice(
                           currentPage === 1
                             ? Math.min(3, leaderboardData.data!.totalProfiles)
                             : 0,
                         )
+                        .filter((item) => item.nim !== session.user.nim)
                         .map((item, index) => (
                           <CardDefault
                             key={`${index}-${item.name}`}
@@ -204,6 +221,21 @@ function LeaderBoardContent() {
                       />
                     )}
                     <div className="no-scrollbar flex h-[20vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[38vh] [@media(min-height:900px)]:h-[40vh]">
+                      {userGroupData.data?.currentUserGroup &&
+                        (!isGroupTopThree || currentPage !== 1) && (
+                          <CardDefault
+                            rank={
+                              userGroupData.data.currentUserGroup.rank as number
+                            }
+                            name={
+                              userGroupData.data.currentUserGroup.name as string
+                            }
+                            isUser
+                            point={
+                              Number(userGroupData.data.currentUserGroup) || 0
+                            }
+                          />
+                        )}
                       {groupLeaderboardData
                         .data!.groupLeaderboard.slice(
                           currentPage === 1
@@ -213,6 +245,7 @@ function LeaderBoardContent() {
                               )
                             : 0,
                         )
+                        .filter((item) => item.name !== session.user.group)
                         .map((item, index) => (
                           <CardDefault
                             key={`${index}-${item.name}`}
@@ -235,11 +268,13 @@ function LeaderBoardContent() {
           </div>
         </div>
 
-        <ProfileFriendModal
-          userId={selectedUserId!}
-          isDialogOpen={isModalOpen}
-          setIsDialogOpen={setIsModalOpen}
-        />
+        {selectedUserId && (
+          <ProfileFriendModal
+            userId={selectedUserId}
+            isDialogOpen={isModalOpen}
+            setIsDialogOpen={setIsModalOpen}
+          />
+        )}
       </div>
     </main>
   );
