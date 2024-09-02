@@ -1,18 +1,26 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { type UserQueue } from '~/types/enums/message';
 import { findMatch, generateQueueKey, cancelQueue } from '../messaging/queue';
-import { type UserMatch, userMatches } from '@katitb2024/database';
+import {
+  profiles,
+  messages,
+  type UserMatch,
+  userMatches,
+  Profile,
+} from '@katitb2024/database';
 import { Redis } from '~/server/redis';
-import { generateKey } from 'crypto';
-import { eq, isNull, ne, or, and } from 'drizzle-orm';
+import { eq, isNull, or, and, desc } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
+import { ChatTopic, GenderEnum } from '~/types/enum/chat';
+import { type UserQueue } from '~/types/payloads/message';
 
 export const findMatchEvent = createEvent(
   {
     name: 'findMatch',
     input: z.object({
       isAnonymous: z.boolean(),
+      topic: z.nativeEnum(ChatTopic),
+      isFindingFriend: z.boolean(),
     }),
     authRequired: true,
   },
@@ -21,8 +29,22 @@ export const findMatchEvent = createEvent(
       return;
     }
     const userSession = ctx.client.data.session;
+    const profile = await ctx.drizzle
+      .select({ gender: profiles.gender })
+      .from(profiles)
+      .where(eq(profiles.userId, userSession.user.id));
+    if (!profile[0]) {
+      return new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Profile not found',
+      });
+    }
+
     const userQueue: UserQueue = {
       userId: userSession.user.id,
+      ...input,
+      gender:
+        profile[0].gender === 'Male' ? GenderEnum.MALE : GenderEnum.FEMALE,
     };
 
     const matchResult = await findMatch(userQueue);
@@ -41,7 +63,8 @@ export const findMatchEvent = createEvent(
       .values({
         firstUserId: matchResult.firstPair.userId,
         secondUserId: matchResult.secondPair.userId,
-        topic: '',
+        isAnonymous: input.isAnonymous,
+        topic: input.topic.toString(),
       })
       .returning();
 
@@ -71,26 +94,25 @@ export const checkMatchEvent = createEvent(
       generateQueueKey(ctx.client.data.session.user.id),
     );
 
-    console.log('masukk ');
-
     const result: {
       queue: null | UserQueue;
       match: undefined | UserMatch;
+      profile: undefined | Profile;
     } = {
       queue: null,
       match: undefined,
+      profile: undefined,
     };
 
     // Kasus kalau dia belum dapet match, jadi queue nya ga null
     if (userQueue) {
-      result.queue = JSON.parse(userQueue) as UserQueue;
+      result.queue = (await JSON.parse(userQueue)) as UserQueue;
       result.match = undefined;
       return result;
     }
 
     if (!ctx.client.data.match) {
       const userId = ctx.client.data.session.user.id;
-      console.log(userId);
       const userMatch = await ctx.drizzle
         .select()
         .from(userMatches)
@@ -105,7 +127,6 @@ export const checkMatchEvent = createEvent(
         )
         .execute();
 
-      console.log(userMatch);
       ctx.client.data.match = userMatch[0];
     }
 
@@ -136,6 +157,22 @@ export const endMatchEvent = createEvent(
     if (!match) {
       return;
     }
+
+    const msgs = await ctx.drizzle
+      .select()
+      .from(messages)
+      .where(eq(messages.userMatchId, currentMatch.id))
+      .orderBy(desc(messages.createdAt))
+      .limit(1);
+
+    const lastMessage = msgs[0];
+    if (lastMessage) {
+      await ctx.drizzle
+        .update(userMatches)
+        .set({ lastMessage: lastMessage.content })
+        .where(eq(userMatches.id, currentMatch.id));
+    }
+
     const sockets = await ctx.io
       .in([match.firstUserId, match.secondUserId])
       .fetchSockets();

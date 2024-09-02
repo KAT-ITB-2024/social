@@ -23,12 +23,12 @@ const ClassFullModal = ({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
         className={cn(
-          'w-[300px] px-4 py-14 bg-white rounded-[12px] shadow-black',
+          'w-[300px] rounded-[12px] bg-white px-4 py-14 shadow-black',
           className,
         )}
       >
         <div
-          className="absolute top-4 right-4 text-2x cursor-pointer"
+          className="text-2x absolute right-4 top-4 cursor-pointer"
           onClick={() => setIsOpen(false)}
         >
           <Image src={CloseIcon} alt="Close Icon" width={32} height={32} />
@@ -38,7 +38,7 @@ const ClassFullModal = ({
             Oh No!
           </p>
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-pink-400 text-center">
+        <AlertDialogDescription className="text-center text-pink-400">
           Sayangnya kelas ini sudah penuh.. Mari telusuri kelas lainnya!
         </AlertDialogDescription>
       </AlertDialogContent>

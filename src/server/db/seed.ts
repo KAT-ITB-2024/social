@@ -68,11 +68,11 @@ export async function seedProfile(db: PostgresJsDatabase<typeof schema>) {
     }
     try {
       await db.insert(schema.profiles).values({
-        name: `User ${user.id}`,
+        name: `User ${i + 1}`,
         userId: user.id,
         faculty: 'STEI',
         gender: i % 2 === 0 ? 'Male' : 'Female',
-        profileImage: '',
+        profileImage: null,
         point: 0,
         group: group.name,
         updatedAt: new Date(),
@@ -110,9 +110,9 @@ export async function seedAssignment(db: PostgresJsDatabase<typeof schema>) {
       deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       assignmentType: 'Side',
       point: 50,
-      filename: `Side Quest ${i}`,
-      downloadUrl: 'https://google.com/DownloadUrl',
       updatedAt: new Date(),
+      filename: '',
+      downloadUrl: '',
     });
     dayCounter += 1;
   }
@@ -240,10 +240,10 @@ export async function seedPostTest(db: PostgresJsDatabase<typeof schema>) {
     deadline.setDate(deadline.getDate() + 7); // Adds 7 days to the current date
 
     await db.insert(schema.postTests).values({
-      deadline: deadline,
       eventId: events[i]?.id ?? '',
       googleFormLink: 'https://google.com',
       startTime: new Date(),
+      deadline,
     });
   }
 }
@@ -281,6 +281,41 @@ export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
   console.log('Done seeding classes!');
 }
 
+export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
+  const user = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .limit(2);
+  if (!user[0] || !user[1]) {
+    return;
+  }
+  // Data dummy buat yang udah test
+  await db.insert(schema.wrappedProfiles).values({
+    userId: user[0].id,
+    name: 'User 0',
+    submittedQuest: 10,
+    totalMatch: 20,
+    character: 'Odra',
+    personality: 'IIII',
+    personalityDesc: 'Ini iiiiii',
+    favTopics: ['General', 'Game', 'Olahraga'],
+    rank: 129,
+    rankPercentage: 12,
+    updatedAt: new Date(),
+  });
+
+  await db.insert(schema.wrappedProfiles).values({
+    userId: user[1].id,
+    name: 'User 1',
+    updatedAt: new Date(),
+    favTopics: ['General'],
+    submittedQuest: 8,
+    totalMatch: 0,
+    rank: 80,
+    rankPercentage: 90,
+  });
+}
+
 export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
@@ -301,22 +336,23 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding assignment submission');
   await seedPostTest(db);
   console.log('Done seeding post test');
-  // await seedNotifications(db);
+  await seedNotifications(db);
   console.log('Done seeding notifications!');
-  // await seedClasses(db);
+  await seedClasses(db);
   console.log('Done seeding classes!');
+  await seedOskmWrapped(db);
+  console.log('Done seeding oskm wrapped!');
   await migrationClient.end();
 }
 
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
-  console.error('No databse url provided!');
-} else {
-  await seed(dbUrl)
-    .catch((err) => {
-      console.log(err);
-    })
-    .then(() => console.log('Done seeding data!'));
-}
+
+const seeding = async () => {
+  await seed(dbUrl ?? '');
+};
+
+seeding().catch((err) => {
+  console.error(err);
+});

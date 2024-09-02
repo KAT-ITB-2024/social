@@ -42,7 +42,7 @@ export function DayModal({ event, isOpen, setIsOpen }: DayModalProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
-        className="max-w-[370px] max-h-[80vh] overflow-y-auto px-9 py-12"
+        className="max-h-[80vh] max-w-[370px] overflow-y-auto px-9 py-12"
         style={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'cover',
@@ -51,13 +51,13 @@ export function DayModal({ event, isOpen, setIsOpen }: DayModalProps) {
       >
         {' '}
         <div
-          className="absolute top-4 right-4 text-2xl text-yellow cursor-pointer"
+          className="absolute right-4 top-4 cursor-pointer text-2xl text-yellow"
           onClick={() => setIsOpen(false)}
         >
           <Image src={CloseIcon} alt="Close Icon" width={32} height={32} />
         </div>
         <div
-          className="text-2xl cursor-pointer text-blue-500"
+          className="cursor-pointer text-2xl text-blue-500"
           onClick={() => setIsOpen(false)}
         >
           <AlertDialogTitle className="flex flex-col items-center gap-y-4">
@@ -72,36 +72,34 @@ export function DayModal({ event, isOpen, setIsOpen }: DayModalProps) {
           </AlertDialogTitle>
           <div className="flex flex-col gap-y-4">
             <AlertDialogDescription className="flex flex-col gap-y-4">
-              <p className="text-b4 text-blue-500 text-left font-normal">
+              <p className="text-left text-b4 font-normal text-blue-500">
                 {event.lore}
               </p>
             </AlertDialogDescription>
-            <span className="text-sh5 text-blue-500 font-bold">
-              Youtube Video
-            </span>{' '}
+            <span className="text-sh5 font-bold text-blue-500">Video</span>{' '}
             <Link
               href={event.youtubeVideo ?? ''}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-pink-400 text-b4"
+              className="w-full truncate text-b4 text-pink-400"
             >
               {event.youtubeVideo}
             </Link>
-            <span className="text-sh5 text-blue-500 font-bold">Guidebook</span>
+            <span className="text-sh5 font-bold text-blue-500">Guidebook</span>
             <Link
               href={event.guidebookLink ?? ''}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-pink-400 text-b4"
+              className="text-b4 text-pink-400"
             >
               {event.guidebookLink}
             </Link>
-            <span className="text-sh5 text-blue-500 font-bold">Post Test</span>
+            <span className="text-sh5 font-bold text-blue-500">Post Test</span>
             <Link
               href={event.googleFormLink ?? ''}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-pink-400 text-b4"
+              className="text-b4 text-pink-400"
             >
               {event.googleFormLink}
             </Link>

@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {
+      "name": "oskm-social-1",
+      "script": "yarn",
+      "args": "start",
+      "instances": "max",
+      "exec_mode": "cluster"
+    }
+  ]
+}

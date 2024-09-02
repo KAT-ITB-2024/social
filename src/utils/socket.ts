@@ -1,7 +1,7 @@
 import type { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
 import parser from 'socket.io-msgpack-parser';
-import { env } from '~/env';
+import { env } from '~/env.cjs';
 import {
   type ClientToServerEvents,
   type ServerToClientEvents,

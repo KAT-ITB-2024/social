@@ -115,13 +115,13 @@ export default function ModalProfile({
   return (
     <Dialog>
       <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-      <DialogContent className="w-full max-w-[450px] h-[270px] flex flex-col bg-blue-100 p-6 rounded-lg">
+      <DialogContent className="flex h-[270px] w-full max-w-[450px] flex-col rounded-lg bg-blue-100 p-6">
         {icon && (
-          <div className="absolute top-4 left-4">
+          <div className="absolute left-4 top-4">
             <Image src={icon} alt={description} width={37} height={37} />
           </div>
         )}
-        <div className="absolute top-4 right-4 flex space-x-2">
+        <div className="absolute right-4 top-4 flex space-x-2">
           <Image
             src="/images/profile/delete.svg"
             alt="Delete Icon"
@@ -145,7 +145,7 @@ export default function ModalProfile({
         </DialogHeader>
 
         <div className="flex flex-grow items-center justify-center">
-          <div className="flex flex-row items-center justify-center max-w-xs border-dashed border-2 border-turquoise-400 p-4 rounded-lg">
+          <div className="flex max-w-xs flex-row items-center justify-center rounded-lg border-2 border-dashed border-turquoise-400 p-4">
             <Image
               src="/images/profile/file_copy.svg"
               alt="File Copy Icon"
@@ -153,18 +153,18 @@ export default function ModalProfile({
               height={60}
               className="mb-4"
             />
-            <label className="relative w-full flex flex-col items-center ml-4">
+            <label className="relative ml-4 flex w-full flex-col items-center">
               <input
                 type="file"
                 accept="image/png,image/jpeg"
-                className="opacity-0 absolute cursor-pointer"
+                className="absolute cursor-pointer opacity-0"
                 onChange={handleFileChange}
               />
-              <div className="cursor-pointer bg-lightYellow rounded text-blue-600 px-5 py-2 border-2 border-blue-600 inline-block text-center">
+              <div className="inline-block cursor-pointer rounded border-2 border-blue-600 bg-lightYellow px-5 py-2 text-center text-blue-600">
                 Select File
               </div>
               <span
-                className={`block text-b5 mt-2 text-center ${!isFileSelected ? 'text-error-600' : 'text-blue-500'}`}
+                className={`mt-2 block text-center text-b5 ${!isFileSelected ? 'text-error-600' : 'text-blue-500'}`}
               >
                 {fileName}
               </span>
@@ -172,9 +172,9 @@ export default function ModalProfile({
           </div>
         </div>
 
-        <DialogFooter className="flex justify-center mt-4">
+        <DialogFooter className="mt-4 flex justify-center">
           <Button
-            className="bg-blue-600 text-white px-5 py-2 rounded text-center"
+            className="rounded bg-blue-600 px-5 py-2 text-center text-white"
             onClick={handleSubmit}
             disabled={!isFileSelected}
           >
