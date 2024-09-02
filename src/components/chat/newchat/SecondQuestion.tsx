@@ -35,7 +35,7 @@ const SecondQuestion = ({
         PILIH TOPIK KUY!
       </p>
       <ScrollArea className="h-52 w-full rounded-md">
-        <div className="flex h-52 w-full flex-col items-center justify-evenly gap-3">
+        <div className="flex w-full flex-col items-center justify-evenly gap-3">
           {Object.entries(topicLabels).map(([key, label]) => {
             const chatTopic = Number(key) as ChatTopic;
             return (
