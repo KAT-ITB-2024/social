@@ -8,7 +8,7 @@ import Jellyfish1 from 'public/images/class-selection/sea-creatures-1.png';
 import Jellyfish2 from 'public/images/class-selection/sea-Creatures-2.png';
 import SeaSlug from 'public/images/class-selection/SeaSlug.png';
 
-import { useRouter, notFound } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import ClassConfirmationModal from '@/components/class-selection/ClassConfirmationModal';
@@ -18,8 +18,8 @@ import ClassEnrolledModal from '@/components/class-selection/ClassEnrolled';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { toast } from 'sonner';
-import { SuccessToast } from '~/components/ui/success-toast';
 import { ErrorToast } from '~/components/ui/error-toast';
+import NotFound from '~/app/not-found';
 
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -35,6 +35,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
     data: selectedClass,
     isLoading,
     error,
+    refetch,
   } = api.class.getClassById.useQuery(params.id);
 
   const { mutate: enrollClass } = api.class.enrollClass.useMutation({
@@ -42,17 +43,20 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
       localStorage.setItem('confirmedClassId', params.id);
       closeConfirmationModal();
       setIsInfoModalOpen(true);
-      toast(
-        <SuccessToast
-          title="Enrollment success!"
-          desc="You have successfully enrolled in the class."
-        />,
-      );
+      void refetch();
     },
     onError: (err) => {
       console.error(err.message);
       setIsEnrolledModalOpen(true);
-      toast(<ErrorToast desc={`Enrollment failed: ${err.message}`} />);
+      if (err.data?.code === 'CONFLICT') {
+        toast(
+          <ErrorToast desc="Kelas sudah penuh! Silakan pilih kelas lain" />,
+        );
+      } else {
+        toast(
+          <ErrorToast desc="Terjadi kesalahan ketika mendaftar kelas, silakan coba lagi!" />,
+        );
+      }
     },
   });
 
@@ -60,8 +64,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
     return <LoadingSpinnerCustom />;
   }
   if (error ?? !selectedClass) {
-    notFound();
-    return notFound;
+    return <NotFound />;
   }
 
   const openConfirmationModal = () => {
