@@ -241,7 +241,11 @@ const Chat = () => {
           name={
             match?.isRevealed && profileData?.[0] ? profileData[0]?.name : null
           }
-          profilePhoto={profileData?.[0] ? profileData[0].profileImage : null}
+          profilePhoto={
+            match?.isRevealed && profileData?.[0]
+              ? profileData[0].profileImage
+              : null
+          }
         />
         {/* Chat Room */}
         <Messages

@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
 import { classes, groups, profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
@@ -6,7 +6,7 @@ import { EnrollClassPayload } from '~/types/payloads/class';
 import { z } from 'zod';
 
 export const classRouter = createTRPCRouter({
-  getEnrolledClass: publicProcedure.query(async ({ ctx }) => {
+  getEnrolledClass: pesertaProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
 
     if (!userId) {
@@ -57,7 +57,7 @@ export const classRouter = createTRPCRouter({
     return enrolledClass[0];
   }),
 
-  getAllClasses: publicProcedure.query(async ({ ctx }) => {
+  getAllClasses: pesertaProcedure.query(async ({ ctx }) => {
     const user = ctx.session?.user;
     if (!ctx.session || !user) {
       throw new TRPCError({
@@ -81,7 +81,7 @@ export const classRouter = createTRPCRouter({
     const userSession = parseInt(group[0].bata);
     let sessionCondition;
 
-    if (userSession <= 4) {
+    if (userSession % 2 === 0) {
       sessionCondition = eq(classes.type, 'Sesi 1');
     } else {
       sessionCondition = eq(classes.type, 'Sesi 2');
@@ -94,7 +94,7 @@ export const classRouter = createTRPCRouter({
     return allClasses;
   }),
 
-  getClassById: publicProcedure
+  getClassById: pesertaProcedure
     .input(z.string().nonempty('Class ID cannot be empty'))
     .query(async ({ input, ctx }) => {
       const classId = input;

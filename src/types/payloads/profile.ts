@@ -19,3 +19,7 @@ export const updateProfileDataPayload = z.object({
   instagram: z.string().nullable(),
   email: z.string().nullable(),
 });
+
+export const updatePersonalityPayload = z.object({
+  personality: z.enum(['Mova', 'Kovva', 'Ozirron', 'Sylas', 'Odra']),
+});

@@ -43,9 +43,9 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       text: 'Class Selection',
     },
     {
-      href: '#',
-      src: '/icons/sidebar/oskm-mbti.svg',
-      text: 'OSKM MBTI',
+      href: 'personality',
+      src: '/icons/sidebar/oskm-personality.svg',
+      text: 'OSKM Personality',
     },
     // {
     //   href: '#',
