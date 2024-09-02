@@ -3,12 +3,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Navbar from '~/components/Navbar';
+import { useSession } from 'next-auth/react';
+import { socket } from '~/utils/socket';
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { status } = useSession();
   const pathname = usePathname();
   const [shouldShowNavbar, setShouldShowNavbar] = useState(true);
 
@@ -21,12 +24,26 @@ export default function ClientLayout({
       '/login',
       '/forgot-password',
       '/reset-password',
+      ,
+      '/wrapped',
+      '/chat/room',
     ],
     [],
   );
 
   useEffect(() => {
-    if (routes.includes(pathname)) {
+    if (status === 'authenticated' && !socket.connected) {
+      socket.connect();
+    } else if (status === 'unauthenticated' && socket.connected) {
+      socket.disconnect();
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (
+      routes.includes(pathname) ||
+      (pathname.startsWith('/chat/history/') && pathname !== '/chat/history')
+    ) {
       setShouldShowNavbar(false);
     } else {
       setShouldShowNavbar(true);
@@ -34,9 +51,9 @@ export default function ClientLayout({
   }, [pathname, routes]);
 
   return (
-    <div className="min-h-screen max-w-md mx-auto flex flex-col w-full">
+    <div className="mx-auto flex min-h-screen w-full max-w-md flex-col">
       {shouldShowNavbar && <Navbar />}
-      <div className={`absolute max-w-md flex-grow top-0 mx-auto w-full`}>
+      <div className={`absolute top-0 mx-auto w-full max-w-md flex-grow`}>
         {children}
       </div>
     </div>

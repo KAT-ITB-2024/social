@@ -11,23 +11,23 @@ export const JourneyDay4 = ({ handleClick }: JourneyDay4Props) => {
   return (
     <>
       <div className="h-8" />
-      <div className="relative w-full h-8">
+      <div className="relative h-8 w-full">
         <Image
           src={Bubble3}
           alt="Bubble3"
           width={150}
           height={120}
-          className="absolute top-[-1rem] right-[50px]"
+          className="absolute right-[50px] top-[-1rem]"
         />
       </div>
-      <div className="relative w-full h-[200px] z-10">
+      <div className="relative z-10 h-[200px] w-full">
         <Image
           src={Day4Image}
           alt="Day 4 Journey"
           width={247}
           height={194}
           onClick={() => handleClick('Day 4')}
-          className="absolute top-0 left-4"
+          className="absolute left-4 top-0"
         />
       </div>
     </>

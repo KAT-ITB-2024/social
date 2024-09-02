@@ -1,15 +1,23 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { CustomPagination } from '~/components/leaderboard/Pagination';
 import CardDefault from '~/components/leaderboard/CardDefault';
 import TopThreeContainer from '~/components/leaderboard/TopThreeContainer';
 import { TabsAssignment } from '~/components/leaderboard/Tabs';
-import { api } from '~/trpc/react';
 import { useSearchParams } from 'next/navigation';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { api } from '~/trpc/react';
+
+import ProfileFriendModal from '~/components/profile/ModalProfileFriend';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 function LeaderBoardContent() {
+  const { data: session, status } = useSession();
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const searchParams = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
@@ -28,15 +36,21 @@ function LeaderBoardContent() {
     { enabled: currentContent === 'Kelompok' },
   );
 
+  const handleCardClick = (userId: string) => {
+    setSelectedUserId(userId);
+    setIsModalOpen(true);
+  };
+
   if (
     leaderboardData.isLoading ||
     groupLeaderboardData.isLoading ||
-    userData.isLoading
+    userData.isLoading ||
+    status === 'loading'
   ) {
     return (
-      <main className="min-h-screen items-center justify-center flex flex-col">
+      <main className="flex min-h-screen flex-col items-center justify-center">
         <div
-          className="absolute w-screen h-screen bg-[transparent] p-0 flex flex-col"
+          className="absolute flex h-screen w-screen flex-col bg-[transparent] p-0"
           style={{
             backgroundImage: "url('/images/leaderboard/bg-leaderboard.png')",
             backgroundRepeat: 'no-repeat',
@@ -55,9 +69,9 @@ function LeaderBoardContent() {
       groupLeaderboardData.error?.message ??
       userData.error?.message;
     return (
-      <main className="min-h-screen items-center justify-center flex flex-col">
+      <main className="flex min-h-screen flex-col items-center justify-center">
         <div
-          className="w-[100%] min-h-[100vh] max-w-[450px] bg-[transparent] p-0 flex flex-col"
+          className="flex min-h-[100vh] w-[100%] max-w-[450px] flex-col bg-[transparent] p-0"
           style={{
             backgroundImage: "url('/images/leaderboard/bg-leaderboard.png')",
             backgroundRepeat: 'no-repeat',
@@ -75,28 +89,32 @@ function LeaderBoardContent() {
       ? Math.ceil(leaderboardData.data!.totalProfiles / 20)
       : Math.ceil(groupLeaderboardData.data!.totalGroups / 20);
 
+  if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
+
   return (
-    <main className="h-screen items-center justify-center flex flex-col">
+    <main className="flex h-screen flex-col items-center justify-center">
       <div
-        className="fixed-width-container p-0 flex flex-col"
+        className="fixed-width-container flex flex-col p-0"
         style={{
           backgroundImage: "url('/images/leaderboard/bg-leaderboard.png')",
           backgroundRepeat: 'no-repeat',
           backgroundSize: '100% 100%',
         }}
       >
-        <div className="mt-24 px-7 flex flex-col gap-5 h-full">
-          <h2 className="font-heading text-[32px] text-center text-[#000D76] [text-shadow:4px_4px_20px_var(--tw-shadow-color)] shadow-[#FFBF51BF]">
+        <div className="mt-24 flex h-full flex-col gap-5 px-7">
+          <h2 className="text-center font-heading text-[32px] text-[#000D76] shadow-[#FFBF51BF] [text-shadow:4px_4px_20px_var(--tw-shadow-color)]">
             Leaderboard
           </h2>
-          <div className="h-full relative">
+          <div className="relative h-full">
             <TabsAssignment
               leftTrigger="Individu"
               rightTrigger="Kelompok"
               classname=""
               leftContent={
                 currentContent === 'Individu' && (
-                  <div className="flex flex-col mt-2 gap-3">
+                  <div className="mt-2 flex flex-col gap-3">
                     {currentPage === 1 && (
                       <TopThreeContainer
                         isIndividual
@@ -106,7 +124,7 @@ function LeaderBoardContent() {
                         )}
                       />
                     )}
-                    <div className="h-[15vh] [@media(min-height:700px)]:h-[25vh] [@media(min-height:800px)]:h-[30vh] [@media(min-height:900px)]:h-[35vh] flex flex-col gap-3 overflow-y-scroll no-scrollbar">
+                    <div className="no-scrollbar flex h-[15vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[25vh] [@media(min-height:800px)]:h-[30vh] [@media(min-height:900px)]:h-[35vh]">
                       {userData.data?.currentUserProfile && (
                         <CardDefault
                           rank={userData.data.currentUserProfile.rank as number}
@@ -146,11 +164,12 @@ function LeaderBoardContent() {
                                 ? item.profileImage
                                 : '/images/leaderboard/no-profile.png'
                             }
+                            onClick={() => handleCardClick(item.id)}
                           />
                         ))}
                     </div>
-                    <div className="flex gap-[10px] w-full justify-center items-center">
-                      <p className="font-body text-[14px] text-[#FFFEFE] font-normal">
+                    <div className="flex w-full items-center justify-center gap-[10px]">
+                      <p className="font-body text-[14px] font-normal text-[#FFFEFE]">
                         Total {totalPages} Items
                       </p>
                       <CustomPagination totalPages={totalPages} />
@@ -160,7 +179,7 @@ function LeaderBoardContent() {
               }
               rightContent={
                 currentContent === 'Kelompok' && (
-                  <div className="flex flex-col mt-2 gap-3">
+                  <div className="mt-2 flex flex-col gap-3">
                     {currentPage === 1 && (
                       <TopThreeContainer
                         isIndividual={false}
@@ -170,7 +189,7 @@ function LeaderBoardContent() {
                         )}
                       />
                     )}
-                    <div className="h-[20vh] [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[38vh] [@media(min-height:900px)]:h-[40vh] flex flex-col gap-3 overflow-y-scroll no-scrollbar">
+                    <div className="no-scrollbar flex h-[20vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[38vh] [@media(min-height:900px)]:h-[40vh]">
                       {groupLeaderboardData
                         .data!.groupLeaderboard.slice(
                           currentPage === 1
@@ -189,8 +208,8 @@ function LeaderBoardContent() {
                           />
                         ))}
                     </div>
-                    <div className="flex gap-[10px] w-full justify-center items-center">
-                      <p className="font-body text-sm text-[#FFFEFE] font-normal">
+                    <div className="flex w-full items-center justify-center gap-[10px]">
+                      <p className="font-body text-sm font-normal text-[#FFFEFE]">
                         Total {totalPages} Items
                       </p>
                       <CustomPagination totalPages={totalPages} />
@@ -201,6 +220,12 @@ function LeaderBoardContent() {
             />
           </div>
         </div>
+
+        <ProfileFriendModal
+          userId={selectedUserId!}
+          isDialogOpen={isModalOpen}
+          setIsDialogOpen={setIsModalOpen}
+        />
       </div>
     </main>
   );

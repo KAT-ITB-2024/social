@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '~/env.cjs';
@@ -44,7 +43,7 @@ export const storageRouter = createTRPCRouter({
 
   generateDownloadUrl: publicProcedure
     .input(DownloadFilePayload)
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<string> => {
       if (!ctx.session) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
@@ -58,6 +57,7 @@ export const storageRouter = createTRPCRouter({
       });
       try {
         const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return url;
       } catch (error) {
         throw new TRPCError({

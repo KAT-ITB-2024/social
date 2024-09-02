@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { and, eq, or } from 'drizzle-orm';
-import { messages, userMatches } from '@katitb2024/database';
+import { eq, or } from 'drizzle-orm';
+import { messages, profiles, userMatches } from '@katitb2024/database';
 import { RevealStatusEvent } from '~/types/enums/message';
 export const messageEvent = createEvent(
   {
@@ -102,13 +102,13 @@ export const askRevealEvent = createEvent(
     } else if (input.state === RevealStatusEvent.ACCEPTED) {
       const result = await ctx.drizzle
         .update(userMatches)
-        .set({ isRevealed: true })
+        .set({ isRevealed: true, isAnonymous: false })
         .where(eq(userMatches.id, currentMatch.id))
         .returning();
-
       if (result?.[0] === undefined) {
         return;
       }
+
       ctx.io
         .to([userId, receiverId])
         .emit('askReveal', result[0], RevealStatusEvent.ACCEPTED);

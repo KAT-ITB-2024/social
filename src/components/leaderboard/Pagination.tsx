@@ -24,11 +24,11 @@ export const CustomPagination = ({ totalPages }: { totalPages: number }) => {
   };
 
   return (
-    <Pagination className="font-body text-base font-normal text-[#FFFEFE] w-[70%]">
+    <Pagination className="w-[70%] font-body text-base font-normal text-[#FFFEFE]">
       <PaginationContent className="gap-[10px]">
         <PaginationItem>
           <PaginationPrevious
-            className="bg-[#000D76] text-[#FFFEFE] w-6 h-6 p-[2px] rounded-[4px] "
+            className="h-6 w-6 rounded-[4px] bg-[#000D76] p-[2px] text-[#FFFEFE]"
             onClick={() => handlePageChange(currentPage - 1)}
           />
         </PaginationItem>
@@ -36,7 +36,7 @@ export const CustomPagination = ({ totalPages }: { totalPages: number }) => {
           <PaginationItem key={item} className="mb-[2px]">
             <PaginationLink
               onClick={() => handlePageChange(item)}
-              className={`w-6 h-6 p-[2px] rounded-[4px] bg-[#000D76] ${item === currentPage ? 'border border-[#99E0FF]' : ''}`}
+              className={`h-6 w-6 rounded-[4px] bg-[#000D76] p-[2px] ${item === currentPage ? 'border border-[#99E0FF]' : ''}`}
             >
               {item}
             </PaginationLink>
@@ -44,7 +44,7 @@ export const CustomPagination = ({ totalPages }: { totalPages: number }) => {
         ))}
         <PaginationItem>
           <PaginationNext
-            className="bg-[#000D76] text-[#FFFEFE] w-6 h-6 p-[2px] rounded-[4px] "
+            className="h-6 w-6 rounded-[4px] bg-[#000D76] p-[2px] text-[#FFFEFE]"
             onClick={() => handlePageChange(currentPage + 1)}
           />
         </PaginationItem>

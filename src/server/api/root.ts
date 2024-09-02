@@ -11,6 +11,7 @@ import { storageRouter } from './routers/storage';
 import { attendanceRouter } from './routers/attendance';
 import { mapRouter } from './routers/map';
 import { notificationRouter } from './routers/notification';
+import { wrappedRouter } from './routers/wrapped';
 /**
  * This is the primary router for your server.
  *
@@ -29,6 +30,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   storage: storageRouter,
   map: mapRouter,
+  wrapped: wrappedRouter,
 });
 
 // export type definition of API

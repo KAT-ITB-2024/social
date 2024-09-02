@@ -21,8 +21,8 @@ export default function ProfileHeader({
   };
 
   return (
-    <div className="relative flex flex-col items-center pt-24 px-4">
-      <h3 className="text-h3 mb-3 text-turquoise-400 items-center text-shadow-orange-lg">
+    <div className="relative flex flex-col items-center px-4 pt-24">
+      <h3 className="mb-3 items-center text-h3 text-turquoise-400 text-shadow-orange-lg">
         Profile
       </h3>
 

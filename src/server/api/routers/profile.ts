@@ -1,12 +1,13 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
 import { profiles, users } from '@katitb2024/database';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import {
   getFriendProfilePayload,
   updateProfileDataPayload,
   updateProfileImgPayload,
 } from '~/types/payloads/profile';
+import { z } from 'zod';
 
 export const profileRouter = createTRPCRouter({
   getUserProfile: publicProcedure.query(async ({ ctx }) => {
@@ -115,6 +116,24 @@ export const profileRouter = createTRPCRouter({
           cause: error,
         });
       }
+    }),
+
+  getOthersProfile: pesertaProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const profile = await ctx.db
+        .select()
+        .from(profiles)
+        .where(eq(sql`${input.userId}`, profiles.userId));
+      if (profile.length < 1) {
+        console.log('Return undefined');
+        return undefined;
+      }
+      return profile;
     }),
 
   updateProfileData: publicProcedure

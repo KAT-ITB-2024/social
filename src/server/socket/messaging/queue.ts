@@ -1,5 +1,6 @@
 import { Redis } from '~/server/redis';
-import { type UserQueue } from '~/types/enums/message';
+import { GenderEnum } from '~/types/enum/chat';
+import { type UserQueue } from '~/types/payloads/message';
 
 const serializeUserQueue = (queue: UserQueue) => {
   return `${queue.userId}`;
@@ -12,7 +13,11 @@ const deserializeUserQueue = (raw: string) => {
 };
 
 const generateKey = (queue: UserQueue): string => {
-  const key = `QUEUE`;
+  let key = `QUEUE:${queue.topic}:${queue.isAnonymous ? 1 : 0}`;
+  if (!queue.isFindingFriend) {
+    key +=
+      queue.gender === GenderEnum.FEMALE ? GenderEnum.MALE : GenderEnum.FEMALE;
+  }
   return key;
 };
 
