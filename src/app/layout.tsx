@@ -5,7 +5,6 @@ import { NextAuthProvider } from './provider';
 import { Toaster } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
 import ClientLayout from './ClientLayout';
-import ComingSoon from '~/components/ComingSoon';
 
 export const metadata = {
   title: 'OSKM ITB 2024',
@@ -36,7 +35,7 @@ export default function RootLayout({
             duration={3000}
           />
           <NextAuthProvider>
-            <ComingSoon />
+            <ClientLayout>{children}</ClientLayout>
           </NextAuthProvider>
         </TRPCReactProvider>
       </body>
