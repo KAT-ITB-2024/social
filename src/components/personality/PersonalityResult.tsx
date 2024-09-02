@@ -22,7 +22,7 @@ export default function PersonalityResult({ type }: PersonalityResultProps) {
   const [saved, setSaved] = useState(false);
   const result = ResultsData.find((obj) => obj.type === type);
   const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
-  const share_url = 'app.oskmitb.com/personality';
+  const share_url = 'https://app.oskmitb.com/personality';
   const share_content = `Aku mendapatkan ${capitalizedType} di Tes Kepribadian OSKM! Kalau kalian dapat apa?\nAyo coba cek personality kalian di\n`;
 
   async function handleSave() {
