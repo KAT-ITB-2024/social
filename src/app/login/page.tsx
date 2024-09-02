@@ -139,7 +139,7 @@ const LoginPage = () => {
             )}
           />
           <Link
-            href="/login/forgot-password"
+            href="/forgot-password"
             className="text-start text-[12px] text-blue-500 underline"
           >
             Lupa Password?

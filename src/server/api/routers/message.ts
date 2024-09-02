@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, isNotNull, lte, or } from 'drizzle-orm';
 import { messages, profiles, userMatches } from '@katitb2024/database';
@@ -17,7 +17,7 @@ export const messageRouter = createTRPCRouter({
   /**
    * Get messages based on cursor, take, and userMatchId
    */
-  getChat: publicProcedure
+  getChat: pesertaProcedure
     .input(
       z.object({
         cursor: z.date().optional(),
@@ -93,7 +93,7 @@ export const messageRouter = createTRPCRouter({
   /**
    * Procedure for manually creating message (only for testing)
    */
-  createMessage: publicProcedure
+  createMessage: pesertaProcedure
     .input(createMessagePayload)
     .mutation(async ({ ctx, input }) => {
       try {
@@ -118,7 +118,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  sendMessage: publicProcedure
+  sendMessage: pesertaProcedure
     .input(sendMessagePayload)
     .mutation(async ({ ctx, input }) => {
       if (ctx.session === null) {
@@ -185,7 +185,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  chatHeaders: publicProcedure
+  chatHeaders: pesertaProcedure
     .input(
       z.object({
         limit: z.number().min(5).max(40).default(20),
@@ -298,7 +298,7 @@ export const messageRouter = createTRPCRouter({
       };
     }),
 
-  chatHeadersAll: publicProcedure.query(async ({ ctx }) => {
+  chatHeadersAll: pesertaProcedure.query(async ({ ctx }) => {
     if (ctx.session === null) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -376,7 +376,7 @@ export const messageRouter = createTRPCRouter({
     return data;
   }),
 
-  getSpecificChatHeader: publicProcedure
+  getSpecificChatHeader: pesertaProcedure
     .input(updateVisibilityPayload)
     .query(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;
@@ -386,8 +386,6 @@ export const messageRouter = createTRPCRouter({
           message: 'You must be loggedin first!',
         });
       }
-
-      console.log('Ayam');
 
       const SpecificChat = await ctx.db
         .select({
@@ -451,7 +449,7 @@ export const messageRouter = createTRPCRouter({
     }),
 
   // update visibility for anonymous chat
-  updateVisibility: publicProcedure
+  updateVisibility: pesertaProcedure
     .input(updateVisibilityPayload)
     .mutation(async ({ ctx, input }) => {
       try {
@@ -475,7 +473,7 @@ export const messageRouter = createTRPCRouter({
       }
     }),
 
-  updateIsRead: publicProcedure
+  updateIsRead: pesertaProcedure
     .input(
       z.object({
         userMatchId: z.string(),
@@ -497,7 +495,7 @@ export const messageRouter = createTRPCRouter({
         );
     }),
 
-  updateIsReadCurrUser: publicProcedure
+  updateIsReadCurrUser: pesertaProcedure
     .input(
       z.object({
         userMatchId: z.string(),
@@ -526,7 +524,7 @@ export const messageRouter = createTRPCRouter({
         );
     }),
 
-  updateOneIsRead: publicProcedure
+  updateOneIsRead: pesertaProcedure
     .input(
       z.object({
         messageId: z.string(),

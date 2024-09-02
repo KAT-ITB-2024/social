@@ -1,9 +1,10 @@
-import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { classes, groups, profiles } from '@katitb2024/database';
 import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { EnrollClassPayload } from '~/types/payloads/class';
 import { z } from 'zod';
+import { Redis } from '~/server/redis';
 
 export const classRouter = createTRPCRouter({
   getEnrolledClass: pesertaProcedure.query(async ({ ctx }) => {
@@ -117,10 +118,7 @@ export const classRouter = createTRPCRouter({
         .execute();
 
       if (!selectedClass || selectedClass.length === 0) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Class not found',
-        });
+        return undefined;
       }
 
       const classData = selectedClass[0];
@@ -149,7 +147,7 @@ export const classRouter = createTRPCRouter({
       };
     }),
 
-  enrollClass: publicProcedure
+  enrollClass: pesertaProcedure
     .input(EnrollClassPayload)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session?.user.id;
@@ -176,7 +174,7 @@ export const classRouter = createTRPCRouter({
       if (userProfile[0]?.chosenClassId) {
         throw new TRPCError({
           code: 'CONFLICT',
-          message: 'User already enrolled in a class',
+          message: 'Kamu sudah mendaftar kelas lain!',
         });
       }
 
@@ -191,39 +189,50 @@ export const classRouter = createTRPCRouter({
         .limit(1)
         .execute();
 
-      if (!classToEnroll || classToEnroll.length === 0) {
+      if (!classToEnroll[0] || classToEnroll.length === 0) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Class not found' });
       }
+      const redlock = Redis.getRedlock();
 
-      if (
-        (classToEnroll[0]?.reservedSeats ?? 0) >=
-        (classToEnroll[0]?.totalSeats ?? 0)
-      ) {
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: 'Class is fully booked',
+      const lock = await redlock.acquire([`lock:${classToEnroll[0].id}`], 5000);
+
+      try {
+        if (
+          (classToEnroll[0]?.reservedSeats ?? 0) >=
+          (classToEnroll[0]?.totalSeats ?? 0)
+        ) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: 'Maaf, kelas sudah penuh, silakan coba daftar kelas lain!',
+          });
+        }
+        await ctx.db.transaction(async (trx) => {
+          await trx
+            .update(classes)
+            .set({
+              reservedSeats: (classToEnroll[0]?.reservedSeats ?? 0) + 1,
+            })
+            .where(eq(classes.id, classId))
+            .execute();
+
+          await trx
+            .update(profiles)
+            .set({
+              chosenClass: classId,
+            })
+            .where(eq(profiles.userId, userId))
+            .execute();
         });
+
+        return { message: 'User successfully enrolled' };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong!',
+        });
+      } finally {
+        await lock.release();
       }
-
-      await ctx.db.transaction(async (trx) => {
-        await trx
-          .update(classes)
-          .set({
-            reservedSeats: (classToEnroll[0]?.reservedSeats ?? 0) + 1,
-          })
-          .where(eq(classes.id, classId))
-          .execute();
-
-        await trx
-          .update(profiles)
-          .set({
-            chosenClass: classId,
-          })
-          .where(eq(profiles.userId, userId))
-          .execute();
-      });
-
-      return { message: 'User successfully enrolled' };
     }),
 });
 

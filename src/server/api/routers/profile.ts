@@ -1,4 +1,4 @@
-import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { profiles, users } from '@katitb2024/database';
 import { eq, sql } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
@@ -11,7 +11,7 @@ import {
 import { z } from 'zod';
 
 export const profileRouter = createTRPCRouter({
-  getUserProfile: publicProcedure.query(async ({ ctx }) => {
+  getUserProfile: pesertaProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
 
     if (!userId) {
@@ -44,7 +44,7 @@ export const profileRouter = createTRPCRouter({
     return profile;
   }),
 
-  getFriendProfile: publicProcedure
+  getFriendProfile: pesertaProcedure
     .input(getFriendProfilePayload)
     .query(async ({ ctx, input }) => {
       const { userId } = input;
@@ -75,7 +75,7 @@ export const profileRouter = createTRPCRouter({
       return profile;
     }),
 
-  updateProfileImg: publicProcedure
+  updateProfileImg: pesertaProcedure
     .input(updateProfileImgPayload)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;
@@ -128,13 +128,12 @@ export const profileRouter = createTRPCRouter({
         .from(profiles)
         .where(eq(sql`${input.userId}`, profiles.userId));
       if (profile.length < 1) {
-        console.log('Return undefined');
         return undefined;
       }
       return profile;
     }),
 
-  updateProfileData: publicProcedure
+  updateProfileData: pesertaProcedure
     .input(updateProfileDataPayload)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;
@@ -189,7 +188,7 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
-  updateUserPersonality: publicProcedure
+  updateUserPersonality: pesertaProcedure
     .input(updatePersonalityPayload)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;

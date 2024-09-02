@@ -40,10 +40,6 @@ export default function MatchPage() {
   const queued = useRef(false);
 
   const findMatch = () => {
-    console.log('Ini queued current', queued.current);
-    console.log('Anonymous:', anonymous);
-    console.log('Topic:', topic);
-    console.log('Jodoh:', jodoh);
     if (!queued.current) {
       queueEmit.mutate({
         isAnonymous: anonymous,
@@ -71,8 +67,6 @@ export default function MatchPage() {
 
   const checkEmit = useEmit('checkMatch', {
     onSuccess: (data) => {
-      console.log('ini match');
-      console.log(data.match);
       if (data.match !== undefined) {
         setIsLoading(false);
         void router.push(`/chat/room`);
@@ -109,7 +103,6 @@ export default function MatchPage() {
     if (isLoading) {
       const timer = setInterval(() => {
         setCountdown((prev) => {
-          console.log('Current Countdown:', prev);
           if (prev === 1) {
             cancelFindMatch();
             setNoMatch(true);

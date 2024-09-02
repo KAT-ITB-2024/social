@@ -91,7 +91,6 @@ const Chat = () => {
       if (data.match === undefined) {
         void router.push('/chat');
       } else {
-        console.log(data.match);
         setMatch(data.match);
       }
     },

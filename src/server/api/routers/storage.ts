@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '~/env.cjs';
 import { s3Client } from '~/server/db/storage';
@@ -11,7 +11,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const storageRouter = createTRPCRouter({
-  generateUploadUrl: publicProcedure
+  generateUploadUrl: pesertaProcedure
     .input(UploadFilePayload)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session) {
@@ -41,7 +41,7 @@ export const storageRouter = createTRPCRouter({
       }
     }),
 
-  generateDownloadUrl: publicProcedure
+  generateDownloadUrl: pesertaProcedure
     .input(DownloadFilePayload)
     .mutation(async ({ ctx, input }): Promise<string> => {
       if (!ctx.session) {
@@ -56,7 +56,9 @@ export const storageRouter = createTRPCRouter({
         Key: file,
       });
       try {
-        const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+        const url = await getSignedUrl(s3Client, command, {
+          expiresIn: 604800,
+        });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return url;
       } catch (error) {
