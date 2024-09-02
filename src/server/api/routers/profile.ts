@@ -127,7 +127,6 @@ export const profileRouter = createTRPCRouter({
         .from(profiles)
         .where(eq(sql`${input.userId}`, profiles.userId));
       if (profile.length < 1) {
-        console.log('Return undefined');
         return undefined;
       }
       return profile;

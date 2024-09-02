@@ -24,8 +24,6 @@ export default function TopThreeContainer({
   currentUserNim,
   isIndividual = true,
 }: TopScoreProps) {
-  console.log('GROUP: ', currentUserGroup, cards, isIndividual);
-  console.log(cards[0]?.name === currentUserGroup);
   return (
     <div className="relative my-2 grid w-[346px] grid-cols-3 gap-2">
       <div>

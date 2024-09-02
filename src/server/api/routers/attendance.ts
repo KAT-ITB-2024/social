@@ -53,7 +53,6 @@ export const attendanceRouter = createTRPCRouter({
         };
       });
     } catch (error) {
-      console.log('iNi error', error);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to fetch attendances!',

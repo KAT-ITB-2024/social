@@ -19,7 +19,6 @@ export default function CardTopScore({
   isIndividual = true,
   isUser = false,
 }: CardTopScoreProps) {
-  console.log('inI IS USER', name);
   let profilePicture = profileImage;
   if (isIndividual)
     profilePicture =

@@ -89,7 +89,6 @@ export const checkMatchEvent = createEvent(
     input: undefined,
   },
   async ({ ctx }) => {
-    console.log('masuk check match');
     const userQueue = await Redis.getClient().get(
       generateQueueKey(ctx.client.data.session.user.id),
     );
@@ -144,7 +143,6 @@ export const endMatchEvent = createEvent(
   },
   async ({ ctx }) => {
     const currentMatch = ctx.client.data.match;
-    console.log('Masuk');
     if (!currentMatch) return;
 
     const result = await ctx.drizzle
