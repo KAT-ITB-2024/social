@@ -45,7 +45,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     {
       href: '#',
       src: '/icons/sidebar/oskm-mbti.svg',
-      text: 'OSKM MBTI',
+      text: 'OSKM Personality',
     },
     // {
     //   href: '#',
