@@ -1,29 +1,22 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
 import { groups, profiles, users } from '@katitb2024/database';
 import { eq, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 export const leaderboardRouter = createTRPCRouter({
-  getLeaderboard: publicProcedure
+  getLeaderboard: pesertaProcedure
     .input(
       z.object({
         page: z.number().min(1),
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.session) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not logged in',
-        });
-      }
-
       const sessionUser = ctx.session?.user;
 
       if (!sessionUser) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: 'User not found',
+          message: 'User not logged in',
         });
       }
       const { page } = input;
@@ -52,7 +45,7 @@ export const leaderboardRouter = createTRPCRouter({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ({ totalProfiles, ...rest }) => rest,
       );
-
+      console.log('Ini leaderboard', leaderboard);
       return {
         leaderboard,
         totalProfiles,

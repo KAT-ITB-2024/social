@@ -13,13 +13,19 @@ interface CardTopScoreProps {
 
 interface TopScoreProps {
   cards: Array<CardTopScoreProps>;
+  currentUserNim: string;
+  currentUserGroup: string;
   isIndividual?: boolean;
 }
 
 export default function TopThreeContainer({
   cards,
+  currentUserGroup,
+  currentUserNim,
   isIndividual = true,
 }: TopScoreProps) {
+  console.log('GROUP: ', currentUserGroup, cards, isIndividual);
+  console.log(cards[0]?.name === currentUserGroup);
   return (
     <div className="relative my-2 grid w-[346px] grid-cols-3 gap-2">
       <div>
@@ -31,6 +37,11 @@ export default function TopThreeContainer({
           name={cards[1]!.name}
           nim={cards[1]!.nim}
           point={cards[1]!.point}
+          isUser={
+            isIndividual
+              ? currentUserNim === cards[1]?.nim
+              : currentUserGroup === cards[1]?.name
+          }
         />
       </div>
       <div>
@@ -41,6 +52,11 @@ export default function TopThreeContainer({
           name={cards[0]!.name}
           nim={cards[0]!.nim}
           point={cards[0]!.point}
+          isUser={
+            isIndividual
+              ? currentUserNim === cards[0]?.nim
+              : currentUserGroup === cards[0]?.name
+          }
         />
       </div>
       <div>
@@ -52,6 +68,11 @@ export default function TopThreeContainer({
           name={cards[2]!.name}
           nim={cards[2]!.nim}
           point={cards[2]!.point}
+          isUser={
+            isIndividual
+              ? currentUserNim === cards[2]?.nim
+              : currentUserGroup === cards[2]?.name
+          }
         />
       </div>
     </div>

@@ -18,15 +18,11 @@ function LeaderBoardContent() {
   const searchParams = useSearchParams();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  if (status === 'loading') {
-    return <LoadingSpinnerCustom />;
-  }
-  if (!session || session.user.role !== 'Peserta') redirect('/login');
+  const [isTopThree, setIsTopThree] = useState(false);
+  const [isGroupTopThree, setIsGroupTopThree] = useState(false);
 
   const currentPage = parseInt(searchParams.get('page') ?? '1');
   const currentContent = searchParams.get('content') ?? 'Individu';
-
   const leaderboardData = api.leaderboard.getLeaderboard.useQuery(
     { page: currentPage },
     { enabled: currentContent === 'Individu' },
@@ -40,6 +36,37 @@ function LeaderBoardContent() {
     { page: currentPage },
     { enabled: currentContent === 'Kelompok' },
   );
+  useEffect(() => {
+    const topThree = leaderboardData.data?.leaderboard.slice(
+      0,
+      Math.min(3, leaderboardData.data.totalProfiles),
+    );
+    const hasNim = topThree?.some((item) => item.nim === session?.user.nim);
+    if (hasNim) {
+      setIsTopThree(true);
+    } else {
+      setIsTopThree(false);
+    }
+  }, [leaderboardData]);
+
+  useEffect(() => {
+    const topThree = groupLeaderboardData.data?.groupLeaderboard.slice(
+      Math.min(3, groupLeaderboardData.data.totalGroups),
+    );
+    const isGroupMember = topThree?.some(
+      (item) => item.name === session?.user.group,
+    );
+    if (isGroupMember) {
+      setIsGroupTopThree(true);
+    } else {
+      setIsGroupTopThree(false);
+    }
+  }, [groupLeaderboardData]);
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
+  if (!session || session.user.role !== 'Peserta') redirect('/login');
 
   const handleCardClick = (userId: string) => {
     setSelectedUserId(userId);
@@ -101,6 +128,8 @@ function LeaderBoardContent() {
                     {currentPage === 1 && (
                       <TopThreeContainer
                         isIndividual
+                        currentUserNim={session.user.nim}
+                        currentUserGroup={session.user.group}
                         cards={leaderboardData.data!.leaderboard.slice(
                           0,
                           Math.min(3, leaderboardData.data!.totalProfiles),
@@ -108,7 +137,7 @@ function LeaderBoardContent() {
                       />
                     )}
                     <div className="no-scrollbar flex h-[15vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[25vh] [@media(min-height:800px)]:h-[30vh] [@media(min-height:900px)]:h-[35vh]">
-                      {userData.data?.currentUserProfile && (
+                      {userData.data?.currentUserProfile && !isTopThree && (
                         <CardDefault
                           rank={userData.data.currentUserProfile.rank as number}
                           name={
@@ -170,6 +199,8 @@ function LeaderBoardContent() {
                           0,
                           3,
                         )}
+                        currentUserGroup={session.user.group}
+                        currentUserNim={session.user.nim}
                       />
                     )}
                     <div className="no-scrollbar flex h-[20vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[38vh] [@media(min-height:900px)]:h-[40vh]">
