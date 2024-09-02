@@ -7,24 +7,23 @@ interface LandingProps {
 export default function Landing({ onStart }: LandingProps) {
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-col items-center text-blue-600 overflow-visible mt-36">
-        <h1 className="text-h1 text-shadow-pink-sm font-heading">OSKM</h1>
-        <h2 className="relative text-shadow-pink-sm -top-6 text-h2 font-heading">
+      <div className="mt-36 flex flex-col items-center overflow-visible text-blue-600">
+        <h1 className="font-heading text-h1 text-shadow-pink-sm">OSKM</h1>
+        <h2 className="relative -top-6 font-heading text-h2 text-shadow-pink-sm">
           Personalities
         </h2>
-        <p className="relative text-shadow-green-lg -top-6 font-subheading font-bold text-h6">
+        <p className="relative -top-6 font-subheading text-h6 font-bold text-shadow-green-lg">
           You&lsquo;re diving to OSKM Personalities
         </p>
       </div>
-      <p className="mx-[90px] mt-4 text-blue-600 text-h6 leading-[24px] text-center font-body items-center">
+      <p className="mx-[90px] mt-4 items-center text-center font-body text-h6 leading-[24px] text-blue-600">
         Hi seafolks~ Di sini kamu akan mengeksplor karakter apa yang sekiranya
-        cocok dan menggambarkan kepribadian kamu sebagai mahasiswa ITB dan
-        memperlihatkan kamu kelas mana yang cocok untuk kamu ikuti
+        cocok dan menggambarkan kepribadian kamu sebagai mahasiswa ITB
       </p>
 
       <Button
         onClick={() => onStart('started')}
-        className="mt-8 w-36 h-12 bg-pink-400 py-2 px-5 font-body text-shadow-pink-sm text-[#FEFEFE] "
+        className="mt-8 h-12 w-36 bg-pink-400 px-5 py-2 font-body text-[#FEFEFE] text-shadow-pink-sm"
       >
         <p className="text-b2">Let&#39;s Start!</p>
       </Button>

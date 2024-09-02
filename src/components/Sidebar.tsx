@@ -43,7 +43,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       text: 'Class Selection',
     },
     {
-      href: 'personality',
+      href: '/personality',
       src: '/icons/sidebar/oskm-personality.svg',
       text: 'OSKM Personality',
     },

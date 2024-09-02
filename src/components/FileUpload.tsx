@@ -1,4 +1,6 @@
 import React, { type Dispatch, type SetStateAction, useRef } from 'react';
+import { toast } from 'sonner';
+import { ErrorToast } from './ui/error-toast';
 
 interface FileUploadProps {
   className: string;
@@ -24,8 +26,12 @@ const FileUploader: React.FC<FileUploadProps> = ({
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      setFile(file);
-      setFilename(file.name);
+      if (file.type != 'application/pdf') {
+        toast(<ErrorToast desc="Hanya boleh mengunggah pdf!" />);
+      } else {
+        setFile(file);
+        setFilename(file.name);
+      }
     }
   };
 
