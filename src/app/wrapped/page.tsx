@@ -2,7 +2,7 @@
 
 import Stories from 'react-insta-stories';
 import { WrappedStories } from './Content';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import { api } from '~/trpc/react';
 import { type WrappedProfiles } from '@katitb2024/database';
 import { type OSKMWrapped } from '~/types/payloads/wrapped';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { useSession } from 'next-auth/react';
 
 const inputWrapped = {
   name: 'Lomba Sihir',
@@ -34,6 +35,8 @@ function Wrapped() {
   const [stories, setStories] = useState<
     { content: () => JSX.Element }[] | null
   >(null);
+
+  const { data: session, status } = useSession();
 
   const { data: wrappedData, isLoading: loadingFetchingData } =
     api.wrapped.getWrapped.useQuery();
@@ -68,8 +71,10 @@ function Wrapped() {
       setStories(result);
     }
   }, [wrappedData]);
-  if (loadingFetchingData) {
+  if (loadingFetchingData || status === 'loading') {
     return <LoadingSpinnerCustom />;
+  } else if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
   }
   const loading = () => {
     setIsLoading(true);

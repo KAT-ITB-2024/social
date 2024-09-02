@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import {
   type Assignment,
   assignmentSubmissions,
@@ -13,7 +13,7 @@ import { and, eq, inArray, sql } from 'drizzle-orm';
 import { submissionPayload } from '~/types/payloads/submission';
 
 export const submissionRouter = createTRPCRouter({
-  postSubmission: publicProcedure
+  postSubmission: pesertaProcedure
     .input(submissionPayload)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
