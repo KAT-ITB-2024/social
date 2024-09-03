@@ -44,7 +44,7 @@ export default function MatchPage() {
       queueEmit.mutate({
         isAnonymous: anonymous,
         topic: topic,
-        isFindingFriend: anonymous,
+        isFindingFriend: !jodoh,
       });
       queued.current = true;
       setIsLoading(true);
