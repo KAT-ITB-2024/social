@@ -237,7 +237,9 @@ function LeaderBoardContent() {
                             }
                             isUser
                             point={
-                              Number(userGroupData.data.currentUserGroup) || 0
+                              Number(
+                                userGroupData.data.currentUserGroup.point,
+                              ) || 0
                             }
                           />
                         )}
