@@ -146,7 +146,7 @@ function LeaderBoardContent() {
                       />
                     )}
                     <div
-                      className={`no-scrollbar flex ${currentPage === 1 ? 'h-[30vh]' : 'h-[65vh]'} flex-col gap-3 overflow-y-scroll`}
+                      className={`no-scrollbar flex flex-col gap-3 overflow-y-scroll ${currentPage === 1 ? 'h-[15vh] [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[30vh]' : 'h-[60vh]'}`}
                     >
                       {userData.data?.currentUserProfile &&
                         (!isTopThree || currentPage !== 1) && (
@@ -223,7 +223,7 @@ function LeaderBoardContent() {
                       />
                     )}
                     <div
-                      className={`no-scrollbar flex ${currentPage === 1 ? 'h-[30vh]' : 'h-[65vh]'} flex-col gap-3 overflow-y-scroll`}
+                      className={`no-scrollbar flex flex-col gap-3 overflow-y-scroll ${currentPage === 1 ? 'h-[15vh] [@media(min-height:700px)]:h-[30vh]' : 'h-[60vh]'}`}
                     >
                       {userGroupData.data?.currentUserGroup &&
                         (!isGroupTopThree || currentPage !== 1) && (
