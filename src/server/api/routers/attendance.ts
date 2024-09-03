@@ -139,6 +139,7 @@ export const attendanceRouter = createTRPCRouter({
           presenceEvent,
         });
       } catch (error) {
+        console.log(error);
         if (error instanceof TRPCError) {
           throw error;
         }
