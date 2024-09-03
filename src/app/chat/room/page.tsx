@@ -236,12 +236,16 @@ const Chat = () => {
       >
         <ChatNavbar
           isTyping={opponentTyping}
-          opponentId={profileData?.[0] ? profileData[0].userId : ''}
+          opponentId={
+            !match?.isAnonymous && profileData?.[0] ? profileData[0].userId : ''
+          }
           name={
-            match?.isRevealed && profileData?.[0] ? profileData[0]?.name : null
+            !match?.isAnonymous && profileData?.[0]
+              ? profileData[0]?.name
+              : null
           }
           profilePhoto={
-            match?.isRevealed && profileData?.[0]
+            !match?.isAnonymous && profileData?.[0]
               ? profileData[0].profileImage
               : null
           }

@@ -34,7 +34,7 @@ export const ChatMenu = ({
           <span>Stop Pembicaraan</span>
         </li>
         <div className="flex h-[0.5px] w-full bg-white" />
-        {!match?.isRevealed && (
+        {match?.isAnonymous && (
           <>
             <li
               className="flex cursor-pointer flex-col gap-2 rounded-md p-2 hover:bg-blue-500"
