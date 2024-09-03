@@ -29,7 +29,6 @@ export interface ProfileDetailProps {
   jenisKelamin?: 'Male' | 'Female';
   bio?: string | null;
   instagram?: string | null;
-  email?: string | null;
 }
 
 function ProfileFriend({
@@ -40,7 +39,6 @@ function ProfileFriend({
   jenisKelamin,
   bio,
   instagram,
-  email,
 }: ProfileDetailProps) {
   return (
     <div className="flex flex-col px-4 pt-6">
@@ -77,10 +75,6 @@ function ProfileFriend({
         <p className="mb-4 text-sh4 font-bold text-turquoise-400">
           {instagram ?? '-'}
         </p>
-      </div>
-      <div>
-        <p className="text-b4 text-turquoise-400">Email</p>
-        <p className="text-sh4 font-bold text-turquoise-400">{email ?? '-'}</p>
       </div>
     </div>
   );
