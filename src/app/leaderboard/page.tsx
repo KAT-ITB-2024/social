@@ -105,7 +105,7 @@ function LeaderBoardContent() {
 
   const totalPages =
     currentContent === 'Individu'
-      ? Math.ceil(leaderboardData.data!.totalProfiles / 4)
+      ? Math.ceil(leaderboardData.data!.totalProfiles / 20)
       : Math.ceil(groupLeaderboardData.data!.totalGroups / 20);
 
   if (!session || session.user.role !== 'Peserta') {
