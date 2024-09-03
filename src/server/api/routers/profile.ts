@@ -58,7 +58,6 @@ export const profileRouter = createTRPCRouter({
           bio: profiles.bio,
           instagram: profiles.instagram,
           nim: users.nim,
-          email: users.email,
         })
         .from(profiles)
         .innerJoin(users, eq(users.id, profiles.userId))
