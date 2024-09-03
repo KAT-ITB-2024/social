@@ -17,7 +17,6 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
   onDelete,
   isDeleteable = true,
 }) => {
-  console.log('inI IS DELETEABLE', isDeleteable);
   const sanitizedFileName = isUserSubmit
     ? fileName.split('-').length >= 5
       ? fileName.split('-')[5]

@@ -1,4 +1,4 @@
-import { createTRPCRouter, pesertaProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
 import { generateHash, generateResetToken } from '~/utils/auth';
 import { TRPCError } from '@trpc/server';
 import { env } from '~/env.cjs';
@@ -11,7 +11,7 @@ import {
 import { transporter } from '~/server/mail';
 
 export const authRouter = createTRPCRouter({
-  requestResetPassword: pesertaProcedure
+  requestResetPassword: publicProcedure
     .input(RequestResetPasswordPayload)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db
@@ -23,7 +23,7 @@ export const authRouter = createTRPCRouter({
       if (!user || user.length === 0) {
         throw new TRPCError({
           message: 'Email anda tidak terdaftar di sistem!',
-          code: 'BAD_REQUEST',
+          code: 'NOT_FOUND',
         });
       }
 
@@ -33,7 +33,7 @@ export const authRouter = createTRPCRouter({
 
       if (!userId) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
+          code: 'NOT_FOUND',
           message: 'User ID tidak ditemukan!',
         });
       }
@@ -78,7 +78,7 @@ export const authRouter = createTRPCRouter({
       return 'Email telah dikirim!';
     }),
 
-  resetPassword: pesertaProcedure
+  resetPassword: publicProcedure
     .input(ResetPasswordPayload)
     .mutation(async ({ ctx, input }) => {
       const tokenData = await ctx.db

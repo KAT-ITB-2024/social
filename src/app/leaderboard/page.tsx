@@ -41,6 +41,7 @@ function LeaderBoardContent() {
     undefined,
     { enabled: currentContent === 'Kelompok' },
   );
+
   useEffect(() => {
     if (!leaderboardData?.data || !session?.user?.nim) {
       return;
@@ -122,11 +123,11 @@ function LeaderBoardContent() {
           backgroundSize: '100% 100%',
         }}
       >
-        <div className="mt-24 flex h-full flex-col gap-5 px-7">
+        <div className="mt-24 flex flex-col gap-5 px-7">
           <h2 className="text-center font-heading text-[32px] text-[#000D76] shadow-[#FFBF51BF] [text-shadow:4px_4px_20px_var(--tw-shadow-color)]">
             Leaderboard
           </h2>
-          <div className="relative h-full">
+          <div className="relative">
             <TabsAssignment
               leftTrigger="Individu"
               rightTrigger="Kelompok"
@@ -145,7 +146,9 @@ function LeaderBoardContent() {
                         )}
                       />
                     )}
-                    <div className="no-scrollbar flex h-[15vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[25vh] [@media(min-height:800px)]:h-[30vh] [@media(min-height:900px)]:h-[35vh]">
+                    <div
+                      className={`no-scrollbar flex flex-col gap-3 overflow-y-scroll ${currentPage === 1 ? 'h-[15vh] [@media(min-height:700px)]:h-[20vh] [@media(min-height:800px)]:h-[30vh]' : 'h-[60vh]'}`}
+                    >
                       {userData.data?.currentUserProfile &&
                         (!isTopThree || currentPage !== 1) && (
                           <CardDefault
@@ -220,7 +223,9 @@ function LeaderBoardContent() {
                         currentUserNim={session.user.nim}
                       />
                     )}
-                    <div className="no-scrollbar flex h-[20vh] flex-col gap-3 overflow-y-scroll [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[38vh] [@media(min-height:900px)]:h-[40vh]">
+                    <div
+                      className={`no-scrollbar flex flex-col gap-3 overflow-y-scroll ${currentPage === 1 ? 'h-[15vh] [@media(min-height:700px)]:h-[30vh]' : 'h-[60vh]'}`}
+                    >
                       {userGroupData.data?.currentUserGroup &&
                         (!isGroupTopThree || currentPage !== 1) && (
                           <CardDefault
@@ -232,7 +237,9 @@ function LeaderBoardContent() {
                             }
                             isUser
                             point={
-                              Number(userGroupData.data.currentUserGroup) || 0
+                              Number(
+                                userGroupData.data.currentUserGroup.point,
+                              ) || 0
                             }
                           />
                         )}

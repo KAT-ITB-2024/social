@@ -18,6 +18,7 @@ import { AssignmentConfirmationModal } from '~/components/assignment/Confirmatio
 import { AssingmentInfoModal } from '~/components/assignment/InfoModal';
 import { redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { TRPCError } from '@trpc/server';
 
 export default function DetailPage({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession();
@@ -104,13 +105,6 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     setShowInfoModal(isOpen);
   };
 
-  async function handleFileUpload(fileName: string, downloadUrl: string) {
-    setFilename(fileName);
-    setDownloadUrl(downloadUrl);
-    localStorage.setItem(`assignment_${params.id}_fileName`, fileName);
-    localStorage.setItem(`assignment_${params.id}_downloadUrl`, downloadUrl);
-  }
-
   const handleDelete = () => {
     if (assignmentStatus === AssignmentSubmission.TERKUMPUL) {
       setAssignmentStatus(AssignmentSubmission.BELUM_KUMPUL);
@@ -127,41 +121,41 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       return;
     }
     try {
-      try {
-        setProgress(1);
-        const { url, filename } = await uploadFileMutation.mutateAsync({
-          filename: file.name,
-          folder: FolderEnum.ASSIGNMENT,
-          contentType: AllowableFileTypeEnum.PDF,
-        });
-        const downloadUrl = await downloadFileMutation.mutateAsync({
-          filename: filename,
-          folder: FolderEnum.ASSIGNMENT,
-        });
+      setProgress(1);
+      const { url, filename } = await uploadFileMutation.mutateAsync({
+        filename: file.name,
+        folder: FolderEnum.ASSIGNMENT,
+        contentType: AllowableFileTypeEnum.PDF,
+      });
+      const downloadUrl = await downloadFileMutation.mutateAsync({
+        filename: filename,
+        folder: FolderEnum.ASSIGNMENT,
+      });
 
-        await submissionMutation.mutateAsync({
-          assignmentId: params.id,
-          filename,
-          downloadUrl,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        await uploadFile(url, file, AllowableFileTypeEnum.PDF);
-        setProgress(0);
-        if (assignmentStatus === AssignmentSubmission.BELUM_KUMPUL) {
-          setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        setDownloadUrl(downloadUrl);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        setFilename(filename);
-        setSudahKumpul(true);
-        setShowInfoModal(true);
-        void refetch();
-      } catch (error) {
+      await submissionMutation.mutateAsync({
+        assignmentId: params.id,
+        filename,
+        downloadUrl,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      await uploadFile(url, file, AllowableFileTypeEnum.PDF);
+      setProgress(0);
+      if (assignmentStatus === AssignmentSubmission.BELUM_KUMPUL) {
+        setAssignmentStatus(AssignmentSubmission.TERKUMPUL);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setDownloadUrl(downloadUrl);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      setFilename(filename);
+      setSudahKumpul(true);
+      setShowInfoModal(true);
+      void refetch();
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        toast(<ErrorToast desc={`${error.message}`} />);
+      } else {
         toast(<ErrorToast desc="Silakan coba submit ulang!" />);
       }
-    } catch (error) {
-      toast(<ErrorToast desc="Silakan coba submit ulang!" />);
     } finally {
       setProgress(0);
       setIsSubmitting(false);
@@ -224,7 +218,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             <p className="text-b3 leading-[24px]">
               {assignment.assignments.description}
             </p>
-            {assignment.assignments && (
+            {assignment.assignments.filename && (
               <AttachmentButton
                 fileName={assignment.assignments.filename}
                 fileUrl={assignment.assignments.downloadUrl}
@@ -246,14 +240,17 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   isUserSubmit={true}
                   onDelete={handleDelete}
                   isDeleteable={
-                    assignmentStatus === AssignmentSubmission.TERLAMBAT
-                      ? assignment.assignmentSubmissions
-                        ? false
-                        : true
-                      : assignmentStatus === AssignmentSubmission.TERKUMPUL &&
-                          isOverDeadline
-                        ? false
-                        : true
+                    assignment.assignments.assignmentType == 'Side' &&
+                    assignment.assignmentSubmissions
+                      ? false
+                      : assignmentStatus === AssignmentSubmission.TERLAMBAT
+                        ? assignment.assignmentSubmissions
+                          ? false
+                          : true
+                        : assignmentStatus === AssignmentSubmission.TERKUMPUL &&
+                            isOverDeadline
+                          ? false
+                          : true
                   }
                 />
               ) : (
