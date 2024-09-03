@@ -1,7 +1,7 @@
 import ComingSoon from '~/components/ComingSoon';
 
-const LeaderboardLayout = () => {
+const WrappedLayout = () => {
   return <ComingSoon />;
 };
 
-export default LeaderboardLayout;
+export default WrappedLayout;
