@@ -3,8 +3,14 @@ import ProfileHeader from '~/components/profile/ProfileHeader';
 import Image from 'next/image';
 import { api } from '~/trpc/server';
 import NotFound from '../not-found';
+import { getServerAuthSession } from '~/server/auth';
+import { redirect } from 'next/navigation';
 
 export default async function ProfilePage() {
+  const session = await getServerAuthSession();
+  if (!session || session.user.role !== 'Peserta') {
+    redirect('/login');
+  }
   const userProfile = await api.profile.getUserProfile();
   if (!userProfile) {
     return <NotFound />;
