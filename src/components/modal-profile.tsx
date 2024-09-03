@@ -52,10 +52,17 @@ export default function ModalProfile({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFileName(file.name);
-      setIsFileSelected(true);
-      setSelectedFile(file);
-      onProfileImageChange(URL.createObjectURL(file));
+      if (!(file.type == 'image/jpeg' || file.type == 'image/png')) {
+        setFileName('No File Chosen');
+        setIsFileSelected(false);
+        setSelectedFile(null);
+        toast(<ErrorToast desc="Hanya boleh mengunggah gambar" />);
+      } else {
+        setFileName(file.name);
+        setIsFileSelected(true);
+        setSelectedFile(file);
+        onProfileImageChange(URL.createObjectURL(file));
+      }
     } else {
       setFileName('No File Chosen');
       setIsFileSelected(false);

@@ -8,6 +8,7 @@ import InfoModal from '../InfoModal';
 import Cumi from 'public/images/attendance/cumi.png';
 import { api } from '~/trpc/react';
 import { ErrorToast } from '../ui/error-toast';
+import { toast } from 'sonner';
 
 export const AttendanceCard = ({
   data,
@@ -29,16 +30,22 @@ export const AttendanceCard = ({
 
   const handleAbsen = () => {
     startTransition(() => {
-      try {
-        attendanceMutation.mutate({
+      attendanceMutation.mutate(
+        {
           eventId: Id,
           presenceEvent: Sesi as 'Opening' | 'Closing',
-        });
-        setStatus('Hadir');
-        setIsAlertOpen(true);
-      } catch (e) {
-        ErrorToast({ title: 'Oops!', desc: 'Gagal melakukan absensi' });
-      }
+        },
+        {
+          onSuccess: () => {
+            setStatus('Hadir');
+            setIsAlertOpen(true);
+          },
+          onError: (error) => {
+            console.log(error);
+            toast(<ErrorToast title="Oops!" desc="Gagal melakukan absensi" />);
+          },
+        },
+      );
     });
   };
 
@@ -72,13 +79,13 @@ export const AttendanceCard = ({
   };
 
   return (
-    <Card className="w-full px-6 py-4 bg-card-radial border-turquoise-300 border-2 rounded-[12px]">
-      <CardContent className="p-0 flex justify-between items-center">
+    <Card className="bg-card-radial w-full rounded-[12px] border-2 border-turquoise-300 px-6 py-4">
+      <CardContent className="flex items-center justify-between p-0">
         <div className="flex flex-col">
-          <h1 className="font-subheading font-bold text-b3 text-blue-500">
+          <h1 className="font-subheading text-b3 font-bold text-blue-500">
             {Sesi}
           </h1>
-          <h2 className="font-subheading font-normal text-b4 text-blue-500">
+          <h2 className="font-subheading text-b4 font-normal text-blue-500">
             Waktu: {Waktu}
           </h2>
         </div>
@@ -86,7 +93,7 @@ export const AttendanceCard = ({
           <Button
             onClick={handleAbsen}
             disabled={isLoading}
-            className="bg-pink-400 h-fit px-5 py-2 text-xs font-subheading font-normal text-shade-200 rounded-[4px] hover:bg-pink-500/80"
+            className="h-fit rounded-[4px] bg-pink-400 px-5 py-2 font-subheading text-xs font-normal text-shade-200 hover:bg-pink-500/80"
           >
             Tandai Hadir
           </Button>
@@ -104,7 +111,7 @@ export const AttendanceCard = ({
           description="Kehadiran berhasil dicatat"
           isOpen={isAlertOpen}
           setIsOpen={setIsAlertOpen}
-          className="bg-blue-500 flex flex-col items-center border-none text-yellow text-center rounded-[12px]"
+          className="flex flex-col items-center rounded-[12px] border-none bg-blue-500 text-center text-yellow"
         />
       </CardContent>
     </Card>
