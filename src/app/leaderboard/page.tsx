@@ -113,7 +113,7 @@ function LeaderBoardContent() {
   }
 
   return (
-    <main className="flex max-h-screen flex-col items-center justify-center">
+    <main className="flex h-screen flex-col items-center justify-center">
       <div
         className="fixed-width-container flex flex-col p-0"
         style={{
@@ -146,7 +146,7 @@ function LeaderBoardContent() {
                       />
                     )}
                     <div
-                      className={`no-scrollbar flex flex-col gap-3 overflow-y-scroll ${currentPage === 1 ? 'h-[15vh] [@media(min-height:700px)]:h-[30vh] [@media(min-height:800px)]:h-[30vh]' : 'h-[60vh]'}`}
+                      className={`no-scrollbar flex flex-col gap-3 overflow-y-scroll ${currentPage === 1 ? 'h-[15vh] [@media(min-height:700px)]:h-[20vh] [@media(min-height:800px)]:h-[30vh]' : 'h-[60vh]'}`}
                     >
                       {userData.data?.currentUserProfile &&
                         (!isTopThree || currentPage !== 1) && (
