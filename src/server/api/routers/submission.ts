@@ -184,7 +184,7 @@ function calculateNewPoint(assignment: Partial<Assignment>) {
       10,
     );
 
-    return Math.round(assignment.point * (1 - lateHours * 0.05));
+    return Math.round(assignment.point * (1 - lateHours * 0.01));
   }
   return null;
 }
