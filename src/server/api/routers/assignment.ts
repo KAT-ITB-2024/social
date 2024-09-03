@@ -32,7 +32,7 @@ export const assignmentRouter = createTRPCRouter({
         .where(
           and(
             eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]), // Daily Quest
-            lte(assignments.startTime, getCurrentWIBTime()),
+            lte(assignments.startTime, new Date()),
           ),
         );
 
@@ -68,7 +68,7 @@ export const assignmentRouter = createTRPCRouter({
         .where(
           and(
             eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]), // Side Quest
-            lte(assignments.startTime, getCurrentWIBTime()),
+            lte(assignments.startTime, new Date()),
           ),
         );
 
