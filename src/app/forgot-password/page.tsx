@@ -73,6 +73,10 @@ const ForgotPasswordPage = () => {
     return <LoadingSpinnerCustom />;
   }
 
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
   return (
     <div className="mt-[150px] flex w-full flex-col items-center gap-2">
       <h3 className="text-center text-[60px] text-blue-500">
