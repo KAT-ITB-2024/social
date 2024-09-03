@@ -240,14 +240,17 @@ export default function DetailPage({ params }: { params: { id: string } }) {
                   isUserSubmit={true}
                   onDelete={handleDelete}
                   isDeleteable={
-                    assignmentStatus === AssignmentSubmission.TERLAMBAT
-                      ? assignment.assignmentSubmissions
-                        ? false
-                        : true
-                      : assignmentStatus === AssignmentSubmission.TERKUMPUL &&
-                          isOverDeadline
-                        ? false
-                        : true
+                    assignment.assignments.assignmentType == 'Side' &&
+                    assignment.assignmentSubmissions
+                      ? false
+                      : assignmentStatus === AssignmentSubmission.TERLAMBAT
+                        ? assignment.assignmentSubmissions
+                          ? false
+                          : true
+                        : assignmentStatus === AssignmentSubmission.TERKUMPUL &&
+                            isOverDeadline
+                          ? false
+                          : true
                   }
                 />
               ) : (
