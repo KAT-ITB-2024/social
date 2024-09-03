@@ -26,9 +26,11 @@ import InfoModal from '~/components/InfoModal';
 import { api } from '~/trpc/react';
 import { toast } from 'sonner';
 import { ErrorToast } from '~/components/ui/error-toast';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const ForgotPasswordPage = () => {
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   type RequestResetPasswordPayloadSchema = z.infer<
     typeof RequestResetPasswordPayload
@@ -41,9 +43,11 @@ const ForgotPasswordPage = () => {
             <ErrorToast desc="Pastikan kamu sudah mengisi email di profilemu!" />,
           );
         }
+        setIsLoading(false);
       },
       onSuccess: () => {
         setIsAlertOpen(true);
+        setIsLoading(false);
       },
     });
 
@@ -58,10 +62,15 @@ const ForgotPasswordPage = () => {
   const { isValid } = form.formState;
 
   function onSubmit(values: RequestResetPasswordPayloadSchema) {
+    setIsLoading(true);
     const { email } = values;
     requestResetPasswordMutation.mutate({
       email,
     });
+  }
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
   }
 
   return (
