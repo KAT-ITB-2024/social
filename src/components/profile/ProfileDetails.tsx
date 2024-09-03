@@ -2,12 +2,15 @@
 import { TRPCError } from '@trpc/server';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ErrorToast } from '../ui/error-toast';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '../ui/loading-spinner';
 import { SuccessToast } from '../ui/success-toast';
+import Link from 'next/link';
+import { redirect, useRouter } from 'next/navigation';
+import { InfoToast } from '../ui/info-toast';
 
 interface ProfileDetailProps {
   nama: string;
@@ -47,11 +50,27 @@ export default function ProfileDetails({
     email,
   };
 
+  const router = useRouter();
+
   const [profile, setProfile] = useState(initialProfile);
   const [editProfile, setEditProfile] = useState(initialProfile);
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const updateProfileDataMutation = api.profile.updateProfileData.useMutation();
+
+  const toastShownRef = useRef(false);
+
+  useEffect(() => {
+    if (!toastShownRef.current) {
+      toast(
+        <InfoToast
+          title="Reset password"
+          desc="Jangan lupa isi data email dan reset passwordmu!"
+        />,
+      );
+      toastShownRef.current = true; // Mark the toast as shown
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditProfile({
@@ -201,13 +220,21 @@ export default function ProfileDetails({
               {sanitizeValue(profile.email)}
             </p>
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-x-4">
             <Button
               className="mb-20 mt-2 bg-blue-600 px-8"
               onClick={toggleEditMode}
             >
               Edit Profile
             </Button>
+            {editProfile.email && (
+              <Button
+                className="mb-20 mt-2 bg-yellow px-8 text-purple"
+                onClick={() => router.push('/forgot-password')}
+              >
+                Reset Password
+              </Button>
+            )}
           </div>
         </div>
       )}

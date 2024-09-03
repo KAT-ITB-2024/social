@@ -67,7 +67,6 @@ const ForgotPasswordPage = () => {
     requestResetPasswordMutation.mutate({
       email,
     });
-    setIsAlertOpen(true);
   }
 
   if (isLoading) {
@@ -126,7 +125,7 @@ const ForgotPasswordPage = () => {
           <InfoModal
             image={Starfish}
             title="Email Terkirim"
-            description="Cek email mu Aqualings, untuk mengubah password!"
+            description={`Cek email mu Aqualings!\nJika dalam 5 menit belum ada email masuk, silakan coba lagi!`}
             isOpen={isAlertOpen}
             setIsOpen={setIsAlertOpen}
             className="flex flex-col items-center border-none bg-blue-500 text-center text-yellow"
