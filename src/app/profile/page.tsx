@@ -13,7 +13,7 @@ export default async function ProfilePage() {
   return (
     <main className="flex h-screen flex-col items-center justify-center">
       <div
-        className="fixed-width-container flex flex-col p-0"
+        className="fixed-width-container flex flex-col overflow-y-auto p-12"
         style={{
           backgroundImage: 'url(/images/profile/BackgroundProfile.jpeg)',
           backgroundSize: 'cover',
@@ -41,10 +41,10 @@ export default async function ProfilePage() {
           alt="Starfish"
           width={250}
           height={250}
-          className="absolute right-0 top-96 z-0"
+          className="absolute bottom-0 right-0 z-0"
         />
 
-        <div className="z-1 relative">
+        <div className="z-1 relative pl-4">
           <ProfileHeader profilePic={profilePic} />
           <ProfileDetails {...userProfile} />
         </div>
