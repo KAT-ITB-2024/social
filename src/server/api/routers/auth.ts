@@ -1,4 +1,4 @@
-import { createTRPCRouter, pesertaProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
 import { generateHash, generateResetToken } from '~/utils/auth';
 import { TRPCError } from '@trpc/server';
 import { env } from '~/env.cjs';
@@ -11,7 +11,7 @@ import {
 import { transporter } from '~/server/mail';
 
 export const authRouter = createTRPCRouter({
-  requestResetPassword: pesertaProcedure
+  requestResetPassword: publicProcedure
     .input(RequestResetPasswordPayload)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db
@@ -78,7 +78,7 @@ export const authRouter = createTRPCRouter({
       return 'Email telah dikirim!';
     }),
 
-  resetPassword: pesertaProcedure
+  resetPassword: publicProcedure
     .input(ResetPasswordPayload)
     .mutation(async ({ ctx, input }) => {
       const tokenData = await ctx.db
