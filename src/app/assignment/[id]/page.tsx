@@ -224,7 +224,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
             <p className="text-b3 leading-[24px]">
               {assignment.assignments.description}
             </p>
-            {assignment.assignments && (
+            {assignment.assignments.filename && (
               <AttachmentButton
                 fileName={assignment.assignments.filename}
                 fileUrl={assignment.assignments.downloadUrl}
