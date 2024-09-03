@@ -8,6 +8,7 @@ interface CardTopScoreProps {
   point: number | null;
   isIndividual?: boolean;
   isUser?: boolean;
+  onClick?: () => void;
 }
 
 export default function CardTopScore({
@@ -18,6 +19,7 @@ export default function CardTopScore({
   point,
   isIndividual = true,
   isUser = false,
+  onClick,
 }: CardTopScoreProps) {
   let profilePicture = profileImage;
   if (isIndividual)
@@ -33,6 +35,7 @@ export default function CardTopScore({
           ? 'from-[#0CEBCC99] to-[#05A798]'
           : 'from-[#C5FFF3B2] to-[#99E0FFB2]'
       } p-2 text-[#006E6F] shadow-[4px_4px_10px_0_#FFBF5180]`}
+      onClick={onClick}
     >
       {/* Rank and Profile*/}
       <div className="relative mt-1">

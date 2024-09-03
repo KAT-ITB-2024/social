@@ -32,7 +32,7 @@ const ChatNavbar = ({
       <div className="fixed top-4 z-20 flex w-full max-w-md flex-row items-center justify-between gap-x-2 px-8">
         <div className="flex w-full items-center gap-x-2 rounded-full bg-blue-600 py-2 pl-4 pr-12 text-white">
           <div className="rounded-full bg-white p-1 text-blue-600">
-            <MoveLeft className="h-4 w-4" onClick={() => router.back()} />
+            <MoveLeft className="h-4 w-4" onClick={() => router.push('/')} />
           </div>
           <Image
             src={
