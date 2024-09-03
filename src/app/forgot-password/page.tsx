@@ -24,6 +24,8 @@ import Starfish from 'public/images/login/Starfish.png';
 // Component Import
 import InfoModal from '~/components/InfoModal';
 import { api } from '~/trpc/react';
+import { toast } from 'sonner';
+import { ErrorToast } from '~/components/ui/error-toast';
 
 const ForgotPasswordPage = () => {
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
@@ -32,7 +34,18 @@ const ForgotPasswordPage = () => {
     typeof RequestResetPasswordPayload
   >;
   const requestResetPasswordMutation =
-    api.auth.requestResetPassword.useMutation();
+    api.auth.requestResetPassword.useMutation({
+      onError: (err) => {
+        if (err.data?.code === 'NOT_FOUND') {
+          toast(
+            <ErrorToast desc="Pastikan kamu sudah mengisi email di profilemu!" />,
+          );
+        }
+      },
+      onSuccess: () => {
+        setIsAlertOpen(true);
+      },
+    });
 
   const form = useForm<RequestResetPasswordPayloadSchema>({
     resolver: zodResolver(RequestResetPasswordPayload),
@@ -49,7 +62,6 @@ const ForgotPasswordPage = () => {
     requestResetPasswordMutation.mutate({
       email,
     });
-    setIsAlertOpen(true);
   }
 
   return (
@@ -104,7 +116,7 @@ const ForgotPasswordPage = () => {
           <InfoModal
             image={Starfish}
             title="Email Terkirim"
-            description="Cek email mu Aqualings, untuk mengubah password!"
+            description={`Cek email mu Aqualings!\nJika dalam 5 menit belum ada email masuk, silakan coba lagi!`}
             isOpen={isAlertOpen}
             setIsOpen={setIsAlertOpen}
             className="flex flex-col items-center border-none bg-blue-500 text-center text-yellow"
