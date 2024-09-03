@@ -41,6 +41,7 @@ function LeaderBoardContent() {
     undefined,
     { enabled: currentContent === 'Kelompok' },
   );
+
   useEffect(() => {
     if (!leaderboardData?.data || !session?.user?.nim) {
       return;

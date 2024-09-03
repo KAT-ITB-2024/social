@@ -45,6 +45,7 @@ export const leaderboardRouter = createTRPCRouter({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ({ totalProfiles, ...rest }) => rest,
       );
+
       return {
         leaderboard,
         totalProfiles,
