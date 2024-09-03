@@ -13,7 +13,7 @@ export default async function ProfilePage() {
   return (
     <main className="flex h-screen flex-col items-center justify-center">
       <div
-        className="fixed-width-container flex flex-col overflow-y-auto p-12"
+        className="fixed-width-container lg:no-scrollbar flex flex-col overflow-y-auto p-12"
         style={{
           backgroundImage: 'url(/images/profile/BackgroundProfile.jpeg)',
           backgroundSize: 'cover',
@@ -26,14 +26,14 @@ export default async function ProfilePage() {
           alt="Wave"
           width={300}
           height={100}
-          className="absolute left-0 z-0 h-auto w-auto translate-y-[-60px] rotate-[10deg]"
+          className="absolute right-0 z-0 h-auto w-auto max-w-full translate-y-[-60px] overflow-hidden object-cover"
         />
         <Image
           src="/images/profile/turtle.png"
           alt="Fish"
           width={200}
           height={200}
-          className="absolute top-10 z-0"
+          className="absolute top-10 z-0 max-w-full overflow-hidden"
         />
 
         <Image
@@ -41,7 +41,7 @@ export default async function ProfilePage() {
           alt="Starfish"
           width={250}
           height={250}
-          className="absolute bottom-0 right-0 z-0"
+          className="absolute bottom-0 right-0 z-0 max-w-full overflow-hidden"
         />
 
         <div className="z-1 relative pl-4">
