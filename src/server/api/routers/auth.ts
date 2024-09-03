@@ -23,7 +23,7 @@ export const authRouter = createTRPCRouter({
       if (!user || user.length === 0) {
         throw new TRPCError({
           message: 'Email anda tidak terdaftar di sistem!',
-          code: 'BAD_REQUEST',
+          code: 'NOT_FOUND',
         });
       }
 
@@ -33,7 +33,7 @@ export const authRouter = createTRPCRouter({
 
       if (!userId) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
+          code: 'NOT_FOUND',
           message: 'User ID tidak ditemukan!',
         });
       }
