@@ -1,3 +1,4 @@
+import { genderEnum } from '@katitb2024/database';
 import { Redis } from '~/server/redis';
 import { GenderEnum } from '~/types/enum/chat';
 import { type UserQueue } from '~/types/payloads/message';
@@ -12,11 +13,17 @@ const deserializeUserQueue = (raw: string) => {
   };
 };
 
-const generateKey = (queue: UserQueue): string => {
-  let key = `QUEUE:${queue.topic}:${queue.isAnonymous ? 1 : 0}`;
+const generateKey = (queue: UserQueue, toFind = false) => {
+  let key = `QUEUE:${queue.topic}:${queue.isAnonymous ? 1 : 0}:${
+    queue.isFindingFriend ? 1 : 0
+  }`;
   if (!queue.isFindingFriend) {
-    key +=
-      queue.gender === GenderEnum.FEMALE ? GenderEnum.MALE : GenderEnum.FEMALE;
+    const gender = toFind
+      ? queue.gender === GenderEnum.FEMALE
+        ? GenderEnum.MALE
+        : GenderEnum.FEMALE
+      : queue.gender;
+    key += `:${gender}`;
   }
   return key;
 };
@@ -26,10 +33,10 @@ export const generateQueueKey = (userId: string) => {
 };
 
 export const findMatch = async (queue: UserQueue) => {
-  const key = generateKey(queue);
+  const key = generateKey(queue, true);
   const redis = Redis.getClient();
   const redlock = Redis.getRedlock();
-  const lock = await redlock.acquire([`lock:${key}`], 5000);
+  let lock = await redlock.acquire([`lock:${key}`], 5000);
   console.log('Lock acquired', lock);
 
   let result;
@@ -47,7 +54,14 @@ export const findMatch = async (queue: UserQueue) => {
       if (queueExist !== 0) {
         throw new Error('Queue already exists!');
       }
-      await redis.rpush(key, serializeUserQueue(queue));
+      if (!queue.isFindingFriend) {
+        await lock.release();
+        const insertKey = generateKey(queue, false);
+        lock = await redlock.acquire([`lock:${insertKey}`], 5000);
+        await redis.rpush(insertKey, serializeUserQueue(queue));
+      } else {
+        await redis.rpush(key, serializeUserQueue(queue));
+      }
       await redis.set(queueKey, JSON.stringify(queue));
     } else {
       const match = await redis.lpop(key);
