@@ -187,8 +187,7 @@ function calculateNewPoint(assignment: Partial<Assignment>) {
   if (assignment.startTime && assignment.point) {
     const lateHours = Math.min(
       Math.floor(
-        (getCurrentWIBTime().getTime() - assignment.startTime.getTime()) /
-          (1000 * 60 * 60),
+        (Date.now() - assignment.startTime.getTime()) / (1000 * 60 * 60),
       ),
       50,
     );

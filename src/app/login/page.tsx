@@ -142,7 +142,7 @@ const LoginPage = () => {
             href="/forgot-password"
             className="text-start text-[12px] text-blue-500 underline"
           >
-            Lupa Password?
+            Reset Password
           </Link>
           <div className="py-2" />
           <div className="flex w-full justify-center">

@@ -41,6 +41,7 @@ function LeaderBoardContent() {
     undefined,
     { enabled: currentContent === 'Kelompok' },
   );
+
   useEffect(() => {
     if (!leaderboardData?.data || !session?.user?.nim) {
       return;
@@ -236,7 +237,9 @@ function LeaderBoardContent() {
                             }
                             isUser
                             point={
-                              Number(userGroupData.data.currentUserGroup) || 0
+                              Number(
+                                userGroupData.data.currentUserGroup.point,
+                              ) || 0
                             }
                           />
                         )}
