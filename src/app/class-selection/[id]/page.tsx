@@ -9,7 +9,7 @@ import Jellyfish2 from 'public/images/class-selection/sea-Creatures-2.png';
 import SeaSlug from 'public/images/class-selection/SeaSlug.png';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import ClassConfirmationModal from '@/components/class-selection/ClassConfirmationModal';
 import ClassInfoModal from '@/components/class-selection/ClassInfoModal';
@@ -20,6 +20,7 @@ import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { toast } from 'sonner';
 import { ErrorToast } from '~/components/ui/error-toast';
 import NotFound from '~/app/not-found';
+import { getCurrentWIBTime } from '~/server/api/helpers/utils';
 
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const [isClassFullModalOpen, setIsClassFullModalOpen] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
   const [isEnrolledModalOpen, setIsEnrolledModalOpen] = useState(false);
-
+  const [isClassOpen, setIsClassOpen] = useState(true);
   const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
 
   const {
@@ -52,13 +53,22 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
         toast(
           <ErrorToast desc="Kelas sudah penuh! Silakan pilih kelas lain" />,
         );
+      } else if (err.data?.code === 'BAD_REQUEST') {
+        toast(<ErrorToast desc="Maaf, pendaftaran kelas sudah tutup!" />);
       } else {
         toast(
-          <ErrorToast desc="Terjadi kesalahan ketika mendaftar kelas, silakan coba lagi!" />,
+          <ErrorToast desc="Terjadi kesalahan ketika mendaftar, silakan coba lagi!" />,
         );
       }
     },
   });
+
+  useEffect(() => {
+    const now = getCurrentWIBTime();
+    if (now.getUTCHours() >= 21) {
+      setIsClassOpen(false);
+    }
+  }, []);
 
   if (isLoading) {
     return <LoadingSpinnerCustom />;
@@ -202,7 +212,7 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {!enrolledClass && (
+        {!enrolledClass && isClassOpen && (
           <Button
             className="z-0 mb-8 bg-pink-400"
             onClick={openConfirmationModal}
