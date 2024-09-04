@@ -3,19 +3,16 @@
 import Day1Image from 'public/images/home/day-1-journey.png';
 import HiddenDays from 'public/images/home/hidden-journey.png';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '../ui/loading-spinner';
 import { JourneyDay2 } from './days/day-2';
 import { JourneyDay3 } from './days/day-3';
 import { JourneyDay4 } from './days/day-4';
 import { useEffect, useState } from 'react';
-import { type Event } from '@katitb2024/database';
 import { type OpenedDays } from '~/types/payloads/map';
 import { DayModal } from './DayModal';
 
 export default function Journey() {
-  const router = useRouter();
   const days = api.map.getDays.useQuery();
   const [events, setEvents] = useState<Map<string, OpenedDays> | null>();
   const [selectedEvent, setSelectedEvent] = useState<OpenedDays | null>();
@@ -43,7 +40,7 @@ export default function Journey() {
     return <LoadingSpinnerCustom />;
   }
   return (
-    <div className="flex h-fit w-full flex-col items-center justify-center">
+    <div className="flex h-fit min-h-[75vh] w-full flex-col items-center justify-between">
       <div className="relative h-[194px] w-full">
         <div className="absolute top-0 flex h-full w-full flex-col items-center">
           <div className="relative z-10 h-[180px] w-full">

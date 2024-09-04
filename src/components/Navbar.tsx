@@ -75,7 +75,7 @@ const Navbar = () => {
                   <div className="flex justify-end bg-transparent pr-[4px]">
                     <div className="h-0 w-0 border-b-[14px] border-l-[15px] border-r-[15px] border-b-turquoise-100 border-l-transparent border-r-transparent" />
                   </div>
-                  <DropdownMenuGroup>
+                  <DropdownMenuGroup className="max-h-[40vh] overflow-y-auto">
                     {notifications.length === 0 ? (
                       <DropdownMenuItem
                         className={`rounded-t-sm bg-turquoise-100`}
