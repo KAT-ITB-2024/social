@@ -15,6 +15,12 @@ const config = {
         port: '',
         pathname: '/**/*',
       },
+      {
+        protocol: 'https',
+        hostname: 'oskm-production-bucket.sgp1.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**/*',
+      },
     ],
   },
 };
