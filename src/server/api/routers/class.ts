@@ -5,6 +5,7 @@ import { TRPCError } from '@trpc/server';
 import { EnrollClassPayload } from '~/types/payloads/class';
 import { z } from 'zod';
 import { Redis } from '~/server/redis';
+import { getCurrentWIBTime } from '../helpers/utils';
 
 export const classRouter = createTRPCRouter({
   getEnrolledClass: pesertaProcedure.query(async ({ ctx }) => {
@@ -150,6 +151,13 @@ export const classRouter = createTRPCRouter({
   enrollClass: pesertaProcedure
     .input(EnrollClassPayload)
     .mutation(async ({ input, ctx }) => {
+      const now = getCurrentWIBTime();
+      if (now.getUTCHours() >= 21) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Pendaftaran kelas sudah ditutup!',
+        });
+      }
       const userId = ctx.session?.user.id;
       const { classId } = input;
 
