@@ -7,7 +7,7 @@ import {
   merchandiseCarts,
   profiles,
 } from '@katitb2024/database';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, ilike, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const merchandiseRouter = createTRPCRouter({
@@ -314,5 +314,41 @@ export const merchandiseRouter = createTRPCRouter({
           message: 'Failed to remove item from cart',
         });
       }
+    }),
+
+  getAllMerchandise: protectedProcedure
+    .input(
+      z.object({
+        page: z.number().min(1),
+        name: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
+      const { page, name } = input;
+      const itemsPerPage = 6;
+      const offset = (page - 1) * itemsPerPage;
+
+      const result = await ctx.db
+        .select({
+          merchandiseId: merchandises.id,
+          name: merchandises.name,
+          price: merchandises.price,
+          image: merchandises.image,
+          stock: merchandises.stock,
+        })
+        .from(merchandises)
+        .where(ilike(merchandises.name, `%${name}%`))
+        .limit(6)
+        .orderBy(merchandises.name)
+        .offset(offset);
+
+      return result;
     }),
 });
