@@ -3,6 +3,8 @@ export type OSKMWrapped = {
   totalMatch: number;
   submittedQuest: number;
   favTopics: string[];
+  // countMostFav: number;
+  percent: number;
   test: boolean;
   character: string;
   personality: string;
