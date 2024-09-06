@@ -316,6 +316,75 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
   });
 }
 
+export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
+  const password = await bcrypt.hash('password', 10);
+
+  const ukmUser = await db
+    .insert(schema.users)
+    .values({
+      nim: '12345678',
+      role: 'ITB-X',
+      password,
+      activityPoints: 0,
+      updatedAt: new Date(),
+    })
+    .returning();
+  if (!ukmUser[0]) {
+    return;
+  }
+  await db.insert(schema.lembagaProfiles).values({
+    lembaga: 'UKM',
+    detailedCategory: 'Agama',
+    name: 'PMK',
+    logo: '',
+    description: 'Contoh UKM Agama',
+    instagram: '',
+    visitorCount: 0,
+    userId: ukmUser[0].id,
+    currentToken: '123456',
+    currentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari dari sekarang,
+    updatedAt: new Date(),
+  });
+
+  const hmpsUser = await db
+    .insert(schema.users)
+    .values({
+      nim: '',
+      role: 'ITB-X',
+      password,
+      updatedAt: new Date(),
+    })
+    .returning();
+
+  if (!hmpsUser[0]) {
+    return;
+  }
+
+  await db.insert(schema.lembagaProfiles).values({
+    lembaga: 'HMPS',
+    detailedCategory: 'STEI-K',
+    name: 'HMIF',
+    logo: '',
+    description: 'Himpunan Mahasiswa Informatika',
+    instagram: '',
+    userId: hmpsUser[0].id,
+    currentToken: '123456',
+    currentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari dari sekarang,
+    updatedAt: new Date(),
+  });
+}
+export async function seedMerchandise(db: PostgresJsDatabase<typeof schema>) {
+  for (let i = 0; i < 10; i++) {
+    await db.insert(schema.merchandises).values({
+      name: `Merchandise-${i}`,
+      price: 400,
+      stock: 10,
+      image: '',
+      updatedAt: new Date(),
+    });
+  }
+}
+
 export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
@@ -342,6 +411,10 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding classes!');
   await seedOskmWrapped(db);
   console.log('Done seeding oskm wrapped!');
+  await seedMerchandise(db);
+  console.log('Done seeding merchandise!');
+  await seedLembaga(db);
+  console.log('Done seeding lembaga!');
   await migrationClient.end();
 }
 
