@@ -14,15 +14,16 @@ import { useSession } from 'next-auth/react';
 
 const inputWrapped = {
   name: 'Lomba Sihir',
-  jumlah_match: 250,
-  quest_num: 30,
-  fav_topics: ['Skibidi Toilet', 'Twice Jihyo', 'iShowSpeed'],
+  totalMatch: 0,
+  submittedQuest: 30,
+  favTopics: [],
+  // countMostFav: [],
   percent: 200,
-  test: false,
-  character: 'Gojo Satoru',
-  mbti: 'YWMO',
-  mbti_desc: 'Yowaimo Yowaimo Yowaimo',
-  leaderboard_rank: 69,
+  test: true,
+  character: 'sylas',
+  personality: 'YWMO',
+  personalityDesc: 'Yowaimo Yowaimo Yowaimo',
+  rank: 69,
 };
 
 function Wrapped() {
@@ -30,7 +31,13 @@ function Wrapped() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [oskmWrapped, setOSKMWrapped] = useState<OSKMWrapped | null>(null);
+  /* const [oskmWrapped, setOSKMWrapped] = useState<OSKMWrapped>(inputWrapped); */
+
   const [file, setFile] = useState<File[]>([]);
+
+  const handleBack = () => {
+    router.push('/personality');
+  };
 
   const [stories, setStories] = useState<
     { content: () => JSX.Element }[] | null
@@ -41,9 +48,6 @@ function Wrapped() {
   const { data: wrappedData, isLoading: loadingFetchingData } =
     api.wrapped.getWrapped.useQuery();
 
-  const handleBack = () => {
-    router.push('/personality');
-  };
   // Update state langsung jika data ada
   useEffect(() => {
     const mappedWrapped = wrappedData
@@ -52,6 +56,7 @@ function Wrapped() {
           totalMatch: wrappedData.totalMatch,
           submittedQuest: wrappedData.submittedQuest,
           favTopics: wrappedData.favTopics ?? [], // default to empty array if null
+          // countMostFav: wrappedData.countMostFav,
           percent: wrappedData.rankPercentage,
           test: wrappedData.character !== null, // test is true if character is not null
           character: wrappedData.character ?? '', // default to empty string if null
@@ -68,7 +73,14 @@ function Wrapped() {
         setFile,
         handleBack,
       });
-      setStories(result);
+
+      if (mappedWrapped.favTopics.length > 0 && mappedWrapped.totalMatch > 0) {
+        setStories(result);
+      } else {
+        setStories(
+          result.slice(0, 1).concat(result.slice(2, 3).concat(result.slice(4))),
+        );
+      }
     }
   }, [wrappedData]);
   if (loadingFetchingData || status === 'loading') {
@@ -96,7 +108,7 @@ function Wrapped() {
               width={'100%'}
               height={'100vh'}
               onStoryStart={loading}
-              // onAllStoriesEnd={() => router.push('/')}
+              onAllStoriesEnd={() => router.push('/')}
               keyboardNavigation={true}
             />
           )}
