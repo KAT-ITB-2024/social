@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
 import { ClassData } from './classData';
 
@@ -339,7 +339,7 @@ export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
     logo: '',
     description: 'Contoh UKM Agama',
     instagram: '',
-    visitorCount: 0,
+    visitorCount: 5,
     userId: ukmUser[0].id,
     currentToken: '123456',
     currentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari dari sekarang,
@@ -371,17 +371,136 @@ export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
     currentToken: '123456',
     currentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari dari sekarang,
     updatedAt: new Date(),
+    visitorCount: 5,
   });
 }
 export async function seedMerchandise(db: PostgresJsDatabase<typeof schema>) {
   for (let i = 0; i < 10; i++) {
     await db.insert(schema.merchandises).values({
       name: `Merchandise-${i}`,
-      price: 400,
+      price: 400 + i * 100,
       stock: 10,
       image: '',
       updatedAt: new Date(),
     });
+  }
+}
+
+export async function seedVisitor(db: PostgresJsDatabase<typeof schema>) {
+  const lembaga = await db.select().from(schema.lembagaProfiles).limit(2);
+  const users = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.role, 'Peserta'))
+    .limit(10);
+
+  if (!lembaga[0] || !lembaga[1]) {
+    return;
+  }
+
+  for (let i = 0; i < 10; i++) {
+    await db.insert(schema.visitors).values({
+      boothId: lembaga[i % 2]?.userId ?? '',
+      userId: users[i % 7]?.id ?? '',
+      updatedAt: new Date(),
+    });
+  }
+
+  // @eslint-disable-next-line
+}
+
+const coins = [800, 1200, 1500];
+
+export async function seedHistoryTransaction(
+  db: PostgresJsDatabase<typeof schema>,
+) {
+  const users = await db
+    .select()
+    .from(schema.users)
+    .orderBy(asc(schema.users.nim))
+    .limit(3);
+
+  for (let i = 0; i < 3; i++) {
+    const currCoin = coins[i];
+
+    let quantity;
+    switch (currCoin) {
+      case 800:
+        quantity = 2;
+        break;
+      case 1200:
+        quantity = 1;
+        break;
+      case 1500:
+        quantity = 3;
+        break;
+      default:
+        quantity = 0;
+    }
+
+    await db.insert(schema.merchandiseExchanges).values({
+      status: 'Taken',
+      userId: users[i]?.id ?? '',
+      totalCoins: currCoin,
+      totalItem: quantity,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    });
+    await db.insert(schema.merchandiseExchanges).values({
+      status: 'Not Taken',
+      userId: users[i]?.id ?? '',
+      totalCoins: currCoin,
+      totalItem: quantity,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    });
+  }
+}
+
+export async function seedHistoryDetail(db: PostgresJsDatabase<typeof schema>) {
+  const exchanges = await db.query.merchandiseExchanges.findMany();
+  const merchandise = await db
+    .select()
+    .from(schema.merchandises)
+    .orderBy(asc(schema.merchandises.price))
+    .limit(3);
+
+  for (const exchange of exchanges) {
+    switch (exchange.totalCoins) {
+      case 800:
+        await db.insert(schema.merchandiseExchangeDetails).values({
+          merchandiseId: merchandise[0]?.id ?? '',
+          quantity: 2,
+          merchandiseExchangeId: exchange.id,
+        });
+        break;
+      case 1200:
+        await db.insert(schema.merchandiseExchangeDetails).values({
+          merchandiseExchangeId: exchange.id,
+          merchandiseId: merchandise[2]?.id ?? '',
+          quantity: 2,
+        });
+        break;
+      case 1500:
+        await db.insert(schema.merchandiseExchangeDetails).values([
+          {
+            merchandiseExchangeId: exchange.id,
+            merchandiseId: merchandise[0]?.id ?? '',
+            quantity: 1,
+          },
+          {
+            merchandiseExchangeId: exchange.id,
+            merchandiseId: merchandise[1]?.id ?? '',
+            quantity: 1,
+          },
+          {
+            merchandiseExchangeId: exchange.id,
+            merchandiseId: merchandise[2]?.id ?? '',
+            quantity: 1,
+          },
+        ]);
+        break;
+    }
   }
 }
 
@@ -415,6 +534,12 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding merchandise!');
   await seedLembaga(db);
   console.log('Done seeding lembaga!');
+  await seedHistoryTransaction(db);
+  console.log('Done seeding history transaction!');
+  await seedHistoryDetail(db);
+  console.log('Done seeding history detail!');
+  await seedVisitor(db);
+  console.log('Done seeding visitor!');
   await migrationClient.end();
 }
 
