@@ -13,7 +13,6 @@ import { z } from 'zod';
 export const profileRouter = createTRPCRouter({
   getUserProfile: pesertaProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
-
     if (!userId) {
       return null;
     }

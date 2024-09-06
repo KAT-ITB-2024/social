@@ -20,8 +20,13 @@ export default function Home() {
     api.profile.getUserCoin.useQuery();
 
   useEffect(() => {
-    if (userCoinData) {
-      setUserCoin(userCoinData.coins ? userCoinData.coins : 0);
+    const now = getCurrentWIBTime();
+
+    // if (now.getDate() === 7 && now.getMonth() === 9) {
+    //   setShowOSKMWrapped(true);
+    // }
+    if (now.getDate() === 14 && now.getMonth() === 9) {
+      setShowCoins(true);
     }
   }, [userCoinData]);
 
