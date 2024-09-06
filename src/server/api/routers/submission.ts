@@ -91,8 +91,8 @@ export const submissionRouter = createTRPCRouter({
                 userNim: ctx?.session?.user.nim ?? '',
                 filename: input.filename,
                 downloadUrl: input.downloadUrl,
-                createdAt: getCurrentWIBTime(),
-                updatedAt: getCurrentWIBTime(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
                 point: null,
               })
               .returning({
@@ -135,8 +135,8 @@ export const submissionRouter = createTRPCRouter({
                 userNim: userDetail.nim,
                 filename: input.filename,
                 downloadUrl: input.downloadUrl,
-                createdAt: getCurrentWIBTime(),
-                updatedAt: getCurrentWIBTime(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
                 point: newPoint,
               };
             });
