@@ -336,13 +336,7 @@ export const merchandiseRouter = createTRPCRouter({
       const offset = (page - 1) * itemsPerPage;
 
       const result = await ctx.db
-        .select({
-          merchandiseId: merchandises.id,
-          name: merchandises.name,
-          price: merchandises.price,
-          image: merchandises.image,
-          stock: merchandises.stock,
-        })
+        .select()
         .from(merchandises)
         .where(ilike(merchandises.name, `%${name}%`))
         .limit(6)
@@ -350,5 +344,34 @@ export const merchandiseRouter = createTRPCRouter({
         .offset(offset);
 
       return result;
+    }),
+
+  getOrderHistory: protectedProcedure
+    .input(
+      z.object({
+        page: z.number().min(1),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!ctx.session || !ctx.session.user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User is not logged in',
+        });
+      }
+
+      const { page } = input;
+      const itemsPerPage = 6;
+      const offset = (page - 1) * itemsPerPage;
+
+      const orderHistory = await ctx.db
+        .select()
+        .from(merchandiseExchanges)
+        .where(eq(merchandiseExchanges.userId, ctx.session.user.id))
+        .limit(6)
+        .orderBy(merchandiseExchanges.updatedAt)
+        .offset(offset);
+
+      return orderHistory;
     }),
 });
