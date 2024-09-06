@@ -24,9 +24,9 @@ export default function Home() {
   useEffect(() => {
     const now = getCurrentWIBTime();
 
-    if (now.getDate() === 7 && now.getMonth() === 9) {
-      setShowOSKMWrapped(true);
-    }
+    // if (now.getDate() === 7 && now.getMonth() === 9) {
+    //   setShowOSKMWrapped(true);
+    // }
     if (now.getDate() === 14 && now.getMonth() === 9) {
       setShowCoins(true);
     }
