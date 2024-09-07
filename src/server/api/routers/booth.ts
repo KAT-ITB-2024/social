@@ -1,5 +1,5 @@
 import { createTRPCRouter, pesertaProcedure } from '~/server/api/trpc';
-import { lembagaProfiles } from '@katitb2024/database';
+import { lembagaProfiles, visitors } from '@katitb2024/database';
 import { and, eq, ilike, inArray } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -27,7 +27,11 @@ export const boothRouter = createTRPCRouter({
         const offset = (page - 1) * limit;
 
         const HMPSByFaculty = await ctx.db
-          .select({ name: lembagaProfiles.name, logo: lembagaProfiles.logo }) // specify the data needed
+          .select({
+            id: lembagaProfiles.id,
+            name: lembagaProfiles.name,
+            logo: lembagaProfiles.logo,
+          }) // specify the data needed
           .from(lembagaProfiles)
           .where(
             and(
@@ -80,7 +84,11 @@ export const boothRouter = createTRPCRouter({
         const offset = (page - 1) * limit;
 
         const UKMByRumpun = await ctx.db
-          .select({ name: lembagaProfiles.name, logo: lembagaProfiles.logo }) // specify the data needed
+          .select({
+            id: lembagaProfiles.id,
+            name: lembagaProfiles.name,
+            logo: lembagaProfiles.logo,
+          }) // specify the data needed
           .from(lembagaProfiles)
           .where(
             and(
@@ -132,7 +140,11 @@ export const boothRouter = createTRPCRouter({
         const offset = (page - 1) * limit;
 
         const otherLembaga = await ctx.db
-          .select({ name: lembagaProfiles.name, logo: lembagaProfiles.logo }) // specify the data needed
+          .select({
+            id: lembagaProfiles.id,
+            name: lembagaProfiles.name,
+            logo: lembagaProfiles.logo,
+          }) // specify the data needed
           .from(lembagaProfiles)
           .where(
             and(
@@ -164,7 +176,7 @@ export const boothRouter = createTRPCRouter({
 
   GetSpecificLembaga: pesertaProcedure
     .input(z.string())
-    .query(async ({ ctx, input: lembagaName }) => {
+    .query(async ({ ctx, input: lembagaId }) => {
       if (!ctx.session) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
@@ -173,10 +185,28 @@ export const boothRouter = createTRPCRouter({
       }
 
       try {
+        // Check if user has already registered presence for current booth
+        const existingPresence = await ctx.db
+          .select()
+          .from(visitors)
+          .where(
+            and(
+              eq(visitors.id, ctx.session.user.id),
+              eq(visitors.boothId, lembagaId),
+            ),
+          );
+
+        if (!existingPresence) {
+          throw new TRPCError({
+            code: 'UNAUTHORIZED',
+            message: 'User has not taken attendance at this booth',
+          });
+        }
+
         const specificLembaga = await ctx.db
           .select()
           .from(lembagaProfiles)
-          .where(ilike(lembagaProfiles.name, `%${lembagaName}%`))
+          .where(eq(lembagaProfiles.id, lembagaId))
           .then((result) => result[0]);
 
         if (!specificLembaga) {
