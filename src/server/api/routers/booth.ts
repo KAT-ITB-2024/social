@@ -1,9 +1,8 @@
 import { createTRPCRouter, pesertaProcedure } from '~/server/api/trpc';
-import { lembagaProfiles, visitors } from '@katitb2024/database';
+import { lembagaProfiles, profiles, visitors } from '@katitb2024/database';
 import { and, eq, ilike, inArray } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { getCurrentWIBTime } from '../helpers/utils';
 
 export const boothRouter = createTRPCRouter({
   GetHMPSByFaculty: pesertaProcedure
@@ -281,7 +280,7 @@ export const boothRouter = createTRPCRouter({
         }
 
         const now = new Date();
-        if (!(now < lembagaToken.currentExpirety)) {
+        if (!(now <= lembagaToken.currentExpirety)) {
           throw new TRPCError({
             code: 'FORBIDDEN',
             message: 'Token expired',
@@ -295,13 +294,58 @@ export const boothRouter = createTRPCRouter({
           });
         }
 
+        const userId = ctx.session.user.id;
         // Register attendance
         await ctx.db.insert(visitors).values({
-          userId: ctx.session.user.id,
+          userId: userId,
           boothId: lembagaId,
           createdAt: now,
           updatedAt: now,
         });
+
+        // Fetch current user coin
+        const user = await ctx.db
+          .select({ coins: profiles.coins })
+          .from(profiles)
+          .where(eq(profiles.userId, userId))
+          .then((result) => result[0]);
+
+        if (!user) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'User profile not found!',
+          });
+        }
+
+        const currentUserCoin = user.coins ?? 0;
+
+        // Add coin to user
+        await ctx.db
+          .update(profiles)
+          .set({ coins: currentUserCoin + 100 })
+          .where(eq(profiles.userId, userId));
+
+        // Fetch current visitorCount from lembagaProfiles
+        const lembaga = await ctx.db
+          .select({ visitorCount: lembagaProfiles.visitorCount })
+          .from(lembagaProfiles)
+          .where(eq(lembagaProfiles.id, lembagaId))
+          .then((result) => result[0]);
+
+        if (!lembaga) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Lembaga Profile not found!',
+          });
+        }
+
+        const currentVisitorCount = lembaga.visitorCount ?? 0;
+
+        // Add lembaga visitorCount
+        await ctx.db
+          .update(lembagaProfiles)
+          .set({ visitorCount: currentVisitorCount + 1 })
+          .where(eq(lembagaProfiles.id, lembagaId));
       } catch (error) {
         console.log(error);
         if (error instanceof TRPCError) {
