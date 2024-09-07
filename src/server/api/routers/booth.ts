@@ -3,6 +3,7 @@ import { lembagaProfiles, visitors } from '@katitb2024/database';
 import { and, eq, ilike, inArray } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { getCurrentWIBTime } from '../helpers/utils';
 
 export const boothRouter = createTRPCRouter({
   GetHMPSByFaculty: pesertaProcedure
@@ -242,12 +243,70 @@ export const boothRouter = createTRPCRouter({
       }
 
       const { lembagaId, insertedToken } = input;
-      const { nim } = ctx.session.user;
 
       try {
-        // const existingPresence = await ctx.db.select().from();
+        // Check if user has already registered presence for current booth
+        const existingPresence = await ctx.db
+          .select()
+          .from(visitors)
+          .where(
+            and(
+              eq(visitors.id, ctx.session.user.id),
+              eq(visitors.boothId, lembagaId),
+            ),
+          );
+
+        if (existingPresence) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: 'User have already registered this booth!',
+          });
+        }
+
+        // Token validation
+        const lembagaToken = await ctx.db
+          .select({
+            currentToken: lembagaProfiles.currentToken,
+            currentExpirety: lembagaProfiles.currentExpiry,
+          })
+          .from(lembagaProfiles)
+          .where(eq(lembagaProfiles.id, lembagaId))
+          .then((result) => result[0]);
+
+        if (!lembagaToken?.currentToken || !lembagaToken?.currentExpirety) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Lembaga token not found!',
+          });
+        }
+
+        const now = new Date();
+        if (!(now < lembagaToken.currentExpirety)) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Token expired',
+          });
+        }
+
+        if (!(lembagaToken.currentToken === insertedToken)) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Token invalid',
+          });
+        }
+
+        // Register attendance
+        await ctx.db.insert(visitors).values({
+          userId: ctx.session.user.id,
+          boothId: lembagaId,
+          createdAt: now,
+          updatedAt: now,
+        });
       } catch (error) {
         console.log(error);
+        if (error instanceof TRPCError) {
+          throw error;
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to fetch ',
