@@ -1,10 +1,12 @@
 import bcrypt from 'bcrypt';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import * as schema from '@katitb2024/database';
-import { eq, or, sql } from 'drizzle-orm';
+import { eq, inArray, or, sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
 import postgres from 'postgres';
 import { ChatTopic } from '~/types/enum/chat';
+
+const BATCH_SIZE = 100; // Increased batch size for processing
 
 export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
   const personalityDescMap = {
@@ -17,71 +19,92 @@ export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
       'Kamu dikenal sebagai sosok yang mencintai kedamaian dan ketenangan dalam segala situasi. Kamu selalu berusaha untuk mempertahankan kedua hal tersebut di mana pun kamu berada dan cenderung menghindari keributan. Menjamin pertumbuhan dan kedamaian diri merupakan kesukaanmu, sehingga orang-orang cenderung datang kepadamu untuk mencari teman bercerita karena kamu memiliki kondisi spiritual yang sangat baik.',
     Odra: 'Kamu dikenal sebagai sosok yang bijak karena memiliki wawasan yang luas dan dapat melihat situasi dari berbagai sudut pandang. Pengetahuan yang mendalam dan pengalaman yang banyak ini kamu peroleh dari perjalanan hidupmu yang sudah cukup panjang. Kamu pun tidak enggan dalam membagikan pengalaman dan pengetahuanmu tersebut untuk membantu orang di sekitarmu. ',
   };
-  const users = await db
+  const users = db
     .select()
     .from(schema.users)
     .innerJoin(schema.profiles, eq(schema.profiles.userId, schema.users.id));
 
-  const totalGroups = await db
+  // Fetch total groups count
+  const totalGroupsResult = db
     .select({ count: sql<number>`count(*)` })
-    .from(schema.groups)
-    .then((result) => result[0]?.count ?? 0);
-  const groupRankMap: Record<string, number> = {};
-  for (let i = 0; i < users.length; i += 50) {
-    const userBatch = users.slice(i, i + 50);
-    for (const user of userBatch) {
-      try {
-        const userMatches = await db
-          .select()
-          .from(schema.userMatches)
-          .where(
-            or(
-              eq(schema.userMatches.firstUserId, user.users.id),
-              eq(schema.userMatches.secondUserId, user.users.id),
-            ),
-          );
+    .from(schema.groups);
+
+  // Fetch all group ranks in a single query
+  const groupRanksQuery = db
+    .select({
+      name: schema.groups.name,
+      rank: sql`RANK() OVER (ORDER BY ${schema.groups.point} DESC)`,
+    })
+    .from(schema.groups);
+
+  // Execute all queries concurrently
+  const [usersResult, totalGroupsResultValue, groupRanks] = await Promise.all([
+    users,
+    totalGroupsResult,
+    groupRanksQuery,
+  ]);
+
+  if (!totalGroupsResultValue[0]) {
+    throw new Error('Error group value!');
+  }
+
+  const totalGroups = totalGroupsResultValue[0].count;
+
+  const groupRankMap: Record<string, number> = Object.fromEntries(
+    groupRanks.map((g) => [g.name, g.rank as number]),
+  );
+
+  for (let i = 0; i < usersResult.length; i += BATCH_SIZE) {
+    try {
+      const userBatch = usersResult.slice(i, i + BATCH_SIZE);
+      const userIds = userBatch.map((u) => u.users.id);
+      const userNims = userBatch.map((u) => u.users.nim);
+
+      // Fetch user matches for the entire batch
+      const userMatches = await db
+        .select()
+        .from(schema.userMatches)
+        .where(
+          or(
+            inArray(schema.userMatches.firstUserId, userIds),
+            inArray(schema.userMatches.secondUserId, userIds),
+          ),
+        );
+
+      // Fetch submitted quests for the entire batch
+      const submittedQuests = await db
+        .select({
+          userNim: schema.assignmentSubmissions.userNim,
+          count: sql<number>`count(*)`,
+        })
+        .from(schema.assignmentSubmissions)
+        .where(inArray(schema.assignmentSubmissions.userNim, userNims))
+        .groupBy(schema.assignmentSubmissions.userNim);
+
+      const submittedQuestsMap = Object.fromEntries(
+        submittedQuests.map((sq) => [sq.userNim, sq.count]),
+      );
+
+      const wrappedProfiles = userBatch.map((user) => {
+        const userMatchCount = userMatches.filter(
+          (m) =>
+            m.firstUserId === user.users.id || m.secondUserId === user.users.id,
+        ).length;
+
         const topicFrequency: Record<string, number> = {};
+        userMatches
+          .filter(
+            (m) =>
+              m.firstUserId === user.users.id ||
+              m.secondUserId === user.users.id,
+          )
+          .forEach((match) => {
+            const topic = ChatTopic[parseInt(match.topic)];
+            if (match.topic && topic) {
+              topicFrequency[topic] = (topicFrequency[topic] ?? 0) + 1;
+            }
+          });
 
-        for (const match of userMatches) {
-          const topic = ChatTopic[parseInt(match.topic)];
-          if (match.topic && topic) {
-            topicFrequency[topic] = (topicFrequency[topic] ?? 0) + 1;
-          }
-        }
-
-        const submittedQuestRaw = await db
-          .select()
-          .from(schema.assignmentSubmissions)
-          .where(eq(schema.assignmentSubmissions.userNim, user.users.nim));
-        let groupRank;
-        if (!groupRankMap[user.profiles.group]) {
-          const group = await db
-            .select({
-              name: sql`gr.name`,
-              point: sql`gr.point`,
-              rank: sql`gr.rank`,
-            })
-            .from(
-              sql`(
-        SELECT
-          g."groupName" as name,
-          g."point",
-          RANK() OVER (ORDER BY g."point" DESC) AS rank
-          FROM ${schema.groups} g
-      ) AS gr`,
-            )
-            .where(eq(sql`gr.name`, user.profiles.group))
-            .then((result) => result[0] ?? null);
-          if (!group) {
-            throw new Error('Profile group not found!');
-          }
-          groupRank = group.rank as number;
-          groupRankMap[user.profiles.group] = groupRank ?? 0;
-          console.log('Cache miss', group.name);
-        } else {
-          groupRank = groupRankMap[user.profiles.group];
-        }
-        const totalMatch = userMatches.length;
         const topTopics = Object.entries(topicFrequency)
           .sort((a, b) => b[1] - a[1])
           .slice(0, 3)
@@ -89,33 +112,36 @@ export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
 
         const favTopics = topTopics.map((topic) => topic.topic);
         const favTopicCount = topTopics[0]?.count;
-        if (!groupRank) {
-          throw new Error('Group rank not found');
-        }
+
+        const groupRank = groupRankMap[user.profiles.group] ?? 0;
         const rankPercentage = 100 - (1 - groupRank / totalGroups) * 100;
 
-        const personality = user.profiles.lastMBTI;
+        const submittedQuestCount = submittedQuestsMap[user.users.nim] ?? 0;
 
-        await db.insert(schema.wrappedProfiles).values({
+        return {
           userId: user.users.id,
           name: user.profiles.name,
-          totalMatch,
-          submittedQuest: submittedQuestRaw.length,
-          character: personality,
-          personality,
-          personalityDesc:
-            (personality && personalityDescMap[personality]) ?? null,
+          totalMatch: userMatchCount,
+          submittedQuest: submittedQuestCount,
+          character: user.profiles.lastMBTI,
+          personality: user.profiles.lastMBTI,
+          personalityDesc: user.profiles.lastMBTI
+            ? personalityDescMap[user.profiles.lastMBTI]
+            : null,
           favTopics,
           rank: groupRank,
           rankPercentage: rankPercentage.toString(),
           updatedAt: new Date(),
           favTopicCount,
-        });
-      } catch (error) {
-        console.log(`Error seeding batch-${i}`);
-      }
+        };
+      });
+
+      // Bulk insert wrapped profiles
+      await db.insert(schema.wrappedProfiles).values(wrappedProfiles);
+      console.log('Done seeding user batch', i);
+    } catch (error) {
+      console.log(`Fail seeding batch ${i}`);
     }
-    console.log('Done seeding user batch', i);
   }
 }
 dotenv.config();

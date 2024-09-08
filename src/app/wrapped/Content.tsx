@@ -303,20 +303,33 @@ const WrappedStories = ({
               loading="eager"
               className="absolute bottom-0"
             />
-            <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
-              <p className="text-center font-heading text-2xl text-blue-500">
-                Kamu masuk top
-              </p>
-              <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
-                {oskmWrapped.rankPercentage}%
-              </p>
-              <p className="text-center font-heading text-2xl text-blue-500">
-                peserta!
-              </p>
-              <p className="text-md text-center font-subheading text-blue-500">
-                Juara sejati diantara teman-temanmu!
-              </p>
-            </div>
+            {oskmWrapped.rank === 1 ? (
+              <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
+                <p className="text-center font-heading text-2xl text-blue-500">
+                  Juara 1 OSKM ITB 2024
+                </p>
+
+                <p className="text-md text-center font-subheading text-blue-500">
+                  Selamat, kelompok kalian berhasil menjadi juara 1 di OSKM ITB
+                  2024!
+                </p>
+              </div>
+            ) : (
+              <div className="absolute left-[12.5%] flex w-3/4 flex-col gap-2">
+                <p className="text-center font-heading text-2xl text-blue-500">
+                  Kamu masuk top
+                </p>
+                <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
+                  {oskmWrapped.rankPercentage}%
+                </p>
+                <p className="text-center font-heading text-2xl text-blue-500">
+                  peserta!
+                </p>
+                <p className="text-md text-center font-subheading text-blue-500">
+                  Juara sejati diantara teman-temanmu!
+                </p>
+              </div>
+            )}
           </>
         );
       },
