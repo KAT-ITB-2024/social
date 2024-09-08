@@ -308,7 +308,7 @@ const WrappedStories = ({
                 Kamu masuk top
               </p>
               <p className="pb-0.5 text-center font-heading text-5xl text-pink-400">
-                {oskmWrapped.percent}%
+                {oskmWrapped.rankPercentage}%
               </p>
               <p className="text-center font-heading text-2xl text-blue-500">
                 peserta!
