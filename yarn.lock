@@ -1260,12 +1260,12 @@
 
 "@katitb2024/database@git+https://github.com/KAT-ITB-2024/database-oskm.git#feat/itb-x":
   version "1.0.0"
-  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#a314853ebbaaf3ee00d805b9e0ec88aa7f06238f"
+  resolved "git+https://github.com/KAT-ITB-2024/database-oskm.git#12176a0a6af5b563ec2326378d5c127a0b5c78e5"
   dependencies:
     "@paralleldrive/cuid2" "^2.2.2"
     bcrypt "^5.1.1"
     csv-parser "^3.0.0"
-    database-oskm "file:../../../Library/Caches/Yarn/v6/npm-@katitb2024-database-1.0.0-a314853ebbaaf3ee00d805b9e0ec88aa7f06238f/node_modules/@katitb2024/database"
+    database-oskm "file:../../../../.cache/yarn/v6/npm-@katitb2024-database-1.0.0-12176a0a6af5b563ec2326378d5c127a0b5c78e5/node_modules/@katitb2024/database"
     drizzle-dbml-generator "^0.8.0"
     drizzle-orm "^0.31.2"
     postgres "^3.4.4"
@@ -3308,6 +3308,7 @@ data-view-byte-offset@^1.0.0:
     "@aws-sdk/s3-request-presigner" "^3.635.0"
     "@hookform/resolvers" "^3.7.0"
     "@metamorph/trpc-panel" "^1.0.5"
+    "@paralleldrive/cuid2" "^2.2.2"
     "@radix-ui/react-alert-dialog" "^1.1.1"
     "@radix-ui/react-dropdown-menu" "^2.1.1"
     "@radix-ui/react-label" "^2.1.0"
