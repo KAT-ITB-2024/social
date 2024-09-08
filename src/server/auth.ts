@@ -7,7 +7,7 @@ import {
 } from 'next-auth';
 import { type Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { env } from '~/env';
+import { env } from '~/env.cjs';
 import { db } from '~/server/db';
 import { users, type UserRole, profiles } from '@katitb2024/database';
 import { type DefaultJWT } from 'next-auth/jwt';

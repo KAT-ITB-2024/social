@@ -41,22 +41,20 @@ export const TabsAssignment = ({
       defaultValue={currentContent}
       onValueChange={handleValueChange}
       className={cn(
-        'flex flex-col items-center justify-center w-full',
+        'flex w-full flex-col items-center justify-center',
         classname,
       )}
     >
-      <TabsList className="flex justify-center items-center rounded-full p-0 bg-lightYellow shadow-orange-sm w-full max-w-[400px]">
+      <TabsList className="flex w-full max-w-[400px] items-center justify-center rounded-full bg-lightYellow p-0 shadow-orange-sm">
         <TabsTrigger
           value={leftTrigger}
-          className="w-1/2 bg-lightYellow h-full text-blue-500 rounded-full 
-        data-[state=active]:bg-blue-500 data-[state=active]:text-lightYellow font-bold transition-colors duration-500 ease-in-out"
+          className="h-full w-1/2 rounded-full bg-lightYellow font-bold text-blue-500 transition-colors duration-500 ease-in-out data-[state=active]:bg-blue-500 data-[state=active]:text-lightYellow"
         >
           {leftTrigger}
         </TabsTrigger>
         <TabsTrigger
           value={rightTrigger}
-          className="w-1/2 bg-lightYellow h-full text-blue-500 rounded-full 
-        data-[state=active]:bg-blue-500 data-[state=active]:text-lightYellow font-bold transition-colors duration-500 ease-in-out"
+          className="h-full w-1/2 rounded-full bg-lightYellow font-bold text-blue-500 transition-colors duration-500 ease-in-out data-[state=active]:bg-blue-500 data-[state=active]:text-lightYellow"
         >
           {rightTrigger}
         </TabsTrigger>

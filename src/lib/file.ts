@@ -49,6 +49,7 @@ export const downloadFile = async (
       responseType: 'blob',
       onDownloadProgress,
     });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return response.data;
   } catch (error) {
     console.error('File download error:', error);

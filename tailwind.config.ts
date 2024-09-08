@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
 
 const config = {
   darkMode: ['class'],
@@ -21,6 +22,8 @@ const config = {
       backgroundImage: {
         classes:
           "url('/images/class-selection/class-selection-background.png')",
+        'blue-turquoise':
+          'linear-gradient(153deg, #0CEBCC -1.2%, #3678FF 100%)',
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -209,7 +212,45 @@ const config = {
         // Orange shadows
         'orange-sm': '4px 4px 10px rgba(255, 191, 81, 0.5)',
         'orange-md': '4px 4px 10px rgba(255, 191, 81, 0.75)',
-        'orange-lg': '4px 4px 20px rgba(255, 191, 81, 0.75)',
+        'orange-lg': '4px 4px 20px rgba(255, 191, 81, 1)',
+        'orange-xl': '4px 4px 20px rgba(255, 191, 81, 1)',
+        'orange-2xl': '4px 4px 50px rgba(255, 191, 81, 1)',
+        // Neutral shadows
+        'neutral-sm': '4px 4px 10px rgba(56, 64, 83, 0.5)',
+        'neutral-md': '4px 4px 10px rgba(32, 41, 56, 0.75)',
+        'neutral-lg': '4px 4px 20px rgba(32, 41, 56, 0.75)',
+        'neutral-xl': '4px 4px 20px rgba(32, 41, 56, 1)',
+        'neutral-2xl': '4px 4px 50px rgba(32, 41, 56, 1)',
+        // White shadows
+        'white-sm': '0px 0px 10px rgba(255, 255, 255, 1)',
+        'white-md': '0px 0px 15px rgba(255, 255, 255, 1)',
+        'white-lg': '0px 0px 20px rgba(255, 255, 255, 1)',
+        'white-xl': '0px 0px 40px rgba(255, 255, 255, 1)',
+        'white-2xl': '0px 0px 60px rgba(255, 255, 255, 1)',
+      },
+      textShadow: {
+        // Pink shadows
+        'pink-sm': '4px 4px 10px rgba(255, 140, 217, 0.5)',
+        'pink-md': '4px 4px 10px rgba(255, 140, 217, 0.75)',
+        'pink-lg': '4px 4px 20px rgba(255, 140, 217, 0.75)',
+        'pink-xl': '4px 4px 20px rgba(255, 140, 217, 1)',
+        'pink-2xl': '4px 4px 50px rgba(255, 140, 217, 1)',
+        // Green shadows
+        'green-sm': '4px 4px 10px rgba(12, 235, 204, 0.5)',
+        'green-md': '4px 4px 10px rgba(12, 235, 204, 0.75)',
+        'green-lg': '4px 4px 20px rgba(12, 235, 204, 0.75)',
+        'green-xl': '4px 4px 20px rgba(12, 235, 204, 1)',
+        'green-2xl': '4px 4px 50px rgba(12, 235, 204, 1)',
+        // Blue shadows
+        'blue-sm': '4px 4px 10px rgba(100, 177, 247, 0.5)',
+        'blue-md': '4px 4px 10px rgba(100, 177, 247, 0.75)',
+        'blue-lg': '4px 4px 20px rgba(100, 177, 247, 0.75)',
+        'blue-xl': '4px 4px 20px rgba(100, 177, 247, 1)',
+        'blue-2xl': '4px 4px 50px rgba(100, 177, 247, 1)',
+        // Orange shadows
+        'orange-sm': '4px 4px 10px rgba(255, 191, 81, 0.5)',
+        'orange-md': '4px 4px 10px rgba(255, 191, 81, 0.75)',
+        'orange-lg': '4px 4px 20px rgba(255, 191, 81, 1)',
         'orange-xl': '4px 4px 20px rgba(255, 191, 81, 1)',
         'orange-2xl': '4px 4px 50px rgba(255, 191, 81, 1)',
         // Neutral shadows
@@ -227,7 +268,19 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') },
+      );
+    }),
+  ],
 } satisfies Config;
 
 export default config;

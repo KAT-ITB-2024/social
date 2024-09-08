@@ -37,7 +37,7 @@ const ClassConfirmationModal = ({
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
         className={cn(
-          'w-[300px] px-6 pb-6 pt-10 bg-white rounded-[12px border border-orange-400 shadow-pink-xl',
+          'rounded-[12px w-[300px] border border-orange-400 bg-white px-6 pb-6 pt-10 shadow-pink-xl',
           className,
         )}
       >
@@ -53,7 +53,7 @@ const ClassConfirmationModal = ({
             Pilih Kelas
           </p>
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-pink-400 text-center font-normal ">
+        <AlertDialogDescription className="text-center font-normal text-pink-400">
           Apakah kamu yakin memilih kelas ini?
           <br />
           Kelas hanya dapat dipilih satu kali.
@@ -65,7 +65,7 @@ const ClassConfirmationModal = ({
           >
             Pilih Sekarang
           </AlertDialogAction>
-          <AlertDialogCancel className="bg-white border-orange-400 text-orange-400 hover:bg-orange-50 hover:text-orange-500">
+          <AlertDialogCancel className="border-orange-400 bg-white text-orange-400 hover:bg-orange-50 hover:text-orange-500">
             Batal
           </AlertDialogCancel>
         </AlertDialogFooter>

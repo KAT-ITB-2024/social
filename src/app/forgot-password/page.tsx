@@ -19,21 +19,37 @@ import { Input } from '@/components/ui/input';
 import { RequestResetPasswordPayload } from '~/types/payloads/auth';
 
 // Image Import
-import Image from 'next/image';
 import Starfish from 'public/images/login/Starfish.png';
 
 // Component Import
 import InfoModal from '~/components/InfoModal';
 import { api } from '~/trpc/react';
+import { toast } from 'sonner';
+import { ErrorToast } from '~/components/ui/error-toast';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const ForgotPasswordPage = () => {
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   type RequestResetPasswordPayloadSchema = z.infer<
     typeof RequestResetPasswordPayload
   >;
   const requestResetPasswordMutation =
-    api.auth.requestResetPassword.useMutation();
+    api.auth.requestResetPassword.useMutation({
+      onError: (err) => {
+        if (err.data?.code === 'NOT_FOUND') {
+          toast(
+            <ErrorToast desc="Pastikan kamu sudah mengisi email di profilemu!" />,
+          );
+        }
+        setIsLoading(false);
+      },
+      onSuccess: () => {
+        setIsAlertOpen(true);
+        setIsLoading(false);
+      },
+    });
 
   const form = useForm<RequestResetPasswordPayloadSchema>({
     resolver: zodResolver(RequestResetPasswordPayload),
@@ -46,26 +62,30 @@ const ForgotPasswordPage = () => {
   const { isValid } = form.formState;
 
   function onSubmit(values: RequestResetPasswordPayloadSchema) {
+    setIsLoading(true);
     const { email } = values;
     requestResetPasswordMutation.mutate({
       email,
     });
-    setIsAlertOpen(true);
+  }
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
   }
 
   return (
-    <div className="mt-[150px] flex flex-col gap-2 w-full items-center">
-      <h3 className="text-[60px] text-blue-500 text-center">
+    <div className="mt-[150px] flex w-full flex-col items-center gap-2">
+      <h3 className="text-center text-[60px] text-blue-500">
         Lupa <br /> Password?
       </h3>
-      <p className="text-blue-500 font-bold text-center">
+      <p className="text-center font-bold text-blue-500">
         Jangan Khawatir, Aqualings!
       </p>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-2 z-20 w-full"
+          className="z-20 w-full space-y-2"
         >
           <FormField
             control={form.control}
@@ -80,7 +100,7 @@ const ForgotPasswordPage = () => {
                     {...field}
                     placeholder="Email"
                     type="email"
-                    className="focus-visible:ring-transparent border-neutral-400 rounded-lg border-2"
+                    className="rounded-lg border-2 border-neutral-400 focus-visible:ring-transparent"
                   />
                 </FormControl>
                 {fieldState.error && (
@@ -92,10 +112,10 @@ const ForgotPasswordPage = () => {
             )}
           />
           <div className="py-2" />
-          <div className="w-full flex justify-center">
+          <div className="flex w-full justify-center">
             <Button
               type="submit"
-              className=" bg-blue-500 hover:bg-blue-400 shadow-lg px-8"
+              className="bg-blue-500 px-8 shadow-lg hover:bg-blue-400"
               disabled={!isValid}
             >
               Send
@@ -105,10 +125,10 @@ const ForgotPasswordPage = () => {
           <InfoModal
             image={Starfish}
             title="Email Terkirim"
-            description="Cek email mu Aqualings, untuk mengubah password!"
+            description={`Cek email mu Aqualings!\nJika dalam 5 menit belum ada email masuk, silakan coba lagi!`}
             isOpen={isAlertOpen}
             setIsOpen={setIsAlertOpen}
-            className="bg-blue-500 flex flex-col items-center border-none text-yellow text-center"
+            className="flex flex-col items-center border-none bg-blue-500 text-center text-yellow"
           />
         </form>
       </Form>

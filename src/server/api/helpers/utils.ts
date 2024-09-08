@@ -3,7 +3,15 @@ import { TRPCError } from '@trpc/server';
 const getCurrentWIBTime = () => {
   const now = new Date();
   const offset = 7;
-  return new Date(now.getTime() + offset * 60 * 60 * 1000);
+  now.setHours(now.getHours() + offset);
+  return now;
+};
+
+const getPreviousWIBTime = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  date.setHours(date.getHours() + 7);
+  return date;
 };
 
 const isAllowedToPresence = (
@@ -57,4 +65,4 @@ const isAllowedToPresence = (
   return now >= start && now <= end;
 };
 
-export { getCurrentWIBTime, isAllowedToPresence };
+export { getCurrentWIBTime, isAllowedToPresence, getPreviousWIBTime };

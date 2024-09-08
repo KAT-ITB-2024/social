@@ -8,8 +8,8 @@ import Jellyfish1 from 'public/images/class-selection/sea-creatures-1.png';
 import Jellyfish2 from 'public/images/class-selection/sea-Creatures-2.png';
 import SeaSlug from 'public/images/class-selection/SeaSlug.png';
 
-import { useRouter, notFound } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import ClassConfirmationModal from '@/components/class-selection/ClassConfirmationModal';
 import ClassInfoModal from '@/components/class-selection/ClassInfoModal';
@@ -18,8 +18,9 @@ import ClassEnrolledModal from '@/components/class-selection/ClassEnrolled';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { toast } from 'sonner';
-import { SuccessToast } from '~/components/ui/success-toast';
 import { ErrorToast } from '~/components/ui/error-toast';
+import NotFound from '~/app/not-found';
+import { getCurrentWIBTime } from '~/server/api/helpers/utils';
 
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -28,13 +29,14 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const [isClassFullModalOpen, setIsClassFullModalOpen] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
   const [isEnrolledModalOpen, setIsEnrolledModalOpen] = useState(false);
-
+  const [isClassOpen, setIsClassOpen] = useState(true);
   const { data: enrolledClass } = api.class.getEnrolledClass.useQuery();
 
   const {
     data: selectedClass,
     isLoading,
     error,
+    refetch,
   } = api.class.getClassById.useQuery(params.id);
 
   const { mutate: enrollClass } = api.class.enrollClass.useMutation({
@@ -42,26 +44,37 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
       localStorage.setItem('confirmedClassId', params.id);
       closeConfirmationModal();
       setIsInfoModalOpen(true);
-      toast(
-        <SuccessToast
-          title="Enrollment success!"
-          desc="You have successfully enrolled in the class."
-        />,
-      );
+      void refetch();
     },
     onError: (err) => {
       console.error(err.message);
       setIsEnrolledModalOpen(true);
-      toast(<ErrorToast desc={`Enrollment failed: ${err.message}`} />);
+      if (err.data?.code === 'CONFLICT') {
+        toast(
+          <ErrorToast desc="Kelas sudah penuh! Silakan pilih kelas lain" />,
+        );
+      } else if (err.data?.code === 'BAD_REQUEST') {
+        toast(<ErrorToast desc="Maaf, pendaftaran kelas sudah tutup!" />);
+      } else {
+        toast(
+          <ErrorToast desc="Terjadi kesalahan ketika mendaftar, silakan coba lagi!" />,
+        );
+      }
     },
   });
+
+  useEffect(() => {
+    const now = getCurrentWIBTime();
+    if (now.getUTCHours() >= 21) {
+      setIsClassOpen(false);
+    }
+  }, []);
 
   if (isLoading) {
     return <LoadingSpinnerCustom />;
   }
   if (error ?? !selectedClass) {
-    notFound();
-    return notFound;
+    return <NotFound />;
   }
 
   const openConfirmationModal = () => {
@@ -115,30 +128,30 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
   const description = selectedClass?.description ?? 'Tidak ada penjelasan';
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-turquoise-100 z-0">
-      <div className="fixed-width-container bg-classes bg-center bg-no-repeat bg-cover p-6 pt-32 flex flex-col items-center min-h-screen overflow-y-auto no-scrollbar">
+    <main className="z-0 flex min-h-screen flex-col items-center justify-center bg-turquoise-100">
+      <div className="fixed-width-container no-scrollbar flex min-h-screen flex-col items-center overflow-y-auto bg-classes bg-cover bg-center bg-no-repeat p-6 pt-32">
         <Image
           src={Jellyfish2}
           alt="jellyfish-2"
-          className="absolute -top-1 right-0 w-[20%] z-0"
+          className="absolute -top-1 right-0 z-0 w-[20%]"
         />
         <Image
           src={Jellyfish1}
           alt="jellyfish-1"
-          className="absolute top-[5%] right-0 w-[27%] z-0"
+          className="absolute right-0 top-[5%] z-0 w-[27%]"
         />
         <Image
           src={Coral1}
           alt="coral-1"
-          className="absolute bottom-0 left-[12%] w-[29%] z-0"
+          className="absolute bottom-0 left-[12%] z-0 w-[29%]"
         />
         <Image
           src={Coral2}
           alt="coral-2"
-          className="absolute bottom-0 left-0 w-[27%] z-0"
+          className="absolute bottom-0 left-0 z-0 w-[27%]"
         />
 
-        <div className="container mt-20 z-10">
+        <div className="container z-10 mt-20">
           <div className="-ml-2">
             <Image
               src="/icons/class-selection/keyboard_backspace.svg"
@@ -149,41 +162,41 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
               className="cursor-pointer"
             />
           </div>
-          <h3 className="text-orange-500 text-left -mt-1">
+          <h3 className="-mt-1 text-left text-orange-500">
             {selectedClass.title}
           </h3>
           <div className="mt-[10px]">
-            <p className="inline-block border-2 border-orange-500 text-orange-400 rounded-full px-4 py-1 text-sm">
+            <p className="inline-block rounded-full border-2 border-orange-500 px-4 py-1 text-sm text-orange-400">
               {selectedClass.formattedDate}
             </p>
             <p
-              className={`inline-block border-2 border-orange-500 ${seatColor} rounded-full px-4 py-1 text-sm ml-2`}
+              className={`inline-block border-2 border-orange-500 ${seatColor} ml-2 rounded-full px-4 py-1 text-sm`}
             >
               {selectedClass.reservedSeats} / {selectedClass.totalSeats}
             </p>
           </div>
         </div>
         <div className="container z-10 my-4">
-          <div className="bg-white rounded-sm border-2 border-orange-500">
-            <div className="mt-2 ml-2">
+          <div className="rounded-sm border-2 border-orange-500 bg-white">
+            <div className="ml-2 mt-2">
               <b className="font-bold text-orange-400">PEMBICARA</b>
-              <p className="text-orange-400 text-left">
+              <p className="text-left text-orange-400">
                 {selectedClass.speaker}
               </p>
             </div>
-            <div className="mt-2 ml-2">
+            <div className="ml-2 mt-2">
               <b className="font-bold text-orange-400">LOKASI & WAKTU</b>
-              <p className="text-orange-400 text-left">
+              <p className="text-left text-orange-400">
                 {selectedClass.location}
               </p>
-              <p className="text-orange-400 text-left">
+              <p className="text-left text-orange-400">
                 {selectedClass.formattedTime} WIB
               </p>
             </div>
-            <div className="mt-2 ml-2">
+            <div className="ml-2 mt-2">
               <b className="font-bold text-orange-400">DESKRIPSI</b>
-              <div className="z-10 overflow-y-scroll mb-3 h-28">
-                <p className="text-orange-400 text-left">
+              <div className="z-10 mb-3 h-28 overflow-y-scroll">
+                <p className="text-left text-orange-400">
                   {truncatedText(String(description), 100)}
                 </p>
                 {description.length > 50 && (
@@ -199,14 +212,14 @@ export default function ClassDetail({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {!enrolledClass || enrolledClass.id !== selectedClass?.id ? (
+        {!enrolledClass && isClassOpen && (
           <Button
-            className="mb-8 bg-pink-400 z-0"
+            className="z-0 mb-8 bg-pink-400"
             onClick={openConfirmationModal}
           >
             Daftar
           </Button>
-        ) : null}
+        )}
 
         <ClassConfirmationModal
           isOpen={isConfirmationModalOpen}

@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import {
   assignmentSubmissions,
   assignmentTypeEnum,
@@ -10,7 +10,7 @@ import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
 import { getCurrentWIBTime } from '../helpers/utils';
 
 export const assignmentRouter = createTRPCRouter({
-  getDailyQuest: publicProcedure.query(async ({ ctx }) => {
+  getDailyQuest: pesertaProcedure.query(async ({ ctx }) => {
     if (!ctx.session || !ctx.session.user) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -32,7 +32,7 @@ export const assignmentRouter = createTRPCRouter({
         .where(
           and(
             eq(assignments.assignmentType, assignmentTypeEnum.enumValues[0]), // Daily Quest
-            lte(assignments.startTime, getCurrentWIBTime()),
+            lte(assignments.startTime, new Date()),
           ),
         );
 
@@ -46,7 +46,7 @@ export const assignmentRouter = createTRPCRouter({
     }
   }),
 
-  getSideQuest: publicProcedure.query(async ({ ctx }) => {
+  getSideQuest: pesertaProcedure.query(async ({ ctx }) => {
     if (!ctx.session || !ctx.session.user) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -68,7 +68,7 @@ export const assignmentRouter = createTRPCRouter({
         .where(
           and(
             eq(assignments.assignmentType, assignmentTypeEnum.enumValues[1]), // Side Quest
-            lte(assignments.startTime, getCurrentWIBTime()),
+            lte(assignments.startTime, new Date()),
           ),
         );
 
@@ -82,7 +82,7 @@ export const assignmentRouter = createTRPCRouter({
     }
   }),
 
-  getQuestById: publicProcedure
+  getQuestById: pesertaProcedure
     .input(getAssignmentByIdPayload)
     .query(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {

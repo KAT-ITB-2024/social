@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
 import * as schema from '@katitb2024/database';
-import { env } from '~/env';
+import { env } from '~/env.cjs';
 
 /**
  * Cache the database connection in development. This avoids creating a new connection on every HMR

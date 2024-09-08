@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createEvent } from '../helper';
-import { and, eq, or } from 'drizzle-orm';
-import { messages, userMatches } from '@katitb2024/database';
+import { eq, or } from 'drizzle-orm';
+import { messages, profiles, userMatches } from '@katitb2024/database';
 import { RevealStatusEvent } from '~/types/enums/message';
 export const messageEvent = createEvent(
   {
@@ -12,7 +12,6 @@ export const messageEvent = createEvent(
     authRequired: true,
   },
   async ({ ctx, input }) => {
-    console.log('MASUK KE MESSAGE EVENT');
     const userSession = ctx.client.data.session;
     const senderId = userSession.user.id;
     const currentMatch = ctx.client.data.match;
@@ -102,13 +101,13 @@ export const askRevealEvent = createEvent(
     } else if (input.state === RevealStatusEvent.ACCEPTED) {
       const result = await ctx.drizzle
         .update(userMatches)
-        .set({ isRevealed: true })
+        .set({ isRevealed: true, isAnonymous: false })
         .where(eq(userMatches.id, currentMatch.id))
         .returning();
-
       if (result?.[0] === undefined) {
         return;
       }
+
       ctx.io
         .to([userId, receiverId])
         .emit('askReveal', result[0], RevealStatusEvent.ACCEPTED);

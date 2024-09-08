@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, pesertaProcedure } from '~/server/api/trpc';
 import {
   eventPresences,
   events,
@@ -11,7 +11,7 @@ import { z } from 'zod';
 import { getCurrentWIBTime, isAllowedToPresence } from '../helpers/utils';
 
 export const attendanceRouter = createTRPCRouter({
-  getAllAttendances: publicProcedure.query(async ({ ctx }) => {
+  getAllAttendances: pesertaProcedure.query(async ({ ctx }) => {
     if (!ctx.session) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
@@ -60,7 +60,7 @@ export const attendanceRouter = createTRPCRouter({
     }
   }),
 
-  attend: publicProcedure
+  attend: pesertaProcedure
     .input(
       z.object({
         eventId: z.string(),
@@ -139,6 +139,7 @@ export const attendanceRouter = createTRPCRouter({
           presenceEvent,
         });
       } catch (error) {
+        console.log(error);
         if (error instanceof TRPCError) {
           throw error;
         }

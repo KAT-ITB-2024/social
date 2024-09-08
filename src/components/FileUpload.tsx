@@ -1,12 +1,5 @@
-import React, {
-  type Dispatch,
-  type SetStateAction,
-  useRef,
-  useState,
-} from 'react';
+import React, { type Dispatch, type SetStateAction, useRef } from 'react';
 import { toast } from 'sonner';
-import { api } from '~/trpc/react';
-import { type FolderEnum } from '~/types/enums/storage';
 import { ErrorToast } from './ui/error-toast';
 
 interface FileUploadProps {
@@ -33,8 +26,12 @@ const FileUploader: React.FC<FileUploadProps> = ({
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      setFile(file);
-      setFilename(file.name);
+      if (file.type != 'application/pdf') {
+        toast(<ErrorToast desc="Hanya boleh mengunggah pdf!" />);
+      } else {
+        setFile(file);
+        setFilename(file.name);
+      }
     }
   };
 
@@ -54,9 +51,9 @@ const FileUploader: React.FC<FileUploadProps> = ({
 
       {/* Progress Bar */}
       {progress > 0 && (
-        <div className="w-full bg-gray-200 rounded-full mt-2">
+        <div className="mt-2 w-full rounded-full bg-gray-200">
           <div
-            className="bg-blue-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+            className="rounded-full bg-blue-500 p-0.5 text-center text-xs font-medium leading-none text-blue-100"
             style={{ width: `${progress}%` }}
           >
             {Math.round(progress)}%

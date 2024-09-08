@@ -23,9 +23,9 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
       : fileName
     : fileName;
   return (
-    <div className="flex justify-between bg-[#FFFEFE] rounded-[10px] min-w-64 w-fit min-h-14 py-2 pl-[10px] pr-1">
+    <div className="flex min-h-14 w-fit min-w-64 justify-between rounded-[10px] bg-[#FFFEFE] py-2 pl-[10px] pr-1">
       <Link
-        className="flex items-center min-w-48 w-fit pl-2 bg-pink-200 bg-opacity-30 rounded-[10px]"
+        className="flex w-fit min-w-48 items-center rounded-[10px] bg-pink-200 bg-opacity-30 pl-2"
         href={fileUrl}
         // download={fileUrl}
         target="_blank"
@@ -37,7 +37,7 @@ const AttachmentButton: React.FC<AttachmentButtonProps> = ({
           width={20}
           height={20}
         />
-        <p className="ml-2 m-1 text-[#384053] break-all">{sanitizedFileName}</p>
+        <p className="m-1 ml-2 break-all text-[#384053]">{sanitizedFileName}</p>
       </Link>
       {isUserSubmit && onDelete && isDeleteable && (
         <AssignmentDeleteModal

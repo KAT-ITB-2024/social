@@ -3,9 +3,9 @@ import Image from 'next/image';
 export const LoadingSpinnerCustom = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-[160px] h-[160px]">
+      <div className="relative h-[160px] w-[160px]">
         <div
-          className="absolute inset-0 rounded-full animate-spin p-[2px]"
+          className="absolute inset-0 animate-spin rounded-full p-[2px]"
           style={{
             backgroundImage: `
               conic-gradient(
@@ -21,16 +21,17 @@ export const LoadingSpinnerCustom = () => {
           }}
         ></div>
 
-        <div className="absolute inset-2 rounded-full flex items-center justify-center flex-col">
-          <div className="relative w-[100px] h-[100px] flex flex-col">
+        <div className="absolute inset-2 flex flex-col items-center justify-center rounded-full">
+          <div className="relative flex h-[100px] w-[100px] flex-col">
             <Image
               src="/images/loading/loading.gif"
               alt="Loading spinner"
-              layout="fill"
-              objectFit="contain"
+              fill
+              style={{ objectFit: 'contain' }}
+              unoptimized
             />
           </div>
-          <p className="text-center text-white text-sm -mt-4">
+          <p className="-mt-4 text-center text-sm text-white">
             Loading<span className="animate-pulse">.</span>
             <span className="animate-pulse delay-300">.</span>
             <span className="animate-pulse delay-700">.</span>

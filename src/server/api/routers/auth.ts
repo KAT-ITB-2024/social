@@ -1,7 +1,7 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
 import { generateHash, generateResetToken } from '~/utils/auth';
 import { TRPCError } from '@trpc/server';
-import { env } from '~/env.js';
+import { env } from '~/env.cjs';
 import { users, resetTokens } from '@katitb2024/database';
 import { eq, and } from 'drizzle-orm';
 import {
@@ -23,7 +23,7 @@ export const authRouter = createTRPCRouter({
       if (!user || user.length === 0) {
         throw new TRPCError({
           message: 'Email anda tidak terdaftar di sistem!',
-          code: 'BAD_REQUEST',
+          code: 'NOT_FOUND',
         });
       }
 
@@ -33,7 +33,7 @@ export const authRouter = createTRPCRouter({
 
       if (!userId) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
+          code: 'NOT_FOUND',
           message: 'User ID tidak ditemukan!',
         });
       }

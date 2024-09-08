@@ -1,6 +1,6 @@
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, pesertaProcedure } from '../trpc';
 import {
-  Assignment,
+  type Assignment,
   assignmentSubmissions,
   assignmentTypeEnum,
   assignments,
@@ -11,9 +11,10 @@ import {
 import { TRPCError } from '@trpc/server';
 import { and, eq, inArray, sql } from 'drizzle-orm';
 import { submissionPayload } from '~/types/payloads/submission';
+import { getCurrentWIBTime } from '../helpers/utils';
 
 export const submissionRouter = createTRPCRouter({
-  postSubmission: publicProcedure
+  postSubmission: pesertaProcedure
     .input(submissionPayload)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
@@ -61,9 +62,18 @@ export const submissionRouter = createTRPCRouter({
 
           // Delete existing submission if it exists
           if (assignment.submissionId) {
-            await transaction
-              .delete(assignmentSubmissions)
-              .where(eq(assignmentSubmissions.id, assignment.submissionId));
+            // Only delete if it is individual assignment
+            if (assignment.assignmentType == assignmentTypeEnum.enumName[0])
+              await transaction
+                .delete(assignmentSubmissions)
+                .where(eq(assignmentSubmissions.id, assignment.submissionId));
+            else {
+              // If submitting again for side quest, return error
+              throw new TRPCError({
+                code: 'FORBIDDEN',
+                message: 'Side quest sudah pernah dikerjakan',
+              });
+            }
           }
 
           if (assignment.graded != null) {
@@ -81,8 +91,8 @@ export const submissionRouter = createTRPCRouter({
                 userNim: ctx?.session?.user.nim ?? '',
                 filename: input.filename,
                 downloadUrl: input.downloadUrl,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                createdAt: getCurrentWIBTime(),
+                updatedAt: getCurrentWIBTime(),
                 point: null,
               })
               .returning({
@@ -96,7 +106,6 @@ export const submissionRouter = createTRPCRouter({
               .select({
                 name: profiles.name,
                 userid: profiles.userId,
-                point: profiles.point,
               })
               .from(profiles)
               .where(eq(profiles.group, ctx.session.user.group));
@@ -126,8 +135,8 @@ export const submissionRouter = createTRPCRouter({
                 userNim: userDetail.nim,
                 filename: input.filename,
                 downloadUrl: input.downloadUrl,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                createdAt: getCurrentWIBTime(),
+                updatedAt: getCurrentWIBTime(),
                 point: newPoint,
               };
             });
@@ -151,9 +160,6 @@ export const submissionRouter = createTRPCRouter({
                 message: 'Group not found',
               });
             }
-
-            console.log('Group point:', group.point);
-            console.log('New point:', newPoint);
 
             await transaction
               .update(groups)
@@ -181,13 +187,12 @@ function calculateNewPoint(assignment: Partial<Assignment>) {
   if (assignment.startTime && assignment.point) {
     const lateHours = Math.min(
       Math.floor(
-        (new Date().getTime() - assignment.startTime.getTime()) /
-          (1000 * 60 * 60),
+        (Date.now() - assignment.startTime.getTime()) / (1000 * 60 * 60),
       ),
-      10,
+      50,
     );
 
-    return Math.round(assignment.point * (1 - lateHours * 0.05));
+    return Math.round(assignment.point * (1 - lateHours * 0.01));
   }
   return null;
 }
