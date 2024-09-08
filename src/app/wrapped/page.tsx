@@ -52,12 +52,13 @@ function Wrapped() {
           totalMatch: wrappedData.totalMatch,
           submittedQuest: wrappedData.submittedQuest,
           favTopics: wrappedData.favTopics ?? [], // default to empty array if null
-          percent: parseInt(wrappedData.rankPercentage),
           test: wrappedData.character !== null, // test is true if character is not null
           character: wrappedData.character ?? '', // default to empty string if null
           personality: wrappedData.personality ?? '', // default to empty string if null
           personalityDesc: wrappedData.personalityDesc ?? '', // default to empty string if null
           rank: wrappedData.rank,
+          rankPercentage: wrappedData.rankPercentage,
+          favTopicCount: wrappedData.favTopicCount,
         }
       : null;
     if (mappedWrapped && !oskmWrapped) {
