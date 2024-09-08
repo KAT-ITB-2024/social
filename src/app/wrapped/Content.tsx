@@ -444,7 +444,7 @@ const WrappedStories = ({
                 <Image
                   src={
                     oskmWrapped.test
-                      ? '/images/wrapped/svg/ray.svg'
+                      ? `/images/wrapped/svg/${oskmWrapped.personality}.svg`
                       : '/images/wrapped/svg/cancer.svg'
                   }
                   alt={oskmWrapped.test ? 'Ray' : 'Cancer'}
@@ -454,7 +454,7 @@ const WrappedStories = ({
                 />
                 {oskmWrapped.test ? (
                   <p className="pb-0.5 text-center font-heading text-3xl text-blue-500">
-                    Sylas
+                    {oskmWrapped.personality}
                   </p>
                 ) : null}
                 <div className="items-between flex w-4/5 flex-col gap-4">
