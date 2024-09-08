@@ -28,6 +28,6 @@ export const getAllVisitorsPayload = z.object({
 });
 
 export const updateLembagaProfilePayload = z.object({
-  description: z.string().optional(),
-  instagram: z.string().optional(),
+  description: z.string().default(''),
+  instagram: z.string().default(''),
 });

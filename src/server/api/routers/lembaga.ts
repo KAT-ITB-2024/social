@@ -1,6 +1,6 @@
 import { createTRPCRouter, lembagaProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { eq, and, sql, like, or } from 'drizzle-orm';
+import { eq, and, sql, ilike, or } from 'drizzle-orm';
 import {
   grantCoinsPayload,
   getAllVisitorsPayload,
@@ -70,7 +70,7 @@ export const lembagaRouter = createTRPCRouter({
   getAllVisitors: lembagaProcedure
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
-      const nameOrNim = input.nameOrNim ?? '%';
+      const nameOrNim = input.nameOrNim ? '%' + input.nameOrNim + '%' : '%';
       const boothId = ctx.session.user.id;
 
       let query;
@@ -91,7 +91,7 @@ export const lembagaRouter = createTRPCRouter({
             and(
               eq(visitors.boothId, boothId),
               eq(profiles.faculty, input.faculty),
-              or(like(users.nim, nameOrNim), like(profiles.name, nameOrNim)),
+              or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
             ),
           );
       } else {
@@ -109,7 +109,7 @@ export const lembagaRouter = createTRPCRouter({
           .where(
             and(
               eq(visitors.boothId, boothId),
-              or(like(users.nim, nameOrNim), like(profiles.name, nameOrNim)),
+              or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
             ),
           );
       }
@@ -135,8 +135,7 @@ export const lembagaRouter = createTRPCRouter({
     .input(updateLembagaProfilePayload)
     .mutation(async ({ ctx, input }) => {
       const lembagaId = ctx.session.user.id;
-      const instagram = input.instagram ?? '';
-      const description = input.description ?? '';
+      const { instagram, description } = input;
 
       try {
         const updatedProfile = await ctx.db
