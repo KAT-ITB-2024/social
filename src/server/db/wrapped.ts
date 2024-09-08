@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
-import { and, eq, or, sql } from 'drizzle-orm';
+import { eq, or, sql } from 'drizzle-orm';
 import dotenv from 'dotenv';
-import { ClassData } from './classData';
+import postgres from 'postgres';
+import { ChatTopic } from '~/types/enum/chat';
 
 export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
   const personalityDescMap = {
@@ -20,12 +20,15 @@ export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
   const users = await db
     .select()
     .from(schema.users)
-    .innerJoin(schema.profiles, eq(schema.profiles.userId, schema.users.id));
+    .innerJoin(schema.profiles, eq(schema.profiles.userId, schema.users.id))
+    .limit(2);
   const batch = 1;
   const totalGroups = await db
     .select({ count: sql<number>`count(*)` })
     .from(schema.groups)
     .then((result) => result[0]?.count ?? 0);
+  console.log('INI USERS', users);
+  console.log('INi total groups', totalGroups);
   for (const user of users) {
     const userMatches = await db
       .select()
@@ -39,8 +42,9 @@ export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
     const topicFrequency: Record<string, number> = {};
 
     for (const match of userMatches) {
-      if (match.topic) {
-        topicFrequency[match.topic] = (topicFrequency[match.topic] ?? 0) + 1;
+      const topic = ChatTopic[parseInt(match.topic)];
+      if (match.topic && topic) {
+        topicFrequency[topic] = (topicFrequency[topic] ?? 0) + 1;
       }
     }
 
@@ -74,10 +78,12 @@ export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
       .slice(0, 3)
       .map(([topic, count]) => ({ topic, count }));
 
+    console.log('INI TOPIC FREQUENCY', topicFrequency);
+
     const favTopics = topTopics.map((topic) => topic.topic);
     const favTopicCount = topTopics[0]?.count;
 
-    const rankPercentage = (groupRank / totalGroups) * 100;
+    const rankPercentage = Math.round((groupRank / totalGroups) * 100);
 
     const personality = user.profiles.lastMBTI;
 
@@ -95,5 +101,23 @@ export async function seedOSKMWrapped(db: PostgresJsDatabase<typeof schema>) {
       updatedAt: new Date(),
       favTopicCount,
     });
+    console.log('DOne seeding user', user);
   }
 }
+dotenv.config();
+
+const dbUrl = process.env.DATABASE_URL;
+
+export async function seed(dbUrl: string) {
+  const migrationClient = postgres(dbUrl, { max: 1 });
+  const db = drizzle(migrationClient, { schema });
+  await seedOSKMWrapped(db);
+}
+
+const seeding = async () => {
+  await seed(dbUrl ?? '');
+};
+
+seeding().catch((err) => {
+  console.error(err);
+});
