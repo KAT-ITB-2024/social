@@ -8,8 +8,8 @@ import {
   DrawerFooter,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import Cart from 'public/images/ITB-x/shop_logo.png';
-import Coin from 'public/images/ITB-x/OHUCoin.png';
+import Cart from 'public/images/merch/shop_logo.png';
+import Coin from 'public/images/merch/OHUCoin.png';
 
 interface MerchDrawerProps {
   id: string;
@@ -47,8 +47,8 @@ export const MerchDrawer: React.FC<MerchDrawerProps> = ({
       <DrawerTrigger>
         <Button>Open</Button>
       </DrawerTrigger>
-      <DrawerContent className="p-5 shadow-blue-lg bg-gray-200">
-        <div className="bg-white w-full h-72 flex items-center justify-center rounded-xl">
+      <DrawerContent className="bg-gray-200 p-5 shadow-blue-lg">
+        <div className="flex h-72 w-full items-center justify-center rounded-xl bg-white">
           {image ? (
             <Image
               src={image}
@@ -61,22 +61,21 @@ export const MerchDrawer: React.FC<MerchDrawerProps> = ({
             <p>No Image Available</p>
           )}
         </div>
-        <div className="relative container justify-between items-center top-4">
+        <div className="container relative top-4 items-center justify-between">
           {' '}
-          {/* Add relative positioning here */}
           <Image src={Coin} alt="coin" className="absolute -left-1 w-[30px]" />
           <h4>{price}</h4>
         </div>
         <div className="mt-5">
           <div className="text-sh4">{name}</div>
-          <div className="text-b5 mt-2"> Stok: {stock} </div>
+          <div className="mt-2 text-b5"> Stok: {stock} </div>
         </div>
         <div className="mt-2 flex items-center">
           <span className="mr-4">Kuantitas:</span>
           <div className="flex items-center">
             <button
               onClick={decrementQuantity}
-              className="px-3 h-8 rounded-md bg-white "
+              className="h-8 rounded-md bg-white px-3"
             >
               −
             </button>
@@ -84,17 +83,17 @@ export const MerchDrawer: React.FC<MerchDrawerProps> = ({
               type="text"
               value={quantity}
               readOnly
-              className="w-16 h-8 text-center bg-white -ml-2 z-0"
+              className="z-0 -ml-2 h-8 w-16 bg-white text-center"
             />
             <button
               onClick={incrementQuantity}
-              className="px-3 h-8 rounded-md bg-white -ml-2"
+              className="-ml-2 h-8 rounded-md bg-white px-3"
             >
               +
             </button>
           </div>
         </div>
-        <div className="mt-4 -mb-4">
+        <div className="-mb-4 mt-4">
           <Button className="w-full bg-blue-400" onClick={onClick}>
             <Image
               src={Cart}
@@ -104,7 +103,7 @@ export const MerchDrawer: React.FC<MerchDrawerProps> = ({
             Masukan Keranjang
           </Button>
         </div>
-        <DrawerFooter className="">
+        <DrawerFooter className="-mb-5">
           <DrawerClose></DrawerClose>
         </DrawerFooter>
       </DrawerContent>
