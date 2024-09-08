@@ -300,7 +300,7 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     personalityDesc: 'Ini iiiiii',
     favTopics: ['General', 'Game', 'Olahraga'],
     rank: 129,
-    rankPercentage: 12,
+    rankPercentage: '12%',
     updatedAt: new Date(),
   });
 
@@ -312,7 +312,7 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     submittedQuest: 8,
     totalMatch: 0,
     rank: 80,
-    rankPercentage: 90,
+    rankPercentage: '90%',
   });
 }
 
