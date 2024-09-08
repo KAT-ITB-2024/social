@@ -359,9 +359,7 @@ const WrappedStories = ({
             <div className="absolute left-[12.5%] flex w-3/4 flex-col items-center gap-2">
               <p className="text-center font-heading text-2xl text-pink-400">
                 {oskmWrapped.test ? (
-                  <>
-                    Kamu memiliki pribadi yang {oskmWrapped.personality} seperti
-                  </>
+                  <>Kamu memiliki pribadi yang seperti</>
                 ) : (
                   <>Waduh! Kamu belum melakukan OSKM Personality Test :(</>
                 )}
