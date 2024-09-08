@@ -5,15 +5,11 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import Cart from 'public/images/ITB-x/shop_logo.png';
-import Able from 'public/images/ITB-x/able_cart.png';
-import Disable from 'public/images/ITB-x/disable_cart.png';
+import Able from 'public/images/merch/able_cart.png';
+import Disable from 'public/images/merch/disable_cart.png';
 
 type DrawerVariant = 'sufficient' | 'insufficient';
 
@@ -69,10 +65,10 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
         <Button>Open</Button>
       </DrawerTrigger>
       <DrawerContent
-        className={`p-4 shadow-blue-lg ${backgroundColor}  bg-blue-500 border-blue-500`}
+        className={`p-4 shadow-blue-lg ${backgroundColor} border-blue-500 bg-blue-500`}
       >
         <p
-          className={`bg-white inline-block border ${borderColor} ${textColor} ${backgroundColor} rounded-full px-4 py-1 text-sm w-fit mt-2`}
+          className={`inline-block border bg-white ${borderColor} ${textColor} ${backgroundColor} mt-2 w-fit rounded-full px-4 py-1 text-sm`}
         >
           {condition}
         </p>
@@ -81,7 +77,7 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
           <div className={`text-3xl font-bold ${coinColor}`}>
             {total_price} Coins
           </div>
-          <div className="text-sm text-gray-200 mt-1">
+          <div className="mt-1 text-sm text-gray-200">
             (Koinmu: {total_coins} Coins)
           </div>
         </div>
@@ -97,7 +93,7 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
           />
           Request
         </Button>
-        <DrawerFooter className="mt-4">
+        <DrawerFooter className="-mb-5">
           <DrawerClose></DrawerClose>
         </DrawerFooter>
       </DrawerContent>
