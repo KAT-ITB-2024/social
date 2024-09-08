@@ -8,13 +8,15 @@ import {
 } from '@katitb2024/database';
 import { eq, ilike, sql } from 'drizzle-orm';
 import { z } from 'zod';
+
 import { checkoutPayloadSchema } from '~/types/payloads/merchandise';
 
 export const merchandiseRouter = createTRPCRouter({
   checkoutCart: protectedProcedure
     .input(checkoutPayloadSchema)
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
+      const { user } = ctx.session || {};
+      if (!user) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User is not logged in',
@@ -22,11 +24,10 @@ export const merchandiseRouter = createTRPCRouter({
       }
 
       try {
-        const result = await ctx.db.transaction(async (trx) => {
+        return await ctx.db.transaction(async (trx) => {
           let totalCost = 0;
           let totalItems = 0;
 
-          // Check if all items in the payload are available in the required quantities
           for (const item of input) {
             const merchandise = await trx
               .select()
@@ -48,7 +49,7 @@ export const merchandiseRouter = createTRPCRouter({
           const userCoins = await trx
             .select({ coins: profiles.coins })
             .from(profiles)
-            .where(eq(profiles.userId, ctx.session.user.id))
+            .where(eq(profiles.userId, user.id))
             .then((res) => res[0]?.coins);
 
           if (!userCoins || userCoins < totalCost) {
@@ -60,57 +61,48 @@ export const merchandiseRouter = createTRPCRouter({
           }
 
           const now = new Date();
-          const userId = ctx.session.user.id;
-          await trx
-            .update(profiles)
-            .set({
-              coins: sql`${profiles.coins} - ${totalCost}`,
-            })
-            .where(eq(profiles.userId, userId));
-
-          // Create merchandise exchange entry with totalItem and totalCoins
-          console.log(totalItems);
-          console.log(totalCost);
           const exchange = await trx
             .insert(merchandiseExchanges)
             .values({
-              userId: userId,
+              userId: user.id,
               status: 'Not Taken',
               totalItem: totalItems,
               totalCoins: totalCost,
               createdAt: now,
               updatedAt: now,
             })
-            .returning();
+            .returning()
+            .then((res) => res[0]);
 
-          console.log(exchange);
-          if (!exchange[0]?.id) {
+          if (!exchange?.id) {
             throw new TRPCError({
               code: 'INTERNAL_SERVER_ERROR',
               message: 'Failed to create exchange record',
             });
           }
 
-          // Create exchange details and update stock
           for (const item of input) {
             await trx.insert(merchandiseExchangeDetails).values({
-              merchandiseExchangeId: exchange[0].id,
+              merchandiseExchangeId: exchange.id,
               merchandiseId: item.merchandiseId,
               quantity: item.quantity,
             });
 
-            // Update merchandise stock
             await trx
               .update(merchandises)
-              .set({
-                stock: sql`${merchandises.stock} - ${item.quantity}`,
-              })
+              .set({ stock: sql`${merchandises.stock} - ${item.quantity}` })
               .where(eq(merchandises.id, item.merchandiseId));
           }
 
+          await trx
+            .update(profiles)
+            .set({
+              coins: sql`${profiles.coins} - ${totalCost}`,
+            })
+            .where(eq(profiles.userId, user.id));
+
           return { success: true, message: 'Checkout successful' };
         });
-        return result;
       } catch (error) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
@@ -120,13 +112,10 @@ export const merchandiseRouter = createTRPCRouter({
     }),
 
   getOrderDetail: protectedProcedure
-    .input(
-      z.object({
-        exchangeId: z.string(),
-      }),
-    )
+    .input(z.object({ exchangeId: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
+      const { user } = ctx.session || {};
+      if (!user) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User is not logged in',
@@ -134,7 +123,6 @@ export const merchandiseRouter = createTRPCRouter({
       }
 
       try {
-        // Fetch the exchange
         const exchange = await ctx.db
           .select()
           .from(merchandiseExchanges)
@@ -147,7 +135,7 @@ export const merchandiseRouter = createTRPCRouter({
             message: 'Merchandise exchange not found',
           });
         }
-        // Fetch the exchange details
+
         const exchangeDetails = await ctx.db
           .select({
             merchandiseExchangeId:
@@ -155,7 +143,7 @@ export const merchandiseRouter = createTRPCRouter({
             merchandiseId: merchandiseExchangeDetails.merchandiseId,
             merchandiseName: merchandises.name,
             merchandisePrice: merchandises.price,
-            merchandisesImage: merchandises.image,
+            merchandiseImage: merchandises.image,
             quantity: merchandiseExchangeDetails.quantity,
           })
           .from(merchandiseExchangeDetails)
@@ -167,14 +155,11 @@ export const merchandiseRouter = createTRPCRouter({
             eq(merchandiseExchangeDetails.merchandiseExchangeId, exchange.id),
           );
 
-        return {
-          exchange,
-          details: exchangeDetails,
-        };
-      } catch (error) {
+        return { exchange, details: exchangeDetails };
+      } catch {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Internal Server Error',
+          message: 'Failed to fetch order details',
         });
       }
     }),
@@ -182,12 +167,13 @@ export const merchandiseRouter = createTRPCRouter({
   getAllMerchandise: protectedProcedure
     .input(
       z.object({
-        page: z.number().min(1),
-        name: z.string(),
+        page: z.number().min(1).default(1),
+        name: z.string().default(''),
       }),
     )
     .query(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
+      const { user } = ctx.session || {};
+      if (!user) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User is not logged in',
@@ -198,25 +184,22 @@ export const merchandiseRouter = createTRPCRouter({
       const itemsPerPage = 6;
       const offset = (page - 1) * itemsPerPage;
 
-      const result = await ctx.db
+      const res = ctx.db
         .select()
         .from(merchandises)
+        .limit(itemsPerPage)
+        .offset(offset)
         .where(ilike(merchandises.name, `%${name}%`))
-        .limit(6)
-        .orderBy(merchandises.name)
-        .offset(offset);
+        .orderBy(merchandises.name);
 
-      return result;
+      return res;
     }),
 
   getOrderHistory: protectedProcedure
-    .input(
-      z.object({
-        page: z.number().min(1),
-      }),
-    )
+    .input(z.object({ page: z.number().min(1).default(1) }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
+      const { user } = ctx.session || {};
+      if (!user) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User is not logged in',
@@ -227,14 +210,14 @@ export const merchandiseRouter = createTRPCRouter({
       const itemsPerPage = 6;
       const offset = (page - 1) * itemsPerPage;
 
-      const orderHistory = await ctx.db
+      const res = await ctx.db
         .select()
         .from(merchandiseExchanges)
-        .where(eq(merchandiseExchanges.userId, ctx.session.user.id))
-        .limit(6)
+        .where(eq(merchandiseExchanges.userId, user.id))
+        .limit(itemsPerPage)
         .orderBy(merchandiseExchanges.updatedAt)
         .offset(offset);
 
-      return orderHistory;
+      return res;
     }),
 });
