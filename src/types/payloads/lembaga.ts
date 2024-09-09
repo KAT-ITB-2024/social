@@ -23,7 +23,7 @@ export const getAllVisitorsPayload = z.object({
     ])
     .optional(),
   nameOrNim: z.string().optional(),
-  limit: z.number().min(5).max(25).default(10),
+  limit: z.number().min(5).max(25).default(20),
   page: z.number().min(1).default(1),
 });
 

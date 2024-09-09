@@ -37,13 +37,31 @@ export const lembagaRouter = createTRPCRouter({
       }
 
       try {
-        const updatedProfile = await ctx.db
+        const updatedProfileQuery = ctx.db
           .update(profiles)
           .set({
             coins: sql`${profiles.coins} + ${input.coins}`,
           })
           .where(eq(profiles.userId, input.userId))
           .returning();
+
+        const updateIsGrandtedQuery = ctx.db
+          .update(visitors)
+          .set({
+            isGranted: true,
+          })
+          .where(
+            and(
+              eq(visitors.userId, input.userId),
+              eq(visitors.boothId, boothId),
+            ),
+          )
+          .returning();
+
+        const [updatedProfile] = await Promise.all([
+          updatedProfileQuery,
+          updateIsGrandtedQuery,
+        ]);
 
         if (updatedProfile.length === 0) {
           throw new TRPCError({
@@ -70,59 +88,38 @@ export const lembagaRouter = createTRPCRouter({
   getAllVisitors: lembagaProcedure
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
-      const nameOrNim = input.nameOrNim ? '%' + input.nameOrNim + '%' : '%';
+      const nameOrNim = input.nameOrNim ? `%${input.nameOrNim}%` : '%';
       const boothId = ctx.session.user.id;
 
-      let query;
+      const baseQuery = ctx.db
+        .select({
+          userId: visitors.userId,
+          nim: users.nim,
+          name: profiles.name,
+          faculty: profiles.faculty,
+          profileImage: profiles.profileImage,
+          totalCount: sql<number>`count(*) OVER ()`,
+        })
+        .from(visitors)
+        .innerJoin(users, eq(visitors.userId, users.id))
+        .innerJoin(profiles, eq(visitors.userId, profiles.userId))
+        .where(
+          and(
+            eq(visitors.boothId, boothId),
+            or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
+            input.faculty ? eq(profiles.faculty, input.faculty) : sql`TRUE`,
+          ),
+        );
 
-      if (input.faculty) {
-        query = ctx.db
-          .select({
-            userId: visitors.userId,
-            nim: users.nim,
-            name: profiles.name,
-            faculty: profiles.faculty,
-            profileImage: profiles.profileImage,
-          })
-          .from(visitors)
-          .innerJoin(users, eq(visitors.userId, users.id))
-          .innerJoin(profiles, eq(visitors.userId, profiles.userId))
-          .where(
-            and(
-              eq(visitors.boothId, boothId),
-              eq(profiles.faculty, input.faculty),
-              or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
-            ),
-          );
-      } else {
-        query = ctx.db
-          .select({
-            userId: visitors.userId,
-            nim: users.nim,
-            name: profiles.name,
-            faculty: profiles.faculty,
-            profileImage: profiles.profileImage,
-          })
-          .from(visitors)
-          .innerJoin(users, eq(visitors.userId, users.id))
-          .innerJoin(profiles, eq(visitors.userId, profiles.userId))
-          .where(
-            and(
-              eq(visitors.boothId, boothId),
-              or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
-            ),
-          );
-      }
-
-      const allData = await query;
-      const totalItems = allData.length;
-      const totalPages = Math.max(1, Math.ceil(totalItems / input.limit));
-      const data = await query
+      const paginatedData = await baseQuery
         .limit(input.limit)
         .offset(input.limit * (input.page - 1));
 
+      const totalItems = paginatedData[0]?.totalCount ?? 0;
+      const totalPages = Math.max(1, Math.ceil(totalItems / input.limit));
+
       return {
-        data,
+        data: paginatedData,
         currentPage: input.page,
         previousPage: input.page > 1 ? input.page - 1 : undefined,
         nextPage: input.page < totalPages ? input.page + 1 : undefined,
