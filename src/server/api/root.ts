@@ -12,6 +12,9 @@ import { attendanceRouter } from './routers/attendance';
 import { mapRouter } from './routers/map';
 import { notificationRouter } from './routers/notification';
 import { wrappedRouter } from './routers/wrapped';
+import { merchandiseRouter } from './routers/merchandises';
+import { boothRouter } from './routers/booth';
+
 /**
  * This is the primary router for your server.
  *
@@ -31,6 +34,8 @@ export const appRouter = createTRPCRouter({
   storage: storageRouter,
   map: mapRouter,
   wrapped: wrappedRouter,
+  merchandises: merchandiseRouter,
+  booth: boothRouter,
 });
 
 // export type definition of API

@@ -302,6 +302,7 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     rank: 129,
     rankPercentage: 12,
     updatedAt: new Date(),
+    favTopicCount: 3,
   });
 
   await db.insert(schema.wrappedProfiles).values({
@@ -313,6 +314,7 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     totalMatch: 0,
     rank: 80,
     rankPercentage: 90,
+    favTopicCount: 1,
   });
 }
 
@@ -349,7 +351,7 @@ export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
   const hmpsUser = await db
     .insert(schema.users)
     .values({
-      nim: '',
+      nim: 'HMIF',
       role: 'ITB-X',
       password,
       updatedAt: new Date(),
