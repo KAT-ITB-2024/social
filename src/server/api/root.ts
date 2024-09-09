@@ -15,6 +15,7 @@ import { wrappedRouter } from './routers/wrapped';
 import { merchandiseRouter } from './routers/merchandises';
 import { boothRouter } from './routers/booth';
 
+import { lembagaRouter } from './routers/lembaga';
 /**
  * This is the primary router for your server.
  *
@@ -36,6 +37,7 @@ export const appRouter = createTRPCRouter({
   wrapped: wrappedRouter,
   merchandises: merchandiseRouter,
   booth: boothRouter,
+  lembaga: lembagaRouter,
 });
 
 // export type definition of API
