@@ -289,31 +289,17 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
   if (!user[0] || !user[1]) {
     return;
   }
-  // Data dummy buat yang udah test
-  await db.insert(schema.wrappedProfiles).values({
-    userId: user[0].id,
-    name: 'User 0',
-    submittedQuest: 10,
-    totalMatch: 20,
-    character: 'Odra',
-    personality: 'IIII',
-    personalityDesc: 'Ini iiiiii',
-    favTopics: ['General', 'Game', 'Olahraga'],
-    rank: 129,
-    rankPercentage: 12,
-    updatedAt: new Date(),
-  });
 
-  await db.insert(schema.wrappedProfiles).values({
-    userId: user[1].id,
-    name: 'User 1',
-    updatedAt: new Date(),
-    favTopics: ['General'],
-    submittedQuest: 8,
-    totalMatch: 0,
-    rank: 80,
-    rankPercentage: 90,
-  });
+  // await db.insert(schema.wrappedProfiles).values({
+  //   userId: user[1].id,
+  //   name: 'User 1',
+  //   updatedAt: new Date(),
+  //   favTopics: ['General'],
+  //   submittedQuest: 8,
+  //   totalMatch: 0,
+  //   rank: 80,
+  //   rankPercentage: 90,
+  // });
 }
 
 export async function seed(dbUrl: string) {
