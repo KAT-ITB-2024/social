@@ -155,25 +155,28 @@ export const authOptions: NextAuthOptions = {
             });
           }
 
-          const profile = await db.query.profiles.findFirst({
-            columns: {
-              group: true,
-            },
-            where: eq(profiles.userId, user.id),
-          });
+          let profile;
 
-          if (!profile) {
-            throw new TRPCError({
-              code: 'NOT_FOUND',
-              message: 'Profile not found!',
+          if (user.role == 'Peserta') {
+            profile = await db.query.profiles.findFirst({
+              columns: {
+                group: true,
+              },
+              where: eq(profiles.userId, user.id),
             });
+            if (!profile) {
+              throw new TRPCError({
+                code: 'NOT_FOUND',
+                message: 'Profile not found!',
+              });
+            }
           }
 
           return {
             id: user.id,
             nim: user.nim,
             role: user.role,
-            group: profile.group,
+            group: profile?.group ?? '0',
           };
         } catch (error) {
           if (error instanceof TRPCError) {
