@@ -1,32 +1,29 @@
 import Image from 'next/image';
 import html2canvas from 'html2canvas';
 import { Button } from '~/components/ui/button';
-import { type Dispatch, type SetStateAction } from 'react';
-import { Share } from '~/components/share';
+import React from 'react';
 import { Share2, Download } from 'lucide-react';
 import { type OSKMWrapped } from '~/types/payloads/wrapped';
 
 interface WrappedStoriesProps {
   oskmWrapped: OSKMWrapped;
-  file: File[];
-  setFile: Dispatch<SetStateAction<File[]>>;
+  handleImage: (param: File) => void;
   handleBack: () => void;
 }
 
 const WrappedStories = ({
   oskmWrapped,
-  file,
-  setFile,
+  handleImage,
   handleBack,
 }: WrappedStoriesProps) => {
-  const handleShare = async (download: boolean) => {
+  const handleFile = async (download: boolean) => {
     const element = document.getElementById('wrapped-summary');
     if (element) {
       await html2canvas(element, {
         allowTaint: true,
         useCORS: true,
         width: 448,
-        height: 908,
+        height: 796,
       }).then((canvas) => {
         if (download) {
           const link = document.createElement('a');
@@ -37,13 +34,17 @@ const WrappedStories = ({
           canvas.toBlob((blob) => {
             try {
               if (blob) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 const img = new File([blob], 'Your Wrapped.png', {
                   type: blob.type,
                 });
-                setFile([img]);
+                handleImage(img);
               }
-            } catch (error) {}
+            } catch (error) {
+              const link = document.createElement('a');
+              link.href = canvas.toDataURL('png');
+              link.download = 'Your Wrapped.png';
+              link.click();
+            }
           });
         }
       });
@@ -367,7 +368,7 @@ const WrappedStories = ({
               loading="eager"
               className="absolute bottom-0 right-0"
             />
-            <div className="absolute left-[12.5%] flex w-3/4 flex-col items-center gap-2">
+            <div className="absolute left-[12.5%] z-[1000] flex w-3/4 flex-col items-center gap-2 rounded-xl bg-white/40 py-5">
               <p className="text-center font-heading text-2xl text-pink-400">
                 {oskmWrapped.test ? (
                   <>Kamu memiliki pribadi yang seperti</>
@@ -407,7 +408,7 @@ const WrappedStories = ({
           <div>
             <div
               id="wrapped-summary"
-              className="absolute top-0 h-[908px] w-[448px]"
+              className="absolute top-0 h-[796px] w-[448px]"
             >
               <Image
                 src="/images/wrapped/background/Wrapped 7.png"
@@ -456,7 +457,7 @@ const WrappedStories = ({
                   <Image
                     src={
                       oskmWrapped.test
-                        ? `/images/wrapped/svg/${oskmWrapped.personality}.svg`
+                        ? `/images/characters/${oskmWrapped.character}.png`
                         : '/images/wrapped/svg/cancer.svg'
                     }
                     alt="OSKM Character"
@@ -566,7 +567,7 @@ const WrappedStories = ({
                 <Image
                   src={
                     oskmWrapped.test
-                      ? `/images/wrapped/svg/${oskmWrapped.personality}.svg`
+                      ? `/images/characters/${oskmWrapped.character}.png`
                       : '/images/wrapped/svg/cancer.svg'
                   }
                   alt="OSKM Character"
@@ -635,20 +636,19 @@ const WrappedStories = ({
                 </div>
                 <div className="z-[1000] flex gap-2 pt-6 font-heading text-white">
                   <Button
-                    onClick={() => handleShare(true)}
+                    onClick={() => handleFile(true)}
                     className="bg-blue-300"
                   >
                     <Download color="#fff" strokeWidth={3} className="pr-2" />
                     Download
                   </Button>
-                  <Share
-                    shareData={{ files: file }}
-                    onInteraction={() => handleShare(false)}
+                  <Button
+                    onClick={() => handleFile(false)}
                     className="bg-blue-300"
                   >
                     <Share2 color="#fff" strokeWidth={3} className="pr-2" />
                     Share
-                  </Share>
+                  </Button>
                 </div>
               </div>
             </div>
