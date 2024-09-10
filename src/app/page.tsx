@@ -16,10 +16,7 @@ import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 export default function Home() {
   const { data: session, status } = useSession();
   const [showCoins, setShowCoins] = useState(false);
-  const [showOSKMWrapped, setShowOSKMWrapped] = useState(false);
   const router = useRouter();
-
-  // TODO: SET OSKM WRAPPED NAME
 
   useEffect(() => {
     const now = getCurrentWIBTime();
@@ -81,7 +78,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      {showOSKMWrapped && <ButtonOskmWrap />}
+      <ButtonOskmWrap />
 
       <div className="flex w-full items-center justify-center">
         <h3 className="text-h3 text-blue-600 text-shadow-pink-md">
