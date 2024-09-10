@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { init } from '@paralleldrive/cuid2';
 
 const getCurrentWIBTime = () => {
   const now = new Date();
@@ -65,4 +66,13 @@ const isAllowedToPresence = (
   return now >= start && now <= end;
 };
 
-export { getCurrentWIBTime, isAllowedToPresence, getPreviousWIBTime };
+const createToken = init({
+  length: 10,
+});
+
+export {
+  getCurrentWIBTime,
+  isAllowedToPresence,
+  getPreviousWIBTime,
+  createToken,
+};
