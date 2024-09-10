@@ -7,23 +7,26 @@ import { Button } from '~/components/ui/button';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '~/trpc/react';
-import { type WrappedProfiles } from '@katitb2024/database';
+// import { type WrappedProfiles } from '@katitb2024/database';
 import { type OSKMWrapped } from '~/types/payloads/wrapped';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { useSession } from 'next-auth/react';
+import { resultOf } from '@trpc/client/dist/links/internals/urlWithConnectionParams';
+import { toast } from 'sonner';
+import { ErrorToast } from '~/components/ui/error-toast';
 
-const inputWrapped = {
+const inputWrapped: OSKMWrapped = {
   name: 'Lomba Sihir',
-  totalMatch: 0,
+  totalMatch: 10,
   submittedQuest: 30,
-  favTopics: [],
-  // countMostFav: [],
-  percent: 200,
+  favTopics: ['Jendral Daemon'],
+  rankPercentage: '200',
   test: true,
-  character: 'sylas',
+  character: 'Sylas',
   personality: 'YWMO',
   personalityDesc: 'Yowaimo Yowaimo Yowaimo',
   rank: 69,
+  favTopicCount: 69,
 };
 
 function Wrapped() {
@@ -31,8 +34,8 @@ function Wrapped() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [oskmWrapped, setOSKMWrapped] = useState<OSKMWrapped | null>(null);
-  /* const [oskmWrapped, setOSKMWrapped] = useState<OSKMWrapped>(inputWrapped); */
 
+  const [clicked, setClicked] = useState<boolean>(false);
   const [file, setFile] = useState<File[]>([]);
 
   const handleBack = () => {
@@ -47,6 +50,11 @@ function Wrapped() {
 
   const { data: wrappedData, isLoading: loadingFetchingData } =
     api.wrapped.getWrapped.useQuery();
+
+  const handleImage = (image: File) => {
+    setFile([image]);
+    setClicked(true);
+  };
 
   // Update state langsung jika data ada
   useEffect(() => {
@@ -69,8 +77,7 @@ function Wrapped() {
       setOSKMWrapped(mappedWrapped);
       const result = WrappedStories({
         oskmWrapped: mappedWrapped,
-        file,
-        setFile,
+        handleImage,
         handleBack,
       });
 
@@ -83,14 +90,45 @@ function Wrapped() {
       }
     }
   }, [wrappedData]);
+
+  useEffect(() => {
+    const handleShare = async () => {
+      if (file.length < 0) {
+        setTimeout(() => {
+          console.log('Waiting...');
+          console.log(file);
+        }, 2000);
+      }
+      try {
+        console.log(file);
+        await navigator
+          .share({ files: file })
+          .then(() => console.log('Success!'));
+      } catch (err) {
+        console.log(err);
+        console.log(`Check File (${file.length}): ` + String(file));
+        clicked &&
+          toast(
+            <ErrorToast
+              title="Share Unavailable!"
+              desc="Silakan coba lagi atau unduh OSKM Wrapped-mu!"
+            />,
+          );
+      }
+    };
+
+    handleShare().catch(console.error);
+  }, [file]);
+
   if (loadingFetchingData || status === 'loading') {
     return <LoadingSpinnerCustom />;
   } else if (!session || session.user.role !== 'Peserta') {
     redirect('/login');
   }
+
   const loading = () => {
     setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 500);
+    setTimeout(() => setIsLoading(false), 1000);
   };
 
   return (
@@ -98,7 +136,7 @@ function Wrapped() {
       <div className="min-h-screen overflow-hidden">
         <div
           className={
-            isLoading ? 'blur-md' : 'blur-none transition duration-500'
+            isLoading ? 'blur-md' : 'blur-none transition duration-1000'
           }
         >
           {oskmWrapped && stories && (
