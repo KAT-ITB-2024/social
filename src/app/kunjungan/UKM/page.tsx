@@ -12,6 +12,7 @@ import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
 import bgbr from 'public/images/kunjungan/UKM/bg-br.png';
+import Link from 'next/link';
 
 const KunjunganUKMPage = () => {
   return (
@@ -50,54 +51,54 @@ const KunjunganUKMPage = () => {
             Rumpun Unit Kegiatan Mahasiswa (UKM)
           </h3>
           <div className="grid grid-cols-3 place-items-start">
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={media} alt="media" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Media
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={senbud} alt="senbud" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Seni dan Budaya
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={orkes} alt="orkes" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Olahraga & Kesehatan
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={kajian} alt="kajian" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Kajian
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={agama} alt="agama" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Agama
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={media2} alt="media2" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Media
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center">
+            <Link href={''} className="flex w-full flex-col items-center">
               <Image src={pusat} alt="pusat" className="h-[65%]" />
-              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 Pusat
               </p>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

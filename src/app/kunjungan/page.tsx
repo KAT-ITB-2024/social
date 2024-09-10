@@ -5,6 +5,7 @@ import UKM from 'public/images/kunjungan/UKM.png';
 import BSO from 'public/images/kunjungan/BSO.png';
 import HMPS from 'public/images/kunjungan/HMPS.png';
 import { Button } from '~/components/ui/button';
+import Link from 'next/link';
 
 const KunjunganPage = () => {
   return (
@@ -30,7 +31,9 @@ const KunjunganPage = () => {
             <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
               Unit Kegiatan Mahasiswa (UKM)
             </h3>
-            <Button variant={'pink'}>Explore Now!</Button>
+            <Button variant={'pink'}>
+              <Link href={'/kunjungan/UKM'}>Explore Now!</Link>
+            </Button>
           </div>
 
           <div className="flex w-full flex-col items-center gap-3">
@@ -38,7 +41,9 @@ const KunjunganPage = () => {
             <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
               Badan Semi Otonom (BSO), Pusat, Eksternal
             </h3>
-            <Button variant={'pink'}>Explore Now!</Button>
+            <Button variant={'pink'}>
+              <Link href={'/kunjungan/BSO'}>Explore Now!</Link>
+            </Button>
           </div>
 
           <div className="flex w-full flex-col items-center gap-3">
@@ -46,7 +51,9 @@ const KunjunganPage = () => {
             <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
               Himpunan Mahasiswa Program Studi (HMPS)
             </h3>
-            <Button variant={'pink'}>Explore Now!</Button>
+            <Button variant={'pink'}>
+              <Link href={'/kunjungan/HMPS'}>Explore Now!</Link>
+            </Button>
           </div>
         </div>
       </div>

@@ -16,6 +16,7 @@ import STEI from 'public/images/kunjungan/HMPS/STEI.png';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
+import Link from 'next/link';
 
 const KunjunganHMPSPage = () => {
   return (
@@ -49,89 +50,125 @@ const KunjunganHMPSPage = () => {
             Rumpun Himpunan Mahasiswa Program Studi (HMPS)
           </h3>
           <div className="grid grid-cols-3 place-items-start">
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={FITB} alt="FITB" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FITB
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={FMIPA} alt="FMIPA" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FMIPA
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={FTI} alt="FTI" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FTI
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
-              <Image src={FTSL} alt="FTSL" height={70} />
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
+              <Image src={FTSL} alt="FTSL" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FTSL
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={FTTM} alt="FTTM" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FTTM
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={FTMD} alt="FTMD" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FTMD
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={FSRD} alt="FSRD" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 FSRD
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={SAPPK} alt="SAPPK" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 SAPPK
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={SBM} alt="SBM" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 SBM
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={SF} alt="SF" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 SF
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={SITH} alt="SITH" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 SITH
               </p>
-            </button>
+            </Link>
 
-            <button className="flex h-full w-full flex-col items-center justify-between">
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
               <Image src={STEI} alt="STEI" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 STEI
               </p>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
