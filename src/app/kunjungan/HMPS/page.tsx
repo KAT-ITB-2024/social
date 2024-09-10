@@ -12,6 +12,8 @@ import SBM from 'public/images/kunjungan/HMPS/SBM.png';
 import SF from 'public/images/kunjungan/HMPS/SF.png';
 import SITH from 'public/images/kunjungan/HMPS/SITH.png';
 import STEI from 'public/images/kunjungan/HMPS/STEI.png';
+import SITHR from 'public/images/kunjungan/HMPS/SITHR.png'
+import Pusat from 'public/images/kunjungan/HMPS/Pusat.png'
 
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
@@ -47,7 +49,7 @@ const KunjunganHMPSPage = () => {
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
           <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-            Rumpun Himpunan Mahasiswa Program Studi (HMPS)
+            Rumpun HMPS
           </h3>
           <div className="grid grid-cols-3 place-items-start">
             <Link
@@ -156,7 +158,17 @@ const KunjunganHMPSPage = () => {
             >
               <Image src={SITH} alt="SITH" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
-                SITH
+                SITH-S
+              </p>
+            </Link>
+
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
+              <Image src={SITHR} alt="SITH" height={110} />
+              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+                SITH-R
               </p>
             </Link>
 
@@ -167,6 +179,16 @@ const KunjunganHMPSPage = () => {
               <Image src={STEI} alt="STEI" height={110} />
               <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
                 STEI
+              </p>
+            </Link>
+
+            <Link
+              href={''}
+              className="flex h-full w-full flex-col items-center justify-between"
+            >
+              <Image src={Pusat} alt="STEI" height={110} />
+              <p className="text-center text-sh5 font-bold leading-[150%] text-orange-400">
+                Pusat
               </p>
             </Link>
           </div>

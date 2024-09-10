@@ -48,7 +48,7 @@ const KunjunganUKMPage = () => {
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
           <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-            Rumpun Unit Kegiatan Mahasiswa (UKM)
+            Rumpun UKM
           </h3>
           <div className="grid grid-cols-3 place-items-start">
             <Link href={''} className="flex w-full flex-col items-center">
@@ -89,14 +89,7 @@ const KunjunganUKMPage = () => {
             <Link href={''} className="flex w-full flex-col items-center">
               <Image src={media2} alt="media2" className="h-[65%]" />
               <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
-                Media
-              </p>
-            </Link>
-
-            <Link href={''} className="flex w-full flex-col items-center">
-              <Image src={pusat} alt="pusat" className="h-[65%]" />
-              <p className="translate-y-[-15px] text-center text-sh5 font-bold leading-[150%] text-orange-400">
-                Pusat
+                Pendidikan
               </p>
             </Link>
           </div>

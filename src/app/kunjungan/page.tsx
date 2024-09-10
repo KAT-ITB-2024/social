@@ -26,6 +26,7 @@ const KunjunganPage = () => {
             </p>
           </div>
 
+          {/* UKM */}
           <div className="flex w-full flex-col items-center gap-3">
             <Image src={UKM} alt="ukm" width={235} />
             <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
@@ -36,16 +37,7 @@ const KunjunganPage = () => {
             </Button>
           </div>
 
-          <div className="flex w-full flex-col items-center gap-3">
-            <Image src={BSO} alt="bso" width={235} />
-            <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
-              Badan Semi Otonom (BSO), Pusat, Eksternal
-            </h3>
-            <Button variant={'pink'}>
-              <Link href={'/kunjungan/BSO'}>Explore Now!</Link>
-            </Button>
-          </div>
-
+          {/* HMPS */}
           <div className="flex w-full flex-col items-center gap-3">
             <Image src={HMPS} alt="hmps" width={235} />
             <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
@@ -55,6 +47,18 @@ const KunjunganPage = () => {
               <Link href={'/kunjungan/HMPS'}>Explore Now!</Link>
             </Button>
           </div>
+
+          {/* Eksternal */}
+          <div className="flex w-full flex-col items-center gap-3">
+            <Image src={BSO} alt="bso" width={235} />
+            <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
+              Eksternal
+            </h3>
+            <Button variant={'pink'}>
+              <Link href={'/kunjungan/Eksternal'}>Explore Now!</Link>
+            </Button>
+          </div>
+
         </div>
       </div>
     </main>
