@@ -53,7 +53,7 @@ const KunjunganHMPSPage = () => {
           </h3>
           <div className="grid grid-cols-3 place-items-start">
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FITB`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FITB} alt="FITB" height={110} />
@@ -63,7 +63,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FMIPA`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FMIPA} alt="FMIPA" height={110} />
@@ -73,7 +73,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FTI`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTI} alt="FTI" height={110} />
@@ -83,7 +83,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FTSL`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTSL} alt="FTSL" height={110} />
@@ -93,7 +93,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FTTM`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTTM} alt="FTTM" height={110} />
@@ -103,7 +103,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FTMD`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTMD} alt="FTMD" height={110} />
@@ -113,7 +113,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/FSRD`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FSRD} alt="FSRD" height={110} />
@@ -123,7 +123,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/SAPPK`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SAPPK} alt="SAPPK" height={110} />
@@ -133,7 +133,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/SBM`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SBM} alt="SBM" height={110} />
@@ -143,7 +143,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/SF`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SF} alt="SF" height={110} />
@@ -153,7 +153,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/SITH-S`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SITH} alt="SITH" height={110} />
@@ -163,7 +163,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/SITH-R`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SITHR} alt="SITH" height={110} />
@@ -173,7 +173,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/STEI`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={STEI} alt="STEI" height={110} />
@@ -183,7 +183,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={''}
+              href={`/kunjungan/HMPS/Pusat`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={Pusat} alt="STEI" height={110} />

@@ -13,7 +13,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { MoveRight } from 'lucide-react';
 
-const KategoriUKMPage = () => {
+const FakultasPage = () => {
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean);
   // @ts-ignore
@@ -50,9 +50,13 @@ const KategoriUKMPage = () => {
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {latestSegment}
             </h3>
-            <p className='text-pink-300 text-2xl text-shadow-orange-md'>
-              Unit Kegiatan Mahasiswa
-            </p>
+            {
+              latestSegment !== 'Pusat' && (
+                <p className='text-pink-300 text-2xl text-shadow-orange-md'>
+                  HMPS dan BSO HMPS
+                </p>
+              )
+            }
           </div>
           <div className='space-y-4'>
             {/* Input  */}
@@ -93,4 +97,4 @@ const KategoriUKMPage = () => {
   )
 }
 
-export default KategoriUKMPage
+export default FakultasPage
