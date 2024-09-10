@@ -175,6 +175,7 @@ const config = {
       },
       dropShadow: {
         'orange-shadow': '4px 4px 10px rgba(255, 191, 81, 0.50)',
+        'orange-shadow-lg': '8px 8px 10px rgba(255, 191, 81, 0.50)',
       },
       keyframes: {
         'accordion-down': {
