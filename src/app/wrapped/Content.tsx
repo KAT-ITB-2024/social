@@ -257,8 +257,9 @@ const WrappedStories = ({
               </p>
               {/* countMostFav Here */}
               <p className="text-md text-center font-subheading text-turquoise-400">
-                Kamu obrolin topik ini sebanyak 10 kali! Kayaknya kamu cinta{' '}
-                {oskmWrapped.favTopics[0]} banget, nih!
+                Kamu obrolin topik ini sebanyak {oskmWrapped.favTopicCount}{' '}
+                kali! Kayaknya kamu cinta {oskmWrapped.favTopics[0]} banget,
+                nih!
               </p>
             </div>
           </>
