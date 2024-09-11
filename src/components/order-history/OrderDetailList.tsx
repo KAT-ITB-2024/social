@@ -22,16 +22,22 @@ const orders = [
   // Add more items if needed
 ];
 
-const OrderDetailList = () => {
+interface order {
+  name: string;
+  quantity: number;
+  price: number;
+  imageUrl: string | null;
+}
+const OrderDetailList = ({ orders }: { orders: order[] }) => {
   return (
     <div className="flex flex-col gap-4">
       {orders.map((order) => (
         <OrderDetailCard
-          key={order.id}
-          id={order.id}
+          key={order.name}
           name={order.name}
           quantity={order.quantity}
           price={order.price}
+          imageUrl={order.imageUrl}
         />
       ))}
     </div>
