@@ -1,23 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-  DrawerTrigger,
-} from '@/components/ui/drawer';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import Able from 'public/icons/merch/able_cart.svg';
 import Disable from 'public/icons/merch/shop_logo.svg';
-
-type DrawerVariant = 'sufficient' | 'insufficient';
 
 interface RequestDrawerProps {
   total_items: number;
   total_price: number;
   total_coins: number;
-  variant: DrawerVariant;
+  isOpen?: boolean;
   onClick: () => void;
 }
 
@@ -25,7 +17,7 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
   total_items,
   total_price,
   total_coins,
-  variant,
+  isOpen,
   onClick,
 }) => {
   const isSufficient = total_coins >= total_price;
@@ -60,19 +52,16 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
   }
 
   return (
-    <Drawer>
-      <DrawerTrigger>
-        <Button>Open</Button>
-      </DrawerTrigger>
+    <Drawer modal={false} handleOnly={true} open={isOpen}>
       <DrawerContent
-        className={`p-4 shadow-blue-lg ${backgroundColor} border-blue-500 bg-blue-500`}
+        className={`flex p-6 shadow-blue-lg ${backgroundColor} max-w-md gap-2 border-blue-500 bg-blue-500`}
       >
         <p
-          className={`inline-block border bg-white ${borderColor} ${textColor} ${backgroundColor} mt-2 w-fit rounded-full px-4 py-1 text-sm`}
+          className={`inline-block border bg-white ${borderColor} ${textColor} ${backgroundColor} w-fit rounded-full px-4 py-1 text-sm`}
         >
           {condition}
         </p>
-        <div className="mt-4 text-white">
+        <div className="text-white">
           <div>{total_items} Barang</div>
           <div className={`text-3xl font-bold ${coinColor}`}>
             {total_price} Coins
@@ -82,7 +71,7 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
           </div>
         </div>
         <Button
-          className={`px-2 py-1 ${buttonColor} ${buttonText} mt-5`}
+          className={`px-2 py-2 ${buttonColor} ${buttonText}`}
           onClick={isSufficient ? onClick : undefined}
           disabled={!isSufficient}
         >
@@ -93,9 +82,6 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
           />
           Request
         </Button>
-        <DrawerFooter className="-mb-5">
-          <DrawerClose></DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
