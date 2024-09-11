@@ -7,7 +7,6 @@ import {
 import { TRPCError } from '@trpc/server';
 import { eq, and, lte } from 'drizzle-orm';
 import { getAssignmentByIdPayload } from '~/types/payloads/assignment';
-import { getCurrentWIBTime } from '../helpers/utils';
 
 export const assignmentRouter = createTRPCRouter({
   getDailyQuest: pesertaProcedure.query(async ({ ctx }) => {

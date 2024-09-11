@@ -184,15 +184,43 @@ export const merchandiseRouter = createTRPCRouter({
       const itemsPerPage = 6;
       const offset = (page - 1) * itemsPerPage;
 
-      const res = ctx.db
-        .select()
-        .from(merchandises)
-        .limit(itemsPerPage)
-        .offset(offset)
-        .where(ilike(merchandises.name, `%${name}%`))
-        .orderBy(merchandises.name);
+      try {
+        const totalItems = await ctx.db
+          .select({
+            count: sql`COUNT(*)`,
+          })
+          .from(merchandises)
+          .where(ilike(merchandises.name, `%${name}%`))
+          .then((res) => Number(res[0]?.count) || 0);
 
-      return res;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        const merchandiseList = await ctx.db
+          .select()
+          .from(merchandises)
+          .limit(itemsPerPage)
+          .offset(offset)
+          .where(ilike(merchandises.name, `%${name}%`))
+          .orderBy(merchandises.name);
+
+        const userCoin = await ctx.db
+          .select({ coins: profiles.coins })
+          .from(profiles)
+          .where(eq(profiles.userId, user.id))
+          .then((res) => res[0]?.coins);
+
+        return {
+          userCoin,
+          merchandiseList,
+          totalItems,
+          totalPages,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch merchandise or user coins',
+        });
+      }
     }),
 
   getOrderHistory: protectedProcedure
@@ -210,14 +238,35 @@ export const merchandiseRouter = createTRPCRouter({
       const itemsPerPage = 6;
       const offset = (page - 1) * itemsPerPage;
 
-      const res = await ctx.db
-        .select()
-        .from(merchandiseExchanges)
-        .where(eq(merchandiseExchanges.userId, user.id))
-        .limit(itemsPerPage)
-        .orderBy(merchandiseExchanges.updatedAt)
-        .offset(offset);
+      try {
+        const totalExchanges = await ctx.db
+          .select({
+            count: sql`COUNT(*)`,
+          })
+          .from(merchandiseExchanges)
+          .where(eq(merchandiseExchanges.userId, user.id))
+          .then((res) => Number(res[0]?.count) || 0);
 
-      return res;
+        const totalPages = Math.ceil(totalExchanges / itemsPerPage);
+
+        const exchanges = await ctx.db
+          .select()
+          .from(merchandiseExchanges)
+          .where(eq(merchandiseExchanges.userId, user.id))
+          .limit(itemsPerPage)
+          .offset(offset)
+          .orderBy(merchandiseExchanges.updatedAt);
+
+        return {
+          exchanges,
+          totalExchanges,
+          totalPages,
+        };
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch order history',
+        });
+      }
     }),
 });

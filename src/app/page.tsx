@@ -34,8 +34,14 @@ export default function Home() {
 
   if (status === 'loading') {
     return <LoadingSpinnerCustom />;
-  } else if (!session || session.user.role !== 'Peserta') {
+  } else if (
+    !session ||
+    (session.user.role !== 'Peserta' && session.user.role !== 'ITB-X')
+  ) {
     redirect('/login');
+  } else if (session.user.role === 'ITB-X') {
+    // TODO : CHANGE TO DASHBOARD LEMBAGA
+    redirect('/test-cart');
   }
 
   return (
