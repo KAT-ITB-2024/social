@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
-import Coin from 'public/images/ITB-x/OHUCoin.png';
+import Coin from 'public/images/merch/OHUCoin.png';
 import Image from 'next/image';
 
 interface MerchCardProps {
@@ -16,7 +16,7 @@ export const MerchCard: React.FC<MerchCardProps> = ({
   price,
   stock,
   image,
-  onClick,
+  // onClick,
 }) => {
   const [quantity, setQuantity] = useState(0);
 
