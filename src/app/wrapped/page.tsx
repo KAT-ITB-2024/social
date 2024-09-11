@@ -52,7 +52,7 @@ function Wrapped() {
           totalMatch: wrappedData.totalMatch,
           submittedQuest: wrappedData.submittedQuest,
           favTopics: wrappedData.favTopics ?? [], // default to empty array if null
-          percent: wrappedData.rankPercentage,
+          percent: parseInt(wrappedData.rankPercentage),
           test: wrappedData.character !== null, // test is true if character is not null
           character: wrappedData.character ?? '', // default to empty string if null
           personality: wrappedData.personality ?? '', // default to empty string if null
