@@ -1,36 +1,39 @@
 import { Chip } from '../Chip';
 import Image from 'next/image';
+import Link from 'next/link';
 import Coin from 'public/images/order-history/coin.png';
 
 type orderHistoryCardProps = {
   id: string;
-  quantity: number;
-  price: number;
+  totalItem: number;
+  totalCoins: number;
   status: string;
+  index: number;
 };
 
 const OrderHistoryCard = ({
   id,
-  quantity,
-  price,
+  totalItem,
+  totalCoins,
   status,
+  index,
 }: orderHistoryCardProps) => {
-  const label = status === 'diambil' ? 'Sudah diambil' : 'Belum diambil';
-  const variant = status === 'diambil' ? 'GREEN' : 'YELLOW';
-
-  const uppercaseid = id.toUpperCase();
+  const label = status === 'Taken' ? 'Sudah diambil' : 'Belum diambil';
+  const variant = status === 'Taken' ? 'GREEN' : 'YELLOW';
   return (
-    <div className="flex flex-row items-center justify-between bg-blue-400 p-4 rounded-2xl shadow-green-md text-white">
-      <div className="flex flex-col items-left justify-start">
-        <h3 className="text-sh4">{uppercaseid}</h3>
-        <p>{quantity} pcs</p>
-        <div className="flex flex-row items-center justify-start gap-2">
-          <Image src={Coin} alt="coin" width={15} height={15} />
-          {price}
+    <Link href={`/order-history/${id}`} className="cursor-pointer">
+      <div className="flex flex-row items-center justify-between rounded-2xl bg-blue-400 p-4 text-white shadow-green-md">
+        <div className="items-left flex flex-col justify-start">
+          <h3 className="text-sh4">{'ORDER - ' + (index + 1)}</h3>
+          <p>{totalItem} pcs</p>
+          <div className="flex flex-row items-center justify-start gap-2">
+            <Image src={Coin} alt="coin" width={15} height={15} />
+            {totalCoins}
+          </div>
         </div>
+        <Chip label={label} variant={variant}></Chip>
       </div>
-      <Chip label={label} variant={variant}></Chip>
-    </div>
+    </Link>
   );
 };
 

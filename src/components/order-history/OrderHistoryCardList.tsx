@@ -1,44 +1,78 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import OrderHistoryCard from './OrderHistoryCard';
-import { CustomPagination } from './Pagination';
-
-const orderHistoryCards = [
-  { id: 'order1', quantity: 10, price: 200, status: 'diambil' },
-  { id: 'order2', quantity: 5, price: 150, status: 'belum diambil' },
-  { id: 'order3', quantity: 3, price: 100, status: 'diambil' },
-  { id: 'order4', quantity: 7, price: 250, status: 'belum diambil' },
-  { id: 'order5', quantity: 8, price: 300, status: 'diambil' },
-  // Add more orders as needed
-];
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '../ui/loading-spinner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import { PlusIcon } from 'lucide-react';
 
 const OrderHistoryList = () => {
-  const searchParams = useSearchParams();
-  const currentPage = parseInt(searchParams.get('page') ?? '1');
-  const cardsPerPage = 4;
+  // State to manage the selected filter
+  const [filter, setFilter] = useState<'Taken' | 'Not Taken' | null>(null);
 
-  // Calculate total pages
-  const totalPages = Math.ceil(orderHistoryCards.length / cardsPerPage);
+  // Fetch all order history data once
+  const { data, isLoading } = api.merchandises.getOrderHistory.useQuery();
 
-  // Get current cards based on pagination
-  const startIndex = (currentPage - 1) * cardsPerPage;
-  const currentCards = orderHistoryCards.slice(
-    startIndex,
-    startIndex + cardsPerPage,
-  );
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (!data) {
+    return <p>Data not found</p>;
+  }
+
+  // Apply client-side filtering based on the selected filter
+  const filteredExchanges = filter
+    ? data.exchanges.filter((exchange) => exchange.status === filter)
+    : data.exchanges;
 
   return (
-    <div className="flex flex-col item-center justify-between">
-      {/* Render current set of cards */}
-      <div className="flex flex-col gap-4">
-        {currentCards.map((card) => (
-          <OrderHistoryCard key={card.id} {...card} />
-        ))}
-      </div>
+    <div className="flex flex-col gap-4">
+      {/* Dropdown menu for selecting filters */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="inline-flex h-[29px] w-[139px] items-center justify-between rounded-lg bg-white px-2 py-1 shadow-blue-md">
+            Add filter <PlusIcon className="h-4 w-4" />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="center">
+          <DropdownMenuCheckboxItem
+            key={'Taken'}
+            checked={filter === 'Taken'}
+            onCheckedChange={(checked) => {
+              setFilter(checked ? 'Taken' : null);
+            }}
+          >
+            Sudah Diambil
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem
+            key={'Not Taken'}
+            checked={filter === 'Not Taken'}
+            onCheckedChange={(checked) => {
+              setFilter(checked ? 'Not Taken' : null);
+            }}
+          >
+            Belum Diambil
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-      {/* Render Pagination */}
-      <div className="flex justify-center mt-4">
-        <CustomPagination totalPages={totalPages} />
+      {/* Render filtered cards */}
+      <div className="item-center flex flex-col justify-between">
+        <div className="flex flex-col gap-4">
+          {filteredExchanges.length > 0 ? (
+            filteredExchanges.map((card, index) => (
+              <OrderHistoryCard key={card.id} {...card} index={index} />
+            ))
+          ) : (
+            <p>Kamu belum menukar apapun</p>
+          )}
+        </div>
       </div>
     </div>
   );
