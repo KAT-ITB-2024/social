@@ -314,7 +314,6 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     totalMatch: 0,
     rank: 80,
     rankPercentage: '90',
-    favTopicCount: 1,
   });
 }
 
