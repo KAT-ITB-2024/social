@@ -229,4 +229,31 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
+  getUserCoin: pesertaProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
+
+    if (!userId) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Unauthorized',
+      });
+    }
+
+    const coin = await ctx.db
+      .select({
+        coins: profiles.coins,
+      })
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .then((res) => res[0]);
+
+    if (!coin) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Coin not found',
+      });
+    }
+
+    return coin;
+  }),
 });
