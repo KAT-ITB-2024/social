@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import Coin from 'public/images/merch/OHUCoin.png';
 import Image from 'next/image';
@@ -8,7 +8,8 @@ interface MerchCardProps {
   price: number;
   stock: number;
   image: string;
-  onClick: () => void;
+  itemQuantity: number;
+  onQuantityChange: (quantity: number) => void;
 }
 
 export const MerchCard: React.FC<MerchCardProps> = ({
@@ -16,39 +17,46 @@ export const MerchCard: React.FC<MerchCardProps> = ({
   price,
   stock,
   image,
-  // onClick,
+  itemQuantity,
+  onQuantityChange,
 }) => {
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(itemQuantity);
 
   const incrementQuantity = () => {
     if (quantity < stock) {
-      setQuantity((prevQuantity) => prevQuantity + 1);
+      const newQuantity = quantity + 1;
+      setQuantity(newQuantity);
+      onQuantityChange(newQuantity);
     }
   };
 
   const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity((prevQuantity) => prevQuantity - 1);
+    if (quantity > 0) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      onQuantityChange(newQuantity);
     }
   };
 
+  useEffect(() => {
+    setQuantity(itemQuantity);
+  }, [itemQuantity]);
+
   return (
-    <Card className="relative flex h-[252px] w-[163px] flex-col items-center rounded-2xl border-none bg-blue-400 p-3 shadow-blue-md">
-      <div className="-mt-4 mb-2 flex h-[128px] w-[163px] items-center justify-center rounded-t-2xl bg-gray-100">
-        {image ? (
-          <Image
-            src={image}
-            alt={name}
-            width={100}
-            height={100}
-            className="object-contain"
-          />
-        ) : (
-          <p>No Image Available</p>
-        )}
+    <Card className="relative flex h-auto w-[45%] flex-col items-center rounded-2xl border-none bg-blue-400 shadow-blue-md">
+      <div className="mb-2 flex h-[128px] w-full items-center justify-center overflow-hidden rounded-t-2xl bg-white">
+        <Image
+          src={image}
+          alt={name}
+          width={115}
+          height={115}
+          className="object-contain"
+        />
       </div>
-      <div className="flex w-full flex-col justify-between">
-        <div className="mb-1 text-left text-b3 text-white">{name}</div>
+      <div className="flex w-full flex-col justify-between p-3 pt-1">
+        <div className="mb-1 break-words text-left text-b3 text-white">
+          {name}
+        </div>
         <div className="mb-1 flex w-full items-center justify-between font-semibold text-white">
           <div className="flex items-center">
             <Image src={Coin} alt="coin" width={15} height={15} />
@@ -63,6 +71,7 @@ export const MerchCard: React.FC<MerchCardProps> = ({
           <button
             onClick={decrementQuantity}
             className="text-md px-2 text-blue-600"
+            disabled={quantity <= 0}
           >
             -
           </button>
@@ -70,6 +79,7 @@ export const MerchCard: React.FC<MerchCardProps> = ({
           <button
             onClick={incrementQuantity}
             className="text-md px-2 text-blue-600"
+            disabled={quantity >= stock}
           >
             +
           </button>
