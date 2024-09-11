@@ -9,6 +9,10 @@ import BintangLaut from 'public/images/kunjungan/BintangLaut.png'
 import CoralKanan from 'public/images/kunjungan/CoralKanan.png'
 import CoralTengah from 'public/images/kunjungan/CoralTengah.png'
 import CoralKiri from 'public/images/kunjungan/CoralKiri.png'
+import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png'
+import Arrow from 'public/images/kunjungan/send.svg'
+import { Input } from '~/components/ui/input';
+import { Button } from '~/components/ui/button';
 
 const HMPSLembagaDetailPage = () => {
   const pathname = usePathname()
@@ -64,7 +68,19 @@ const HMPSLembagaDetailPage = () => {
         }}
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <div className='space-y-2 text-center'>
+          <div className='space-y-2 text-center translate-y-[-50px]'>
+            <div className='relative'>
+              {/* FRAME */}
+              <Image 
+                src={LembagaDummy}
+                alt='Lembaga Dummy'
+                className='w-[266px] h-[250px]'
+              />
+              {/* FOTO LEMBAGA */}
+              <div className='absolute top-9 left-[50px] -z-20 rounded-full bg-orange-300 w-[175px] h-[175px]'>
+              
+              </div> 
+            </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {latestSegment}
             </h3>
@@ -76,7 +92,25 @@ const HMPSLembagaDetailPage = () => {
               )
             }
           </div>
-         
+          <div className='translate-y-[-35px] space-y-2'>
+            <div className='flex items-center w-full gap-x-4'>
+              <Input className='border-2 border-orange-400 w-[300px] h-[50px] placeholder:text-orange-300 shadow-orange-md' placeholder='Masukkan Kode'/>
+              <Button className='bg-orange-400 hover:bg-orange-300 shadow-orange-md h-[50px]'>
+                <Image 
+                  src={Arrow}
+                  width={24}
+                  height={24}
+                  className='text-white'
+                  alt='Arrow'
+                />
+              </Button>
+            </div>
+            <div>
+              <Button variant={"outline"} className='w-full text-orange-400 hover:text-orange-500 hover:bg-orange-100/25 h-[50px] border-2 border-orange-400 bg-transparent'>
+                Tentang Lembaga
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
