@@ -8,8 +8,8 @@ import {
   DrawerFooter,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import Able from 'public/images/merch/able_cart.png';
-import Disable from 'public/images/merch/disable_cart.png';
+import Able from 'public/icons/merch/able_cart.svg';
+import Disable from 'public/icons/merch/shop_logo.svg';
 
 type DrawerVariant = 'sufficient' | 'insufficient';
 

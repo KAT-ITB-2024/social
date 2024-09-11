@@ -8,6 +8,7 @@ interface OrderCardNewProps {
   quantity: number;
   price: number;
   status: 'Sudah Diambil' | 'Belum Diambil';
+  onClick: () => void;
 }
 
 export const OrderCardNew: React.FC<OrderCardNewProps> = ({

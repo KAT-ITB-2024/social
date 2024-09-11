@@ -8,7 +8,7 @@ import {
   DrawerFooter,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import Cart from 'public/images/merch/shop_logo.png';
+import Cart from 'public/icons/merch/shop_logo.svg';
 import Coin from 'public/images/merch/OHUCoin.png';
 
 interface MerchDrawerProps {
@@ -21,7 +21,7 @@ interface MerchDrawerProps {
 }
 
 export const MerchDrawer: React.FC<MerchDrawerProps> = ({
-  id,
+  // id,
   price,
   name,
   stock,

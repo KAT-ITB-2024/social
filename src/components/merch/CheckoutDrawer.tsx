@@ -8,10 +8,10 @@ import {
   DrawerFooter,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import Cart from 'public/images/merch/able_cart.png';
+import Cart from 'public/icons/merch/able_cart.svg';
 import Coin from 'public/images/merch/OHUCoin.png';
 import Jellyfish from 'public/images/merch/burbub.png';
-import CloseIcon from 'public/images/merch/close.png';
+import CloseIcon from 'public/icons/merch/close.svg';
 
 const dummyMerchData = [
   {
@@ -45,7 +45,11 @@ const dummyMerchData = [
 ];
 
 interface CheckoutDrawerProps {
-  orderId?: string;
+  id: string;
+  price: number;
+  name: string;
+  stock: number;
+  image: string;
   onClick: () => void;
 }
 

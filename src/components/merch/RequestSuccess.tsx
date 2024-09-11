@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Bubly from 'public/images/merch/burbub.png';
-import Receipt from 'public/images/merch/receipt.png';
+import Receipt from 'public/icons/merch/receipt.svg';
 import { Button } from '../ui/button';
 import {
   AlertDialog,
@@ -10,7 +10,7 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import CloseIcon from 'public/images/merch/close.png';
+import CloseIcon from 'public/icons/merch/close.svg';
 import { cn } from '~/lib/utils';
 
 export const RequestSuccess = ({
