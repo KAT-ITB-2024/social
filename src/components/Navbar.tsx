@@ -12,7 +12,11 @@ import {
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from './ui/loading-spinner';
 
-const Navbar = () => {
+interface NavbarProps {
+  isDesktop?: boolean;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isDesktop = false }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const handleToggleSidebar = () => {
@@ -35,7 +39,9 @@ const Navbar = () => {
   return (
     <div className="relative">
       {!isSidebarOpen && (
-        <div className="fixed z-50 w-full max-w-md justify-center">
+        <div
+          className={`fixed z-50 w-full ${!isDesktop ? 'max-w-md' : ''} justify-center`}
+        >
           <div
             className="relative top-4 mx-6 flex items-center justify-between rounded-full bg-blue-600 py-3 pl-3 pr-5 shadow-green-sm"
             style={{

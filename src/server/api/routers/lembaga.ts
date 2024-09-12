@@ -175,9 +175,7 @@ export const lembagaRouter = createTRPCRouter({
         message: 'Lembaga not found',
       });
     }
-    return {
-      data: data[0],
-    };
+    return data[0];
   }),
 
   refreshCurrentToken: lembagaProcedure.mutation(async ({ ctx }) => {

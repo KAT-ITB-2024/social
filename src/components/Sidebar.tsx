@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
+  isDesktop?: boolean;
 }
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {

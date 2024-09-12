@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { socket } from '~/utils/socket';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
-export default function ClientLayout({
+export default function MobileClientLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -1,10 +1,10 @@
 import '~/styles/globals.css';
 import { GeistSans } from 'geist/font/sans';
 import { TRPCReactProvider } from '~/trpc/react';
-import { NextAuthProvider } from './provider';
+import { NextAuthProvider } from '../provider';
 import { Toaster } from 'sonner';
 import { SuccessToast } from '~/components/ui/success-toast';
-import ClientLayout from './ClientLayout';
+import DesktopClientLayout from './DesktopClientLayout';
 
 export const metadata = {
   title: 'OSKM ITB 2024',
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body className="mx-auto min-w-full max-w-md">
+      <body className="min-w-full">
         <TRPCReactProvider>
           <Toaster
             toastOptions={{
@@ -35,7 +35,7 @@ export default function RootLayout({
             duration={3000}
           />
           <NextAuthProvider>
-            <ClientLayout>{children}</ClientLayout>
+            <DesktopClientLayout>{children}</DesktopClientLayout>
           </NextAuthProvider>
         </TRPCReactProvider>
       </body>
