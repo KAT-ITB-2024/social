@@ -13,7 +13,8 @@ export const MenuButton = ({
     | 'Chat'
     | 'Leaderboard'
     | 'OSKM MBTI'
-    | 'Class Selection';
+    | 'Class Selection'
+    | 'Merch';
 }) => {
   const router = useRouter();
 
@@ -45,6 +46,11 @@ export const MenuButton = ({
         'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl';
       imgSrc = '/images/home/navigation/leaderboard.png';
       routePath = '/leaderboard';
+      break;
+    case 'Merch':
+      cn =
+        'border-solid border-2 border-turquoise-100 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-pink-200/75 bg-turquoise-100 rounded-xl';
+      (imgSrc = '/icons/sidebar/request-merch.svg'), (routePath = '/merch');
       break;
   }
 

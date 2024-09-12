@@ -1,4 +1,4 @@
-import { createTRPCRouter, pesertaProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, publicProcedure } from '../trpc';
 import { generateHash, generateResetToken } from '~/utils/auth';
 import { TRPCError } from '@trpc/server';
 import { env } from '~/env.cjs';

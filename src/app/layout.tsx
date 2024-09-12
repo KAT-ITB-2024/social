@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body className="max-w-md mx-auto">
+      <body className="mx-auto min-w-full max-w-md">
         <TRPCReactProvider>
           <Toaster
             toastOptions={{
