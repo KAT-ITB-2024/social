@@ -34,12 +34,12 @@ const EksternalLembagaDetailPage = () => {
     lembagaId: lastSegment,
   });
 
-  if (!data) {
-    return <NotFound />;
-  }
-
   if (isLoading) {
     return <LoadingSpinnerCustom />;
+  }
+
+  if (!data && !isLoading) {
+    return <NotFound />;
   }
 
   return (
@@ -127,7 +127,7 @@ const EksternalLembagaDetailPage = () => {
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
-                disabled={data.hasVisited}
+                disabled={data?.hasVisited}
               />
               <Button
                 className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
