@@ -1,26 +1,37 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
 import bgbr from 'public/images/kunjungan/UKM/bg-br.png';
+import Link from 'next/link';
+import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
 import { Input } from '~/components/ui/input';
 import { usePathname } from 'next/navigation';
+import { Button } from '~/components/ui/button';
+import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import NotFound from '~/app/not-found';
 import { LembagaCard } from '~/components/kunjungan/LembagaCard';
 
-const KategoriUKMPage = () => {
+const PusatPage = () => {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
+  const lastSegment = segments[segments.length - 1];
   if (!lastSegment) {
     return;
   }
-  const { data: lembagaData } = api.booth.getUkmByRumpun.useQuery({
-    rumpun: lastSegment,
-  });
+  const { data, isLoading } = api.booth.getLembagaPusat.useQuery();
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (!data && !isLoading) {
+    return <NotFound />;
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -52,9 +63,11 @@ const KategoriUKMPage = () => {
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {lastSegment}
             </h3>
-            <p className="text-2xl text-pink-300 text-shadow-orange-md">
-              Unit Kegiatan Mahasiswa
-            </p>
+            {lastSegment !== 'Pusat' && (
+              <p className="text-2xl text-pink-300 text-shadow-orange-md">
+                HMPS dan BSO HMPS
+              </p>
+            )}
           </div>
           <div className="space-y-4">
             {/* Input  */}
@@ -66,12 +79,12 @@ const KategoriUKMPage = () => {
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {lembagaData?.data.map((item) => {
+              {data?.map((lembagaPusat) => {
                 return (
                   <LembagaCard
-                    key={item.id}
-                    item={item}
-                    link={`/kunjungan/UKM/${lastSegment}/${item.id}`}
+                    key={lembagaPusat.id}
+                    item={lembagaPusat}
+                    link={`/get-coins/Pusat/${lembagaPusat.id}`}
                   />
                 );
               })}
@@ -83,4 +96,4 @@ const KategoriUKMPage = () => {
   );
 };
 
-export default KategoriUKMPage;
+export default PusatPage;

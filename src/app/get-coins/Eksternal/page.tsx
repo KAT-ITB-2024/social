@@ -65,7 +65,7 @@ const EksternalPage = () => {
                   <LembagaCard
                     key={lembaga.id}
                     item={lembaga}
-                    link={`/kunjungan/Eksternal/${lembaga.id}`}
+                    link={`/get-coins/Eksternal/${lembaga.id}`}
                   />
                 );
               })}

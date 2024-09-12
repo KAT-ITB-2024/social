@@ -86,7 +86,7 @@ const KategoriUKMPage = () => {
                   <LembagaCard
                     key={item.id}
                     item={item}
-                    link={`/kunjungan/HMPS/${lastSegment}/${item.id}`}
+                    link={`/get-coins/HMPS/${lastSegment}/${item.id}`}
                   />
                 );
               })}
