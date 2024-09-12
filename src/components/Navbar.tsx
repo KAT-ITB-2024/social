@@ -137,7 +137,7 @@ const Navbar = () => {
       {/* Black Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 z-30 h-screen w-screen bg-black bg-opacity-80"
+          className="fixed inset-0 z-[1000] h-screen w-screen bg-black bg-opacity-80"
           onClick={handleToggleSidebar}
         >
           <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
