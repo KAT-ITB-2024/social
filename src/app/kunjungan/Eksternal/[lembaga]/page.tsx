@@ -13,13 +13,11 @@ import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
 import Arrow from 'public/images/kunjungan/send.svg';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import { api } from '~/trpc/react';
-import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
-import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 
-const UKMLembagaDetailPage = () => {
+const EksternalLembagaDetailPage = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
@@ -27,14 +25,6 @@ const UKMLembagaDetailPage = () => {
   const lastSegment = segments[segments.length - 1];
   if (!lastSegment) {
     return;
-  }
-
-  const { data, isLoading } = api.booth.getSpecificLembaga.useQuery({
-    lembagaId: lastSegment,
-  });
-
-  if (isLoading) {
-    return <LoadingSpinnerCustom />;
   }
 
   return (
@@ -97,11 +87,11 @@ const UKMLembagaDetailPage = () => {
               <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {data?.name ?? ''}
+              {lastSegment}
             </h3>
             {lastSegment !== 'Pusat' && (
               <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                Unit Kegiatan Mahasiswa
+                Lembaga Skibidi
               </p>
             )}
           </div>
@@ -111,7 +101,10 @@ const UKMLembagaDetailPage = () => {
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                onClick={() => setIsOpen(true)}
+              >
                 <Image
                   src={Arrow}
                   width={24}
@@ -154,4 +147,4 @@ const UKMLembagaDetailPage = () => {
   );
 };
 
-export default UKMLembagaDetailPage;
+export default EksternalLembagaDetailPage;

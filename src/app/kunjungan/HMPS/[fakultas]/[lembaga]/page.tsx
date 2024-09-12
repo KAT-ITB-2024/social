@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import IkanHijau from 'public/images/kunjungan/IkanHijau.png';
@@ -15,9 +15,14 @@ import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
+import Penyu from 'public/images/kunjungan/Penyu.png';
+import Gurita from 'public/images/kunjungan/Gurita.png';
 
 const HMPSLembagaDetailPage = () => {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(true);
+  const [isFalseOpen, setIsFalseOpen] = useState(false);
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1];
   if (!lastSegment) {
@@ -104,7 +109,10 @@ const HMPSLembagaDetailPage = () => {
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                onClick={() => setIsOpen(true)}
+              >
                 <Image
                   src={Arrow}
                   width={24}
@@ -125,6 +133,24 @@ const HMPSLembagaDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* IF SUCCESS */}
+      <KunjunganConfirmation
+        title="100 Coins"
+        image={Penyu}
+        description="Yeay! Kamu mendapatkan 100 coins sebagai hadiah atas kunjunganmu!"
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+
+      {/* IF FALSE */}
+      <KunjunganConfirmation
+        title="Oops!"
+        image={Gurita}
+        description="Sepertinya ada sedikit kesalahan. Periksa kembali kodenya dan coba lagi!"
+        isOpen={isFalseOpen}
+        setIsOpen={setIsFalseOpen}
+      />
     </main>
   );
 };

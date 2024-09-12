@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import React from 'react'
+import React from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
-import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png'
+import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
 import Link from 'next/link';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
@@ -42,59 +42,62 @@ const EksternalPage = () => {
           <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
             Eksternal
           </h3>
-          <div className='space-y-4'>
+          <div className="space-y-4">
             {/* Input  */}
-            <Input className='w-[400px] h-[50px] focus-visible:ring-transparent border-orange-400 border-2 placeholder:text-orange-300' placeholder='Search...' />
+            <Input
+              className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
+              placeholder="Search..."
+            />
 
             {/* Lembaga */}
-            <div className='space-y-2'>
+            <div className="space-y-2">
               {/* Lembaga Item */}
-              <div className='w-[400px] h-[75px] border-2 border-orange-500 shadow-orange-sm rounded-xl bg-gradient-to-r from-transparent to-orange-200/75 flex items-center justify-between px-4'>
-                <div className='flex gap-x-2 items-center'>
-                  <div className='relative'>
-                    <Image 
+              <div className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm">
+                <div className="flex items-center gap-x-2">
+                  <div className="relative">
+                    <Image
                       src={LembagaDummy}
-                      alt='Lembaga Dummy'
+                      alt="Lembaga Dummy"
                       height={72}
                       width={72}
                     />
                     {/* Gambar Lembaga */}
-                    <div className='absolute top-3 left-4 -z-20 rounded-full bg-orange-300 w-[45px] h-[45px]'>
-
-                    </div>
+                    <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
                   </div>
-                  <h3 className='text-2xl font-bold text-orange-500'>Lembaga Skibidi</h3>
+                  <h3 className="text-2xl font-bold text-orange-500">
+                    Lembaga Skibidi
+                  </h3>
                 </div>
                 <div>
-                  <Link href={`/kunjungan/eksternal`}>
-                    <Button className='bg-orange-400 hover:bg-orange-300 flex items-center justify-center p-2'>
-                      <MoveRight className='text-xl' />
+                  <Link href={`/kunjungan/Eksternal/lembagaDummy`}>
+                    <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
+                      <MoveRight className="text-xl" />
                     </Button>
                   </Link>
                 </div>
               </div>
 
               {/* Lembaga Item */}
-              <div className='w-[400px] h-[75px] border-2 border-orange-500 shadow-orange-sm rounded-xl bg-gradient-to-r from-transparent to-orange-200/75 flex items-center justify-between px-4'>
-                <div className='flex gap-x-2 items-center'>
-                  <div className='relative'>
-                    <Image 
+              <div className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm">
+                <div className="flex items-center gap-x-2">
+                  <div className="relative">
+                    <Image
                       src={LembagaDummy}
-                      alt='Lembaga Dummy'
+                      alt="Lembaga Dummy"
                       height={72}
                       width={72}
                     />
                     {/* Gambar Lembaga */}
-                    <div className='absolute top-3 left-4 -z-20 rounded-full bg-orange-300 w-[45px] h-[45px]'>
-
-                    </div>
+                    <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
                   </div>
-                  <h3 className='text-2xl font-bold text-orange-500'>Lembaga Skibidi</h3>
+                  <h3 className="text-2xl font-bold text-orange-500">
+                    Lembaga Skibidi
+                  </h3>
                 </div>
                 <div>
-                  <Link href={`/kunjungan/eksternal`}>
-                    <Button className='bg-orange-400 hover:bg-orange-300 flex items-center justify-center p-2'>
-                      <MoveRight className='text-xl' />
+                  <Link href={`/kunjungan/Eksternal/lembagaDummy`}>
+                    <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
+                      <MoveRight className="text-xl" />
                     </Button>
                   </Link>
                 </div>
@@ -104,7 +107,7 @@ const EksternalPage = () => {
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default EksternalPage
+export default EksternalPage;
