@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { RequestDrawer } from '~/components/merch/RequestDrawer';
 import { RequestSuccess } from '~/components/merch/RequestSuccess';
@@ -10,6 +10,9 @@ import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { toast } from 'sonner';
+import { redirect } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type Merch = {
   id: string;
@@ -21,13 +24,28 @@ type Merch = {
   image: string | null;
 };
 
+type CartItem = { item: Merch; quantity: number };
+
 export default function MerchPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  const [cartItems, setCartItems] = useState<
-    { item: Merch; quantity: number }[]
-  >([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const storedCartItems = localStorage.getItem('cartItems');
+        if (storedCartItems) {
+          return JSON.parse(storedCartItems) as CartItem[];
+        }
+      } catch (error) {
+        console.error('Error parsing cart items from localStorage:', error);
+      }
+    }
+    return [];
+  });
 
   const updateCart = (item: Merch, newQuantity: number) => {
     setCartItems((prevCart) => {
@@ -80,6 +98,14 @@ export default function MerchPage() {
     }
   };
 
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    } else {
+      localStorage.removeItem('cartItems');
+    }
+  }, [cartItems]);
+
   const totalQuantity = cartItems.reduce(
     (total, cartItem) => total + cartItem.quantity,
     0,
@@ -104,6 +130,11 @@ export default function MerchPage() {
   }
 
   const { userCoin, merchandiseList } = merchData;
+
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
+  if (!session || session.user.role !== 'Peserta') redirect('/login');
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -133,7 +164,10 @@ export default function MerchPage() {
 
             {/* Right section - History button */}
             <div className="flex items-center justify-center">
-              <button className="flex flex-col items-center justify-between gap-[5px] rounded-lg bg-blue-400 px-4 py-2 text-xs text-lightYellow shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+              <button
+                className="flex flex-col items-center justify-between gap-[5px] rounded-lg bg-blue-400 px-4 py-2 text-xs text-lightYellow shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onClick={() => router.push('/order-history')}
+              >
                 <Image
                   src="/icons/merch/history.svg"
                   alt="History"

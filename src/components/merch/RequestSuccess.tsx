@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import CloseIcon from 'public/icons/merch/close.svg';
 import { cn } from '~/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export const RequestSuccess = ({
   total_coins,
@@ -24,6 +25,7 @@ export const RequestSuccess = ({
   setIsOpen: (param: boolean) => void;
   className?: string;
 }) => {
+  const router = useRouter();
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent
@@ -50,7 +52,10 @@ export const RequestSuccess = ({
             (Koinmu sekarang: {total_coins})
           </div>
         </AlertDialogDescription>
-        <Button className="mt-5 bg-turquoise-100 px-2 text-blue-500">
+        <Button
+          className="mt-5 bg-turquoise-100 px-2 text-blue-500"
+          onClick={() => router.push('/order-history')}
+        >
           <Image
             src={Receipt}
             alt="cart"
