@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import IkanHijau from 'public/images/kunjungan/IkanHijau.png'
@@ -13,12 +13,18 @@ import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png'
 import Arrow from 'public/images/kunjungan/send.svg'
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
+import Penyu from 'public/images/kunjungan/Penyu.png'
+import Gurita from 'public/images/kunjungan/Gurita.png'
+import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 
 const UKMLembagaDetailPage = () => {
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean);
   // @ts-ignore
   const latestSegment = segments.length > 0 ? segments[segments.length - 1].replace(/%20/g, ' ') : '';
+
+  const [isOpen, setIsOpen] = useState(true)
+  const [isFalseOpen, setIsFalseOpen] = useState(false)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -113,6 +119,25 @@ const UKMLembagaDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* IF SUCCESS */}
+      <KunjunganConfirmation 
+        title="100 Coins"
+        image={Penyu}
+        description="Yeay! Kamu mendapatkan 100 coins sebagai hadiah atas kunjunganmu!"
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+
+      {/* IF FALSE */}
+      <KunjunganConfirmation 
+        title="Oops!"
+        image={Gurita}
+        description="Sepertinya ada sedikit kesalahan. Periksa kembali kodenya dan coba lagi!"
+        isOpen={isFalseOpen}
+        setIsOpen={setIsFalseOpen}
+      />
+
     </main>
   )
 }

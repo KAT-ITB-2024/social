@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import IkanHijau from 'public/images/kunjungan/IkanHijau.png'
@@ -13,12 +13,18 @@ import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png'
 import Arrow from 'public/images/kunjungan/send.svg'
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
+import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
+import Penyu from 'public/images/kunjungan/Penyu.png'
+import Gurita from 'public/images/kunjungan/Gurita.png'
 
 const HMPSLembagaDetailPage = () => {
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean);
   // @ts-ignore
   const latestSegment = segments.length > 0 ? segments[segments.length - 1].replace(/%20/g, ' ') : '';
+
+  const [isOpen, setIsOpen] = useState(true)
+  const [isFalseOpen, setIsFalseOpen] = useState(false)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -95,7 +101,10 @@ const HMPSLembagaDetailPage = () => {
           <div className='translate-y-[-35px] space-y-2'>
             <div className='flex items-center w-full gap-x-4'>
               <Input className='border-2 border-orange-400 w-[300px] h-[50px] placeholder:text-orange-300 shadow-orange-md' placeholder='Masukkan Kode'/>
-              <Button className='bg-orange-400 hover:bg-orange-300 shadow-orange-md h-[50px]'>
+              <Button 
+                className='bg-orange-400 hover:bg-orange-300 shadow-orange-md h-[50px]'
+                onClick={() => setIsOpen(true)}
+              >
                 <Image 
                   src={Arrow}
                   width={24}
@@ -106,13 +115,35 @@ const HMPSLembagaDetailPage = () => {
               </Button>
             </div>
             <div>
-              <Button variant={"outline"} className='w-full text-orange-400 hover:text-orange-500 hover:bg-orange-100/25 h-[50px] border-2 border-orange-400 bg-transparent'>
+              <Button 
+                variant={"outline"} 
+                className='w-full text-orange-400 hover:text-orange-500 hover:bg-orange-100/25 h-[50px] border-2 border-orange-400 bg-transparent' 
+              >
                 Tentang Lembaga
               </Button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* IF SUCCESS */}
+      <KunjunganConfirmation 
+        title="100 Coins"
+        image={Penyu}
+        description="Yeay! Kamu mendapatkan 100 coins sebagai hadiah atas kunjunganmu!"
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+
+      {/* IF FALSE */}
+      <KunjunganConfirmation 
+        title="Oops!"
+        image={Gurita}
+        description="Sepertinya ada sedikit kesalahan. Periksa kembali kodenya dan coba lagi!"
+        isOpen={isFalseOpen}
+        setIsOpen={setIsFalseOpen}
+      />
+
     </main>
   )
 }
