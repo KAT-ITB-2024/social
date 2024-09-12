@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
 import { ClassData } from './classData';
 
@@ -316,6 +316,17 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     rankPercentage: '90',
     favTopicCount: 1,
   });
+
+  // await db.insert(schema.wrappedProfiles).values({
+  //   userId: user[1].id,
+  //   name: 'User 1',
+  //   updatedAt: new Date(),
+  //   favTopics: ['General'],
+  //   submittedQuest: 8,
+  //   totalMatch: 0,
+  //   rank: 80,
+  //   rankPercentage: 90,
+  // });
 }
 
 export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
@@ -419,7 +430,8 @@ export async function seedHistoryTransaction(
   const users = await db
     .select()
     .from(schema.users)
-    .orderBy(asc(schema.users.nim))
+    .where(eq(schema.users.role, 'Peserta'))
+    .orderBy(desc(schema.users.nim))
     .limit(3);
 
   for (let i = 0; i < 3; i++) {

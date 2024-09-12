@@ -52,7 +52,6 @@ export const submissionRouter = createTRPCRouter({
             )
             .where(eq(assignments.id, input.assignmentId))
             .then((result) => result[0]);
-
           if (!assignment) {
             throw new TRPCError({
               code: 'NOT_FOUND',
@@ -63,7 +62,7 @@ export const submissionRouter = createTRPCRouter({
           // Delete existing submission if it exists
           if (assignment.submissionId) {
             // Only delete if it is individual assignment
-            if (assignment.assignmentType == assignmentTypeEnum.enumName[0])
+            if (assignment.assignmentType == assignmentTypeEnum.enumValues[0])
               await transaction
                 .delete(assignmentSubmissions)
                 .where(eq(assignmentSubmissions.id, assignment.submissionId));
@@ -91,8 +90,8 @@ export const submissionRouter = createTRPCRouter({
                 userNim: ctx?.session?.user.nim ?? '',
                 filename: input.filename,
                 downloadUrl: input.downloadUrl,
-                createdAt: getCurrentWIBTime(),
-                updatedAt: getCurrentWIBTime(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
                 point: null,
               })
               .returning({
@@ -135,8 +134,8 @@ export const submissionRouter = createTRPCRouter({
                 userNim: userDetail.nim,
                 filename: input.filename,
                 downloadUrl: input.downloadUrl,
-                createdAt: getCurrentWIBTime(),
-                updatedAt: getCurrentWIBTime(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
                 point: newPoint,
               };
             });
