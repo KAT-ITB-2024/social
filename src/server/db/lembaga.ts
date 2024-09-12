@@ -6,17 +6,18 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import csv from 'csv-parser';
 import path from 'path';
+import { randomBytes } from 'crypto';
 
 // Tentukan path file csv
-const csvFilePath = path.resolve(__dirname, './list.csv');
+const csvFilePath = path.resolve(__dirname, './lembaga.csv');
 type UserCSV = {
-  x: string;
-  name: string;
   nim: string;
   password: string;
+  rumpun: string;
   lembagaName: string;
-  lembagaEnum: string;
+  link?: string;
   group?: string;
+  logo?: string;
 };
 
 export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
@@ -38,10 +39,10 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
   });
   console.log('ini users', users[1]);
   for (const user of users) {
-    const { nim, password, lembagaName, lembagaEnum, group } = user;
+    const { nim, password, lembagaName, rumpun, group, link, logo } = user;
 
     let index = 0;
-    switch (lembagaEnum) {
+    switch (rumpun) {
       case 'BSO':
         index = 0;
         break;
@@ -67,6 +68,8 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
       return;
     }
 
+    const code = randomBytes(3).toString('hex').toUpperCase();
+
     try {
       const newUser = await db
         .insert(schema.users)
@@ -86,12 +89,14 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
         updatedAt: new Date(),
         userId: newUser[0].id,
         detailedCategory: group,
+        detailLink: link,
+        logo,
+        currentToken: code,
+        currentExpiry: new Date(Date.now() + 5 * 60 * 1000),
       });
     } catch (error) {
       console.log('Error', error);
     }
-
-    console.log(nim, password, lembagaName);
   }
 }
 
