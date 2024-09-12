@@ -89,7 +89,7 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
         updatedAt: new Date(),
         userId: newUser[0].id,
         detailedCategory: group,
-        detailLink: link,
+        detailLink: `https://oskmitb.com/itb-x/detail/${link}`,
         logo,
         currentToken: code,
         currentExpiry: new Date(Date.now() + 5 * 60 * 1000),
