@@ -23,6 +23,12 @@ export const wrappedRouter = createTRPCRouter({
         message: "User's oskm wrapped not found!",
       });
     }
+
+    if (oskmWrapped[0]) {
+      const rankPercentageNumber = oskmWrapped[0].rankPercentage;
+      oskmWrapped[0].rankPercentage = Number(rankPercentageNumber).toFixed(2);
+    }
+
     return oskmWrapped[0];
   }),
 });

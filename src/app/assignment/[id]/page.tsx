@@ -40,9 +40,14 @@ export default function DetailPage({ params }: { params: { id: string } }) {
     data: assignment,
     isLoading,
     refetch,
-  } = api.assignment.getQuestById.useQuery({
-    id: params.id,
-  });
+  } = api.assignment.getQuestById.useQuery(
+    {
+      id: params.id,
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   const submissionMutation = api.submission.postSubmission.useMutation();
 
