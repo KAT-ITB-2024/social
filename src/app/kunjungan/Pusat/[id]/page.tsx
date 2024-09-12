@@ -99,7 +99,17 @@ const HimpunanDetailPage = () => {
                 className="h-[250px] w-[266px]"
               />
               {/* FOTO LEMBAGA */}
-              <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
+              {data?.specificLembaga?.logo ? (
+                <Image
+                  src={data.specificLembaga.logo}
+                  alt="Lembaga"
+                  height={175}
+                  width={175}
+                  className="absolute left-[50px] top-9 -z-20 rounded-full"
+                />
+              ) : (
+                <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300" />
+              )}
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {data?.specificLembaga?.name ?? ''}

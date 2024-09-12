@@ -15,6 +15,7 @@ import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import NotFound from '~/app/not-found';
+import { LembagaCard } from '~/components/kunjungan/LembagaCard';
 
 const KategoriUKMPage = () => {
   const pathname = usePathname();
@@ -82,33 +83,11 @@ const KategoriUKMPage = () => {
               {/* Lembaga Item */}
               {lembagaData?.data.map((item) => {
                 return (
-                  <div
+                  <LembagaCard
                     key={item.id}
-                    className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm"
-                  >
-                    <div className="flex items-center gap-x-2">
-                      <div className="relative">
-                        <Image
-                          src={item.logo ?? LembagaDummy}
-                          alt="Lembaga Dummy"
-                          height={72}
-                          width={72}
-                        />
-                        {/* Gambar Lembaga */}
-                        <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
-                      </div>
-                      <h3 className="text-2xl font-bold text-orange-500">
-                        {item.name}
-                      </h3>
-                    </div>
-                    <div>
-                      <Link href={`/kunjungan/HMPS/${lastSegment}/${item.id}`}>
-                        <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
-                          <MoveRight className="text-xl" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
+                    item={item}
+                    link={`/kunjungan/HMPS/${lastSegment}/${item.id}`}
+                  />
                 );
               })}
             </div>
