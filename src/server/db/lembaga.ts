@@ -21,7 +21,6 @@ type UserCSV = {
 
 export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
   const users: UserCSV[] = [];
-  console.log('INI CSV FILE PATH', csvFilePath);
   // Bungkus dalam Promise agar dapat menunggu proses pembacaan CSV selesai
   await new Promise<void>((resolve, reject) => {
     fs.createReadStream(csvFilePath)
@@ -37,7 +36,6 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
         reject(error); // Tangani error jika ada
       });
   });
-  console.log('ini users lenght', users.length);
   for (const user of users) {
     const { nim, password, lembagaName, lembagaEnum, group } = user;
 

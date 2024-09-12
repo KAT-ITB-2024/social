@@ -14,16 +14,14 @@ import { Button } from '~/components/ui/button';
 import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
 
-const FakultasPage = () => {
+const PusatPage = () => {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1];
   if (!lastSegment) {
     return;
   }
-  const { data } = api.booth.getHmpsByFaculty.useQuery({
-    faculty: lastSegment,
-  });
+  const { data } = api.booth.getLembagaPusat.useQuery();
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -71,30 +69,37 @@ const FakultasPage = () => {
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              <div className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm">
-                <div className="flex items-center gap-x-2">
-                  <div className="relative">
-                    <Image
-                      src={LembagaDummy}
-                      alt="Lembaga Dummy"
-                      height={72}
-                      width={72}
-                    />
-                    {/* Gambar Lembaga */}
-                    <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
+              {data?.map((lembagaPusat) => {
+                return (
+                  <div
+                    key={lembagaPusat.id}
+                    className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <div className="relative">
+                        <Image
+                          src={lembagaPusat.logo ?? LembagaDummy}
+                          alt="Lembaga Dummy"
+                          height={72}
+                          width={72}
+                        />
+                        {/* Gambar Lembaga */}
+                        <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
+                      </div>
+                      <h3 className="text-2xl font-bold text-orange-500">
+                        {lembagaPusat.name}
+                      </h3>
+                    </div>
+                    <div>
+                      <Link href={`/kunjungan/Pusat/${lembagaPusat.id}`}>
+                        <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
+                          <MoveRight className="text-xl" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-orange-500">
-                    Lembaga Skibidi
-                  </h3>
-                </div>
-                <div>
-                  <Link href={`/kunjungan/HMPS/${lastSegment}/lembagaDummy`}>
-                    <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
-                      <MoveRight className="text-xl" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -103,4 +108,4 @@ const FakultasPage = () => {
   );
 };
 
-export default FakultasPage;
+export default PusatPage;

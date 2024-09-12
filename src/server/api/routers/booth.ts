@@ -119,12 +119,25 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
+  getLembagaPusat: pesertaProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User not logged in yet!',
+      });
+    }
+
+    const lembaga = await ctx.db
+      .select()
+      .from(lembagaProfiles)
+      .where(eq(lembagaProfiles.lembaga, 'Pusat'));
+    return lembaga;
+  }),
+
   GetOtherLembaga: pesertaProcedure
     .input(
       z.object({
         lembagaName: z.string().default(''),
-        limit: z.number().min(1).default(10),
-        page: z.number().min(1).default(1),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -136,8 +149,7 @@ export const boothRouter = createTRPCRouter({
       }
 
       try {
-        const { lembagaName, limit, page } = input;
-        const offset = (page - 1) * limit;
+        const { lembagaName } = input;
 
         const otherLembaga = await ctx.db
           .select({
@@ -151,20 +163,10 @@ export const boothRouter = createTRPCRouter({
               ilike(lembagaProfiles.name, `%${lembagaName}%`),
               inArray(lembagaProfiles.lembaga, ['BSO', 'Pusat', 'Eksternal']),
             ),
-          )
-          .limit(limit)
-          .offset(offset);
+          );
 
         // To calculate max page number for FE
-        const numberOfData = otherLembaga.length;
-        const totalPage = Math.max(1, Math.ceil(numberOfData / limit));
-
-        return {
-          data: otherLembaga,
-          nextPage: otherLembaga.length < limit ? undefined : page + 1,
-          totalPage: totalPage,
-          limit: limit,
-        };
+        return otherLembaga;
       } catch (error) {
         console.log(error);
         throw new TRPCError({

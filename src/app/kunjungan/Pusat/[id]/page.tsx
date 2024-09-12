@@ -15,19 +15,20 @@ import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
-import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
+import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 
-const HMPSLembagaDetailPage = () => {
+const HimpunanDetailPage = () => {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
   const segments = pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
+  const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
   }
+
   const { data, isLoading } = api.booth.getSpecificLembaga.useQuery({
     lembagaId: lastSegment,
   });
@@ -35,6 +36,7 @@ const HMPSLembagaDetailPage = () => {
   if (isLoading) {
     return <LoadingSpinnerCustom />;
   }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -95,11 +97,11 @@ const HMPSLembagaDetailPage = () => {
               <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {lastSegment}
+              {data?.name ?? ''}
             </h3>
             {lastSegment !== 'Pusat' && (
               <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                HMPS dan BSO HMPS
+                Unit Kegiatan Mahasiswa
               </p>
             )}
           </div>
@@ -109,10 +111,7 @@ const HMPSLembagaDetailPage = () => {
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
               />
-              <Button
-                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
-                onClick={() => setIsOpen(true)}
-              >
+              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
                 <Image
                   src={Arrow}
                   width={24}
@@ -123,12 +122,15 @@ const HMPSLembagaDetailPage = () => {
               </Button>
             </div>
             <div>
-              <Button
-                variant={'outline'}
-                className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-              >
-                Tentang Lembaga
-              </Button>
+              {data?.detailLink && (
+                <Button
+                  variant={'outline'}
+                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  // TO DO : Pasang link dri info
+                >
+                  Tentang Lembaga
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -155,4 +157,4 @@ const HMPSLembagaDetailPage = () => {
   );
 };
 
-export default HMPSLembagaDetailPage;
+export default HimpunanDetailPage;
