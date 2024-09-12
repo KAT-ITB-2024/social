@@ -69,7 +69,7 @@ const KategoriUKMPage = () => {
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {lembagaData?.data.map((item) => {
+              {lembagaData?.map((item) => {
                 return (
                   <div
                     key={item.id}

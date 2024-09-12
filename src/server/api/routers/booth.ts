@@ -67,8 +67,6 @@ export const boothRouter = createTRPCRouter({
       z.object({
         lembagaName: z.string().default(''),
         rumpun: z.string(),
-        limit: z.number().min(1).default(10),
-        page: z.number().min(1).default(1),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -80,8 +78,7 @@ export const boothRouter = createTRPCRouter({
       }
 
       try {
-        const { lembagaName, rumpun, limit, page } = input;
-        const offset = (page - 1) * limit;
+        const { lembagaName, rumpun } = input;
 
         const UKMByRumpun = await ctx.db
           .select({
@@ -96,20 +93,9 @@ export const boothRouter = createTRPCRouter({
               eq(lembagaProfiles.lembaga, 'UKM'),
               eq(lembagaProfiles.detailedCategory, rumpun),
             ),
-          )
-          .limit(limit)
-          .offset(offset);
+          );
 
-        // To calculate max page number for FE
-        const numberOfData = UKMByRumpun.length;
-        const totalPage = Math.max(1, Math.ceil(numberOfData / limit));
-
-        return {
-          data: UKMByRumpun,
-          nextPage: UKMByRumpun.length < limit ? undefined : page + 1,
-          totalPage: totalPage,
-          limit: limit,
-        };
+        return UKMByRumpun;
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -226,7 +212,7 @@ export const boothRouter = createTRPCRouter({
   }),
 
   // Presensi
-  AttendBooth: pesertaProcedure
+  attendBooth: pesertaProcedure
     .input(
       z.object({
         lembagaId: z.string(),
@@ -240,7 +226,7 @@ export const boothRouter = createTRPCRouter({
           message: 'User not logged in!',
         });
       }
-
+      console.log('ctx session user', ctx.session.user);
       const { lembagaId, insertedToken } = input;
 
       // Wrap related updates and queries in a transaction
@@ -294,8 +280,6 @@ export const boothRouter = createTRPCRouter({
               message: 'Token invalid',
             });
           }
-
-          // Register attendance in the visitors table
           await trx.insert(visitors).values({
             userId: userId,
             boothId: lembagaId,

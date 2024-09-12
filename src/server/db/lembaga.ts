@@ -8,7 +8,7 @@ import csv from 'csv-parser';
 import path from 'path';
 
 // Tentukan path file csv
-const csvFilePath = path.resolve(__dirname, './lembaga.csv');
+const csvFilePath = path.resolve(__dirname, './list.csv');
 type UserCSV = {
   x: string;
   name: string;
@@ -36,6 +36,7 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
         reject(error); // Tangani error jika ada
       });
   });
+  console.log('ini users', users[1]);
   for (const user of users) {
     const { nim, password, lembagaName, lembagaEnum, group } = user;
 
@@ -76,7 +77,6 @@ export async function seedUserFromCsv(db: PostgresJsDatabase<typeof schema>) {
           updatedAt: new Date(),
         })
         .returning();
-      console.log('ini new user', newUser);
       if (!newUser[0]) {
         throw new Error(`Error inserting user`);
       }

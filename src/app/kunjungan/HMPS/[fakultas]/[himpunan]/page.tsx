@@ -24,7 +24,16 @@ const HimpunanDetailPage = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
+  const [inputPin, setInputPin] = useState('');
   const segments = pathname.split('/').filter(Boolean);
+  const { mutate: attendBooth } = api.booth.attendBooth.useMutation({
+    onSuccess() {
+      setIsOpen(true);
+    },
+    onError() {
+      setIsFalseOpen(true);
+    },
+  });
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
@@ -41,6 +50,12 @@ const HimpunanDetailPage = () => {
   if (!data && !isLoading) {
     return <NotFound />;
   }
+
+  const handleSubmit = async () => {
+    if (inputPin) {
+      attendBooth({ lembagaId: lastSegment, insertedToken: inputPin });
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -115,8 +130,13 @@ const HimpunanDetailPage = () => {
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
+                value={inputPin}
+                onChange={(e) => setInputPin(e.target.value)}
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                onClick={handleSubmit}
+              >
                 <Image
                   src={Arrow}
                   width={24}
