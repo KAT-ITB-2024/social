@@ -32,7 +32,7 @@ const OrderHistoryList = () => {
     : data.exchanges;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-[65vh] flex-grow flex-col gap-4">
       {/* Dropdown menu for selecting filters */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -63,16 +63,14 @@ const OrderHistoryList = () => {
       </DropdownMenu>
 
       {/* Render filtered cards */}
-      <div className="item-center flex flex-col justify-between">
-        <div className="flex flex-col gap-4">
-          {filteredExchanges.length > 0 ? (
-            filteredExchanges.map((card, index) => (
-              <OrderHistoryCard key={card.id} {...card} index={index} />
-            ))
-          ) : (
-            <p>Kamu belum menukar apapun</p>
-          )}
-        </div>
+      <div className="no-scrollbar flex flex-grow flex-col gap-y-4 overflow-y-auto">
+        {filteredExchanges.length > 0 ? (
+          filteredExchanges.map((card, index) => (
+            <OrderHistoryCard key={card.id} {...card} index={index} />
+          ))
+        ) : (
+          <p>Kamu belum menukar apapun</p>
+        )}
       </div>
     </div>
   );
