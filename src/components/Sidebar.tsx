@@ -52,11 +52,11 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     //   src: '/icons/sidebar/get-coins.svg',
     //   text: 'Get Coins',
     // },
-    // {
-    //   href: '#',
-    //   src: '/icons/sidebar/request-merch.svg',
-    //   text: 'Request Merch',
-    // },
+    {
+      href: '/merch',
+      src: '/icons/sidebar/request-merch.svg',
+      text: 'Request Merch',
+    },
     {
       href: '/profile',
       src: '/icons/sidebar/profile.svg',
