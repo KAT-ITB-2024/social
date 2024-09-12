@@ -1,31 +1,42 @@
-"use client"
+'use client';
 
-import React from 'react'
+import React from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import IkanHijau from 'public/images/kunjungan/IkanHijau.png'
-import IkanOrange from 'public/images/kunjungan/IkanOrange.png'
-import BintangLaut from 'public/images/kunjungan/BintangLaut.png'
-import CoralKanan from 'public/images/kunjungan/CoralKanan.png'
-import CoralTengah from 'public/images/kunjungan/CoralTengah.png'
-import CoralKiri from 'public/images/kunjungan/CoralKiri.png'
-import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png'
-import Arrow from 'public/images/kunjungan/send.svg'
+import IkanHijau from 'public/images/kunjungan/IkanHijau.png';
+import IkanOrange from 'public/images/kunjungan/IkanOrange.png';
+import BintangLaut from 'public/images/kunjungan/BintangLaut.png';
+import CoralKanan from 'public/images/kunjungan/CoralKanan.png';
+import CoralTengah from 'public/images/kunjungan/CoralTengah.png';
+import CoralKiri from 'public/images/kunjungan/CoralKiri.png';
+import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
+import Arrow from 'public/images/kunjungan/send.svg';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const UKMLembagaDetailPage = () => {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
-  // @ts-ignore
-  const latestSegment = segments.length > 0 ? segments[segments.length - 1].replace(/%20/g, ' ') : '';
+  const lastSegment = segments[segments.length - 1];
+  if (!lastSegment) {
+    return;
+  }
 
+  const { data, isLoading } = api.booth.getSpecificLembaga.useQuery({
+    lembagaId: lastSegment,
+  });
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
         src={IkanHijau}
         alt="bg-tl"
-        className="absolute left-0 -top-16 z-20"
+        className="absolute -top-16 left-0 z-20"
         width={256}
       />
       <Image
@@ -37,7 +48,7 @@ const UKMLembagaDetailPage = () => {
       <Image
         src={BintangLaut}
         alt="bg-bl"
-        className="absolute top-[125px] left-0 z-20"
+        className="absolute left-0 top-[125px] z-20"
         width={90}
       />
       <Image
@@ -68,45 +79,47 @@ const UKMLembagaDetailPage = () => {
         }}
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <div className='space-y-2 text-center translate-y-[-50px]'>
-            <div className='relative'>
+          <div className="translate-y-[-50px] space-y-2 text-center">
+            <div className="relative">
               {/* FRAME */}
-              <Image 
+              <Image
                 src={LembagaDummy}
-                alt='Lembaga Dummy'
-                className='w-[266px] h-[250px]'
+                alt="Lembaga Dummy"
+                className="h-[250px] w-[266px]"
               />
               {/* FOTO LEMBAGA */}
-              <div className='absolute top-9 left-[50px] -z-20 rounded-full bg-orange-300 w-[175px] h-[175px]'>
-              
-              </div> 
+              <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {latestSegment}
+              {data?.name ?? ''}
             </h3>
-            {
-              latestSegment !== 'Pusat' && (
-                <p className='text-pink-300 text-2xl text-shadow-orange-md'>
-                  Unit Kegiatan Mahasiswa
-                </p>
-              )
-            }
+            {lastSegment !== 'Pusat' && (
+              <p className="text-2xl text-pink-300 text-shadow-orange-md">
+                Unit Kegiatan Mahasiswa
+              </p>
+            )}
           </div>
-          <div className='translate-y-[-35px] space-y-2'>
-            <div className='flex items-center w-full gap-x-4'>
-              <Input className='border-2 border-orange-400 w-[300px] h-[50px] placeholder:text-orange-300 shadow-orange-md' placeholder='Masukkan Kode'/>
-              <Button className='bg-orange-400 hover:bg-orange-300 shadow-orange-md h-[50px]'>
-                <Image 
+          <div className="translate-y-[-35px] space-y-2">
+            <div className="flex w-full items-center gap-x-4">
+              <Input
+                className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
+                placeholder="Masukkan Kode"
+              />
+              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+                <Image
                   src={Arrow}
                   width={24}
                   height={24}
-                  className='text-white'
-                  alt='Arrow'
+                  className="text-white"
+                  alt="Arrow"
                 />
               </Button>
             </div>
             <div>
-              <Button variant={"outline"} className='w-full text-orange-400 hover:text-orange-500 hover:bg-orange-100/25 h-[50px] border-2 border-orange-400 bg-transparent'>
+              <Button
+                variant={'outline'}
+                className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+              >
                 Tentang Lembaga
               </Button>
             </div>
@@ -114,7 +127,7 @@ const UKMLembagaDetailPage = () => {
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default UKMLembagaDetailPage
+export default UKMLembagaDetailPage;

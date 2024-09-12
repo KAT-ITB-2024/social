@@ -5,7 +5,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 export const boothRouter = createTRPCRouter({
-  GetHMPSByFaculty: pesertaProcedure
+  getHmpsByFaculty: pesertaProcedure
     .input(
       z.object({
         lembagaName: z.string().default(''),
@@ -62,7 +62,7 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
-  GetUKMByRumpun: pesertaProcedure
+  getUkmByRumpun: pesertaProcedure
     .input(
       z.object({
         lembagaName: z.string().default(''),
@@ -174,9 +174,14 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
-  GetSpecificLembaga: pesertaProcedure
-    .input(z.string())
-    .query(async ({ ctx, input: lembagaId }) => {
+  getSpecificLembaga: pesertaProcedure
+    .input(
+      z.object({
+        lembagaId: z.string().default(''),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { lembagaId } = input;
       if (!ctx.session) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',

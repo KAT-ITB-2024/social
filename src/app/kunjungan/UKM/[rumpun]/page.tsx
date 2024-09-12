@@ -1,23 +1,29 @@
-"use client"
+'use client';
 
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
 import bgbr from 'public/images/kunjungan/UKM/bg-br.png';
 import Link from 'next/link';
-import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png'
+import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
 import { Input } from '~/components/ui/input';
 import { usePathname } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { MoveRight } from 'lucide-react';
+import { api } from '~/trpc/react';
 
 const KategoriUKMPage = () => {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
-  // @ts-ignore
-  const latestSegment = segments.length > 0 ? segments[segments.length - 1].replace(/%20/g, ' ') : '';
+  const lastSegment = segments[segments.length - 1];
+  if (!lastSegment) {
+    return;
+  }
+  const { data: lembagaData } = api.booth.getUkmByRumpun.useQuery({
+    rumpun: lastSegment,
+  });
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -46,51 +52,61 @@ const KategoriUKMPage = () => {
         }}
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <div className='space-y-2 text-center'>
+          <div className="space-y-2 text-center">
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {latestSegment}
+              {lastSegment}
             </h3>
-            <p className='text-pink-300 text-2xl text-shadow-orange-md'>
+            <p className="text-2xl text-pink-300 text-shadow-orange-md">
               Unit Kegiatan Mahasiswa
             </p>
           </div>
-          <div className='space-y-4'>
+          <div className="space-y-4">
             {/* Input  */}
-            <Input className='w-[400px] h-[50px] focus-visible:ring-transparent border-orange-400 border-2 placeholder:text-orange-300' placeholder='Search...' />
+            <Input
+              className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
+              placeholder="Search..."
+            />
 
             {/* Lembaga */}
-            <div className='space-y-2'>
-             {/* Lembaga Item */}
-             <div className='w-[400px] h-[75px] border-2 border-orange-500 shadow-orange-sm rounded-xl bg-gradient-to-r from-transparent to-orange-200/75 flex items-center justify-between px-4'>
-                <div className='flex gap-x-2 items-center'>
-                  <div className='relative'>
-                    <Image 
-                      src={LembagaDummy}
-                      alt='Lembaga Dummy'
-                      height={72}
-                      width={72}
-                    />
-                    {/* Gambar Lembaga */}
-                    <div className='absolute top-3 left-4 -z-20 rounded-full bg-orange-300 w-[45px] h-[45px]'>
-
+            <div className="space-y-2">
+              {/* Lembaga Item */}
+              {lembagaData?.data.map((item) => {
+                return (
+                  <div
+                    key={item.id}
+                    className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <div className="relative">
+                        <Image
+                          src={item.logo ?? LembagaDummy}
+                          alt="Lembaga Dummy"
+                          height={72}
+                          width={72}
+                        />
+                        {/* Gambar Lembaga */}
+                        <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
+                      </div>
+                      <h3 className="text-2xl font-bold text-orange-500">
+                        {item.name}
+                      </h3>
+                    </div>
+                    <div>
+                      <Link href={`/kunjungan/UKM/${lastSegment}/${item.id}`}>
+                        <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
+                          <MoveRight className="text-xl" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                  <h3 className='text-2xl font-bold text-orange-500'>Lembaga Skibidi</h3>
-                </div>
-                <div>
-                  <Link href={`/kunjungan/UKM/${latestSegment}/lembagaDummy`}>
-                    <Button className='bg-orange-400 hover:bg-orange-300 flex items-center justify-center p-2'>
-                      <MoveRight className='text-xl' />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default KategoriUKMPage
+export default KategoriUKMPage;
