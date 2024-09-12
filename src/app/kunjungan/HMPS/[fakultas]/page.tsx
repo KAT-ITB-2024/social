@@ -13,6 +13,8 @@ import { usePathname } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import NotFound from '~/app/not-found';
 
 const KategoriUKMPage = () => {
   const pathname = usePathname();
@@ -21,9 +23,18 @@ const KategoriUKMPage = () => {
   if (!lastSegment) {
     return;
   }
-  const { data: lembagaData } = api.booth.getHmpsByFaculty.useQuery({
+  const { data: lembagaData, isLoading } = api.booth.getHmpsByFaculty.useQuery({
     faculty: lastSegment,
   });
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (!lembagaData && !isLoading) {
+    return <NotFound />;
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image

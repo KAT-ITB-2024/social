@@ -16,15 +16,30 @@ import { Button } from '~/components/ui/button';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import NotFound from '~/app/not-found';
 
 const EksternalLembagaDetailPage = () => {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
   const segments = pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
+  const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
+  }
+
+  const { data, isLoading } = api.booth.getSpecificLembaga.useQuery({
+    lembagaId: lastSegment,
+  });
+
+  if (!data) {
+    return <NotFound />;
+  }
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
   }
 
   return (
@@ -87,11 +102,11 @@ const EksternalLembagaDetailPage = () => {
               <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {lastSegment}
+              {data?.specificLembaga?.name ?? ''}
             </h3>
             {lastSegment !== 'Pusat' && (
               <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                Lembaga Skibidi
+                Lembaga Eksternal
               </p>
             )}
           </div>
@@ -100,6 +115,7 @@ const EksternalLembagaDetailPage = () => {
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
+                disabled={data.hasVisited}
               />
               <Button
                 className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
@@ -112,14 +128,6 @@ const EksternalLembagaDetailPage = () => {
                   className="text-white"
                   alt="Arrow"
                 />
-              </Button>
-            </div>
-            <div>
-              <Button
-                variant={'outline'}
-                className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-              >
-                Tentang Lembaga
               </Button>
             </div>
           </div>

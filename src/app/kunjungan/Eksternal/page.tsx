@@ -10,8 +10,15 @@ import Link from 'next/link';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import { MoveRight } from 'lucide-react';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const EksternalPage = () => {
+  const { data: lembagaData, isLoading } =
+    api.booth.getLembagaExternal.useQuery();
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -52,56 +59,37 @@ const EksternalPage = () => {
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              <div className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm">
-                <div className="flex items-center gap-x-2">
-                  <div className="relative">
-                    <Image
-                      src={LembagaDummy}
-                      alt="Lembaga Dummy"
-                      height={72}
-                      width={72}
-                    />
-                    {/* Gambar Lembaga */}
-                    <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
+              {lembagaData?.map((lembaga) => {
+                return (
+                  <div
+                    key={lembaga.id}
+                    className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm"
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <div className="relative">
+                        <Image
+                          src={lembaga.logo ?? LembagaDummy}
+                          alt="Lembaga Dummy"
+                          height={72}
+                          width={72}
+                        />
+                        {/* Gambar Lembaga */}
+                        <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
+                      </div>
+                      <h3 className="text-2xl font-bold text-orange-500">
+                        {lembaga.name}
+                      </h3>
+                    </div>
+                    <div>
+                      <Link href={`/kunjungan/Eksternal/${lembaga.id}`}>
+                        <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
+                          <MoveRight className="text-xl" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-orange-500">
-                    Lembaga Skibidi
-                  </h3>
-                </div>
-                <div>
-                  <Link href={`/kunjungan/Eksternal/lembagaDummy`}>
-                    <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
-                      <MoveRight className="text-xl" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Lembaga Item */}
-              <div className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm">
-                <div className="flex items-center gap-x-2">
-                  <div className="relative">
-                    <Image
-                      src={LembagaDummy}
-                      alt="Lembaga Dummy"
-                      height={72}
-                      width={72}
-                    />
-                    {/* Gambar Lembaga */}
-                    <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
-                  </div>
-                  <h3 className="text-2xl font-bold text-orange-500">
-                    Lembaga Skibidi
-                  </h3>
-                </div>
-                <div>
-                  <Link href={`/kunjungan/Eksternal/lembagaDummy`}>
-                    <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
-                      <MoveRight className="text-xl" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>

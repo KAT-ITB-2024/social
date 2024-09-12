@@ -13,6 +13,8 @@ import { usePathname } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import NotFound from '~/app/not-found';
 
 const PusatPage = () => {
   const pathname = usePathname();
@@ -21,7 +23,14 @@ const PusatPage = () => {
   if (!lastSegment) {
     return;
   }
-  const { data } = api.booth.getLembagaPusat.useQuery();
+  const { data, isLoading } = api.booth.getLembagaPusat.useQuery();
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (!data && !isLoading) {
+    return <NotFound />;
+  }
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image

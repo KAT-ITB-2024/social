@@ -184,13 +184,6 @@ export const boothRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { lembagaId } = input;
-      if (!ctx.session) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not logged in!',
-        });
-      }
-
       try {
         // Check if user has already registered presence for current booth
         const existingPresence = await ctx.db
@@ -203,12 +196,7 @@ export const boothRouter = createTRPCRouter({
             ),
           );
 
-        if (!existingPresence) {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'User has not taken attendance at this booth',
-          });
-        }
+        const hasVisited = existingPresence.length > 0; // Check if any presence exists
 
         const specificLembaga = await ctx.db
           .select()
@@ -216,13 +204,10 @@ export const boothRouter = createTRPCRouter({
           .where(eq(lembagaProfiles.id, lembagaId))
           .then((result) => result[0]);
 
-        if (!specificLembaga) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'Lembaga not found!',
-          });
-        }
-        return specificLembaga;
+        return {
+          specificLembaga,
+          hasVisited,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -231,6 +216,14 @@ export const boothRouter = createTRPCRouter({
         });
       }
     }),
+
+  getLembagaExternal: pesertaProcedure.query(async ({ ctx }) => {
+    const lembaga = await ctx.db
+      .select()
+      .from(lembagaProfiles)
+      .where(eq(lembagaProfiles.lembaga, 'Eksternal'));
+    return lembaga;
+  }),
 
   // Presensi
   AttendBooth: pesertaProcedure

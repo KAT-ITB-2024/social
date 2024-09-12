@@ -97,7 +97,7 @@ const UKMLembagaDetailPage = () => {
               <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {data?.name ?? ''}
+              {data?.specificLembaga?.name ?? ''}
             </h3>
             {lastSegment !== 'Pusat' && (
               <p className="text-2xl text-pink-300 text-shadow-orange-md">
@@ -110,6 +110,7 @@ const UKMLembagaDetailPage = () => {
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
+                disabled={data?.hasVisited}
               />
               <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
                 <Image
@@ -122,7 +123,7 @@ const UKMLembagaDetailPage = () => {
               </Button>
             </div>
             <div>
-              {data?.detailLink && (
+              {data?.specificLembaga?.detailLink && (
                 <Button
                   variant={'outline'}
                   className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
