@@ -13,7 +13,6 @@ import { z } from 'zod';
 export const profileRouter = createTRPCRouter({
   getUserProfile: pesertaProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
-
     if (!userId) {
       return null;
     }
@@ -42,6 +41,30 @@ export const profileRouter = createTRPCRouter({
     }
 
     return profile;
+  }),
+
+  getProfileName: pesertaProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session?.user.id;
+    if (!userId) {
+      return null;
+    }
+
+    const profile = await ctx.db
+      .select({
+        nama: profiles.name,
+      })
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .then((res) => res[0]);
+
+    if (!profile) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Profile not found',
+      });
+    }
+
+    return profile.nama.split(' ')[0];
   }),
 
   getFriendProfile: pesertaProcedure

@@ -316,6 +316,17 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
     rankPercentage: '90',
     favTopicCount: 1,
   });
+
+  // await db.insert(schema.wrappedProfiles).values({
+  //   userId: user[1].id,
+  //   name: 'User 1',
+  //   updatedAt: new Date(),
+  //   favTopics: ['General'],
+  //   submittedQuest: 8,
+  //   totalMatch: 0,
+  //   rank: 80,
+  //   rankPercentage: 90,
+  // });
 }
 
 export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
