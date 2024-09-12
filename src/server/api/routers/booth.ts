@@ -226,7 +226,6 @@ export const boothRouter = createTRPCRouter({
           message: 'User not logged in!',
         });
       }
-      console.log('ctx session user', ctx.session.user);
       const { lembagaId, insertedToken } = input;
 
       // Wrap related updates and queries in a transaction
@@ -239,7 +238,7 @@ export const boothRouter = createTRPCRouter({
             .select()
             .from(visitors)
             .where(
-              and(eq(visitors.id, userId), eq(visitors.boothId, lembagaId)),
+              and(eq(visitors.userId, userId), eq(visitors.boothId, lembagaId)),
             );
 
           if (existingPresence.length > 0) {
