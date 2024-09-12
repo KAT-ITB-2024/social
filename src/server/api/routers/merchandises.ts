@@ -6,7 +6,7 @@ import {
   merchandiseExchangeDetails,
   profiles,
 } from '@katitb2024/database';
-import { eq, ilike, sql } from 'drizzle-orm';
+import { and, eq, ilike, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { checkoutPayloadSchema } from '~/types/payloads/merchandise';
@@ -138,16 +138,13 @@ export const merchandiseRouter = createTRPCRouter({
 
         const exchangeDetails = await ctx.db
           .select({
-            merchandiseExchangeId:
-              merchandiseExchangeDetails.merchandiseExchangeId,
-            merchandiseId: merchandiseExchangeDetails.merchandiseId,
-            merchandiseName: merchandises.name,
-            merchandisePrice: merchandises.price,
-            merchandiseImage: merchandises.image,
+            name: merchandises.name,
+            price: merchandises.price,
+            imageUrl: merchandises.image,
             quantity: merchandiseExchangeDetails.quantity,
           })
           .from(merchandiseExchangeDetails)
-          .leftJoin(
+          .innerJoin(
             merchandises,
             eq(merchandiseExchangeDetails.merchandiseId, merchandises.id),
           )
@@ -223,50 +220,30 @@ export const merchandiseRouter = createTRPCRouter({
       }
     }),
 
-  getOrderHistory: protectedProcedure
-    .input(z.object({ page: z.number().min(1).default(1) }))
-    .query(async ({ ctx, input }) => {
-      const { user } = ctx.session || {};
-      if (!user) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User is not logged in',
-        });
-      }
+  getOrderHistory: protectedProcedure.query(async ({ ctx }) => {
+    const { user } = ctx.session || {};
+    if (!user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User is not logged in',
+      });
+    }
 
-      const { page } = input;
-      const itemsPerPage = 6;
-      const offset = (page - 1) * itemsPerPage;
+    try {
+      const exchanges = await ctx.db
+        .select()
+        .from(merchandiseExchanges)
+        .where(and(eq(merchandiseExchanges.userId, user.id)))
+        .orderBy(merchandiseExchanges.updatedAt);
 
-      try {
-        const totalExchanges = await ctx.db
-          .select({
-            count: sql`COUNT(*)`,
-          })
-          .from(merchandiseExchanges)
-          .where(eq(merchandiseExchanges.userId, user.id))
-          .then((res) => Number(res[0]?.count) || 0);
-
-        const totalPages = Math.ceil(totalExchanges / itemsPerPage);
-
-        const exchanges = await ctx.db
-          .select()
-          .from(merchandiseExchanges)
-          .where(eq(merchandiseExchanges.userId, user.id))
-          .limit(itemsPerPage)
-          .offset(offset)
-          .orderBy(merchandiseExchanges.updatedAt);
-
-        return {
-          exchanges,
-          totalExchanges,
-          totalPages,
-        };
-      } catch (error) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to fetch order history',
-        });
-      }
-    }),
+      return {
+        exchanges,
+      };
+    } catch (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch order history',
+      });
+    }
+  }),
 });

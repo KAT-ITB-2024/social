@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
 import { ClassData } from './classData';
 
@@ -419,7 +419,8 @@ export async function seedHistoryTransaction(
   const users = await db
     .select()
     .from(schema.users)
-    .orderBy(asc(schema.users.nim))
+    .where(eq(schema.users.role, 'Peserta'))
+    .orderBy(desc(schema.users.nim))
     .limit(3);
 
   for (let i = 0; i < 3; i++) {
