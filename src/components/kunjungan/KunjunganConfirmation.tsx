@@ -37,20 +37,18 @@ const KunjunganConfirmation = ({
       >
         <AlertDialogTitle className="flex flex-col items-center gap-y-2">
           <Image
-            src={Penyu}
+            src={image}
             alt="Penyu"
             height={150}
             width={150}
             className="pb-4"
           />
           <p className="text-center text-h3 font-normal text-orange-500">
-            Pilih Kelas
+            {title}
           </p>
         </AlertDialogTitle>
         <AlertDialogDescription className="text-center font-normal text-pink-400">
-          Apakah kamu yakin memilih kelas ini?
-          <br />
-          Kelas hanya dapat dipilih satu kali.
+          {description}
         </AlertDialogDescription>
         <AlertDialogFooter>
           <AlertDialogAction

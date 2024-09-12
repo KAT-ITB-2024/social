@@ -66,7 +66,7 @@ const EksternalPage = () => {
                   <h3 className='text-2xl font-bold text-orange-500'>Lembaga Skibidi</h3>
                 </div>
                 <div>
-                  <Link href={`/kunjungan/eksternal`}>
+                  <Link href={`/kunjungan/Eksternal/lembagaDummy`}>
                     <Button className='bg-orange-400 hover:bg-orange-300 flex items-center justify-center p-2'>
                       <MoveRight className='text-xl' />
                     </Button>
@@ -92,7 +92,7 @@ const EksternalPage = () => {
                   <h3 className='text-2xl font-bold text-orange-500'>Lembaga Skibidi</h3>
                 </div>
                 <div>
-                  <Link href={`/kunjungan/eksternal`}>
+                  <Link href={`/kunjungan/Eksternal/lembagaDummy`}>
                     <Button className='bg-orange-400 hover:bg-orange-300 flex items-center justify-center p-2'>
                       <MoveRight className='text-xl' />
                     </Button>
