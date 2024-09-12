@@ -18,12 +18,12 @@ import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
-import NotFound from '~/app/not-found';
 
-const HimpunanDetailPage = () => {
+const UKMLembagaDetailPage = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
+  const [inputPin, setInputPin] = useState('');
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
@@ -36,10 +36,6 @@ const HimpunanDetailPage = () => {
 
   if (isLoading) {
     return <LoadingSpinnerCustom />;
-  }
-
-  if (!data && !isLoading) {
-    return <NotFound />;
   }
 
   return (
@@ -91,7 +87,7 @@ const HimpunanDetailPage = () => {
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
           <div className="translate-y-[-50px] space-y-2 text-center">
-            <div className="relative">
+            <div className="relative flex items-center justify-center">
               {/* FRAME */}
               <Image
                 src={LembagaDummy}
@@ -99,11 +95,28 @@ const HimpunanDetailPage = () => {
                 className="h-[250px] w-[266px]"
               />
               {/* FOTO LEMBAGA */}
-              <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
+              <div className="absolute inset-0 top-2 flex items-center justify-center">
+                {data?.specificLembaga?.logo ? (
+                  <Image
+                    src={data?.specificLembaga?.logo}
+                    alt="Lembaga"
+                    height={170}
+                    width={170}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="h-[170px] w-[170px] rounded-full bg-orange-300" />
+                )}
+              </div>
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {data?.specificLembaga?.name ?? ''}
             </h3>
+            {lastSegment !== 'Pusat' && (
+              <p className="text-2xl text-pink-300 text-shadow-orange-md">
+                Unit Kegiatan Mahasiswa
+              </p>
+            )}
           </div>
           <div className="translate-y-[-35px] space-y-2">
             <div className="flex w-full items-center gap-x-4">
@@ -111,6 +124,8 @@ const HimpunanDetailPage = () => {
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
                 disabled={data?.hasVisited}
+                value={inputPin}
+                onChange={(e) => setInputPin(e.target.value)}
               />
               <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
                 <Image
@@ -158,4 +173,4 @@ const HimpunanDetailPage = () => {
   );
 };
 
-export default HimpunanDetailPage;
+export default UKMLembagaDetailPage;

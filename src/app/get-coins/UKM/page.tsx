@@ -52,7 +52,7 @@ const KunjunganUKMPage = () => {
           </h3>
           <div className="grid grid-cols-3 place-items-start">
             <Link
-              href={`/kunjungan/UKM/Media`}
+              href={`/get-coins/UKM/Media`}
               className="flex w-full flex-col items-center"
             >
               <Image src={media} alt="media" className="h-[65%]" />
@@ -62,7 +62,7 @@ const KunjunganUKMPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/UKM/Senbud`}
+              href={`/get-coins/UKM/Senbud`}
               className="flex w-full flex-col items-center"
             >
               <Image src={senbud} alt="senbud" className="h-[65%]" />
@@ -72,7 +72,7 @@ const KunjunganUKMPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/UKM/Orkes`}
+              href={`/get-coins/UKM/Orkes`}
               className="flex w-full flex-col items-center"
             >
               <Image src={orkes} alt="orkes" className="h-[65%]" />
@@ -82,7 +82,7 @@ const KunjunganUKMPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/UKM/Kajian`}
+              href={`/get-coins/UKM/Kajian`}
               className="flex w-full flex-col items-center"
             >
               <Image src={kajian} alt="kajian" className="h-[65%]" />
@@ -92,7 +92,7 @@ const KunjunganUKMPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/UKM/Agama`}
+              href={`/get-coins/UKM/Agama`}
               className="flex w-full flex-col items-center"
             >
               <Image src={agama} alt="agama" className="h-[65%]" />
@@ -102,7 +102,7 @@ const KunjunganUKMPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/UKM/Pendidikan`}
+              href={`/get-coins/UKM/Pendidikan`}
               className="flex w-full flex-col items-center"
             >
               <Image src={media2} alt="media2" className="h-[65%]" />

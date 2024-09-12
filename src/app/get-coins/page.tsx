@@ -33,7 +33,7 @@ const KunjunganPage = () => {
               Unit Kegiatan Mahasiswa (UKM)
             </h3>
             <Button variant={'pink'}>
-              <Link href={'/kunjungan/UKM'}>Explore Now!</Link>
+              <Link href={'/get-coins/UKM'}>Explore Now!</Link>
             </Button>
           </div>
 
@@ -44,7 +44,7 @@ const KunjunganPage = () => {
               Himpunan Mahasiswa Program Studi (HMPS) dan Pusat
             </h3>
             <Button variant={'pink'}>
-              <Link href={'/kunjungan/HMPS-dan-Pusat'}>Explore Now!</Link>
+              <Link href={'/get-coins/HMPS-dan-Pusat'}>Explore Now!</Link>
             </Button>
           </div>
 
@@ -55,7 +55,7 @@ const KunjunganPage = () => {
               Eksternal
             </h3>
             <Button variant={'pink'}>
-              <Link href={'/kunjungan/Eksternal'}>Explore Now!</Link>
+              <Link href={'/get-coins/Eksternal'}>Explore Now!</Link>
             </Button>
           </div>
         </div>

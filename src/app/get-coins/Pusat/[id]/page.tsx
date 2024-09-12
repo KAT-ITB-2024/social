@@ -13,14 +13,14 @@ import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
 import Arrow from 'public/images/kunjungan/send.svg';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
-import Penyu from 'public/images/kunjungan/Penyu.png';
-import Gurita from 'public/images/kunjungan/Gurita.png';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import Penyu from 'public/images/kunjungan/Penyu.png';
+import Gurita from 'public/images/kunjungan/Gurita.png';
+import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import NotFound from '~/app/not-found';
 
-const EksternalLembagaDetailPage = () => {
+const HimpunanDetailPage = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
@@ -34,12 +34,12 @@ const EksternalLembagaDetailPage = () => {
     lembagaId: lastSegment,
   });
 
-  if (!data) {
-    return <NotFound />;
-  }
-
   if (isLoading) {
     return <LoadingSpinnerCustom />;
+  }
+
+  if (!data && !isLoading) {
+    return <NotFound />;
   }
 
   return (
@@ -99,28 +99,30 @@ const EksternalLembagaDetailPage = () => {
                 className="h-[250px] w-[266px]"
               />
               {/* FOTO LEMBAGA */}
-              <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
+              {data?.specificLembaga?.logo ? (
+                <Image
+                  src={data.specificLembaga.logo}
+                  alt="Lembaga"
+                  height={175}
+                  width={175}
+                  className="absolute left-[50px] top-9 -z-20 rounded-full"
+                />
+              ) : (
+                <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300" />
+              )}
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {data?.specificLembaga?.name ?? ''}
             </h3>
-            {lastSegment !== 'Pusat' && (
-              <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                Lembaga Eksternal
-              </p>
-            )}
           </div>
           <div className="translate-y-[-35px] space-y-2">
             <div className="flex w-full items-center gap-x-4">
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
-                disabled={data.hasVisited}
+                disabled={data?.hasVisited}
               />
-              <Button
-                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
-                onClick={() => setIsOpen(true)}
-              >
+              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
                 <Image
                   src={Arrow}
                   width={24}
@@ -129,6 +131,17 @@ const EksternalLembagaDetailPage = () => {
                   alt="Arrow"
                 />
               </Button>
+            </div>
+            <div>
+              {data?.specificLembaga?.detailLink && (
+                <Button
+                  variant={'outline'}
+                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  // TO DO : Pasang link dri info
+                >
+                  Tentang Lembaga
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -155,4 +168,4 @@ const EksternalLembagaDetailPage = () => {
   );
 };
 
-export default EksternalLembagaDetailPage;
+export default HimpunanDetailPage;

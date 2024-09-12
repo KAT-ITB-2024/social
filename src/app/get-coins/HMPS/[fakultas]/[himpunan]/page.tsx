@@ -18,13 +18,22 @@ import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
+import NotFound from '~/app/not-found';
 
-const UKMLembagaDetailPage = () => {
+const HimpunanDetailPage = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
   const [inputPin, setInputPin] = useState('');
   const segments = pathname.split('/').filter(Boolean);
+  const { mutate: attendBooth } = api.booth.attendBooth.useMutation({
+    onSuccess() {
+      setIsOpen(true);
+    },
+    onError() {
+      setIsFalseOpen(true);
+    },
+  });
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
@@ -37,6 +46,16 @@ const UKMLembagaDetailPage = () => {
   if (isLoading) {
     return <LoadingSpinnerCustom />;
   }
+
+  if (!data && !isLoading) {
+    return <NotFound />;
+  }
+
+  const handleSubmit = async () => {
+    if (inputPin) {
+      attendBooth({ lembagaId: lastSegment, insertedToken: inputPin });
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -94,8 +113,17 @@ const UKMLembagaDetailPage = () => {
                 alt="Lembaga Dummy"
                 className="h-[250px] w-[266px]"
               />
-              {/* FOTO LEMBAGA */}
-              <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300"></div>
+              {data?.specificLembaga?.logo ? (
+                <Image
+                  src={data.specificLembaga.logo}
+                  alt="Lembaga"
+                  height={175}
+                  width={175}
+                  className="absolute left-[50px] top-9 -z-20 rounded-full"
+                />
+              ) : (
+                <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300" />
+              )}
             </div>
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {data?.specificLembaga?.name ?? ''}
@@ -111,11 +139,13 @@ const UKMLembagaDetailPage = () => {
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
-                disabled={data?.hasVisited}
                 value={inputPin}
                 onChange={(e) => setInputPin(e.target.value)}
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                onClick={handleSubmit}
+              >
                 <Image
                   src={Arrow}
                   width={24}
@@ -161,4 +191,4 @@ const UKMLembagaDetailPage = () => {
   );
 };
 
-export default UKMLembagaDetailPage;
+export default HimpunanDetailPage;

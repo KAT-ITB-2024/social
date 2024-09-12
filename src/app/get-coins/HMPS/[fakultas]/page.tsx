@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
@@ -15,22 +15,27 @@ import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import NotFound from '~/app/not-found';
+import { LembagaCard } from '~/components/kunjungan/LembagaCard';
 
-const PusatPage = () => {
+const KategoriUKMPage = () => {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
+  const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
   }
-  const { data, isLoading } = api.booth.getLembagaPusat.useQuery();
+  const { data: lembagaData, isLoading } = api.booth.getHmpsByFaculty.useQuery({
+    faculty: lastSegment,
+  });
+
   if (isLoading) {
     return <LoadingSpinnerCustom />;
   }
 
-  if (!data && !isLoading) {
+  if (!lembagaData && !isLoading) {
     return <NotFound />;
   }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -62,11 +67,9 @@ const PusatPage = () => {
             <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
               {lastSegment}
             </h3>
-            {lastSegment !== 'Pusat' && (
-              <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                HMPS dan BSO HMPS
-              </p>
-            )}
+            <p className="text-2xl text-pink-300 text-shadow-orange-md">
+              HMPS dan BSO HMPS{' '}
+            </p>
           </div>
           <div className="space-y-4">
             {/* Input  */}
@@ -78,35 +81,13 @@ const PusatPage = () => {
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {data?.map((lembagaPusat) => {
+              {lembagaData?.map((item) => {
                 return (
-                  <div
-                    key={lembagaPusat.id}
-                    className="flex h-[75px] w-[400px] items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm"
-                  >
-                    <div className="flex items-center gap-x-2">
-                      <div className="relative">
-                        <Image
-                          src={lembagaPusat.logo ?? LembagaDummy}
-                          alt="Lembaga Dummy"
-                          height={72}
-                          width={72}
-                        />
-                        {/* Gambar Lembaga */}
-                        <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-orange-300"></div>
-                      </div>
-                      <h3 className="text-2xl font-bold text-orange-500">
-                        {lembagaPusat.name}
-                      </h3>
-                    </div>
-                    <div>
-                      <Link href={`/kunjungan/Pusat/${lembagaPusat.id}`}>
-                        <Button className="flex items-center justify-center bg-orange-400 p-2 hover:bg-orange-300">
-                          <MoveRight className="text-xl" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
+                  <LembagaCard
+                    key={item.id}
+                    item={item}
+                    link={`/get-coins/HMPS/${lastSegment}/${item.id}`}
+                  />
                 );
               })}
             </div>
@@ -117,4 +98,4 @@ const PusatPage = () => {
   );
 };
 
-export default PusatPage;
+export default KategoriUKMPage;

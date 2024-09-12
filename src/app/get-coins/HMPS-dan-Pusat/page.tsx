@@ -53,7 +53,7 @@ const KunjunganHMPSPage = () => {
           </h3>
           <div className="grid grid-cols-3 place-items-start">
             <Link
-              href={`/kunjungan/HMPS/FITB`}
+              href={`/get-coins/HMPS/FITB`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FITB} alt="FITB" height={110} />
@@ -63,7 +63,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FMIPA`}
+              href={`/get-coins/HMPS/FMIPA`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FMIPA} alt="FMIPA" height={110} />
@@ -73,7 +73,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FTI`}
+              href={`/get-coins/HMPS/FTI`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTI} alt="FTI" height={110} />
@@ -83,7 +83,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FTSL`}
+              href={`/get-coins/HMPS/FTSL`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTSL} alt="FTSL" height={110} />
@@ -93,7 +93,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FTTM`}
+              href={`/get-coins/HMPS/FTTM`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTTM} alt="FTTM" height={110} />
@@ -103,7 +103,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FTMD`}
+              href={`/get-coins/HMPS/FTMD`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTMD} alt="FTMD" height={110} />
@@ -113,7 +113,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FSRD`}
+              href={`/get-coins/HMPS/FSRD`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FSRD} alt="FSRD" height={110} />
@@ -123,7 +123,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/SAPPK`}
+              href={`/get-coins/HMPS/SAPPK`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SAPPK} alt="SAPPK" height={110} />
@@ -133,7 +133,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/SBM`}
+              href={`/get-coins/HMPS/SBM`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SBM} alt="SBM" height={110} />
@@ -143,7 +143,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/SF`}
+              href={`/get-coins/HMPS/SF`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SF} alt="SF" height={110} />
@@ -153,7 +153,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/SITH-S`}
+              href={`/get-coins/HMPS/SITH-S`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SITH} alt="SITH" height={110} />
@@ -163,7 +163,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/SITH-R`}
+              href={`/get-coins/HMPS/SITH-R`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={SITHR} alt="SITH" height={110} />
@@ -173,7 +173,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/STEI`}
+              href={`/get-coins/HMPS/STEI`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={STEI} alt="STEI" height={110} />
@@ -183,7 +183,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/Pusat`}
+              href={`/get-coins/Pusat`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={Pusat} alt="STEI" height={110} />
