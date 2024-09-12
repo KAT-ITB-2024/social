@@ -12,8 +12,8 @@ import SBM from 'public/images/kunjungan/HMPS/SBM.png';
 import SF from 'public/images/kunjungan/HMPS/SF.png';
 import SITH from 'public/images/kunjungan/HMPS/SITH.png';
 import STEI from 'public/images/kunjungan/HMPS/STEI.png';
-import SITHR from 'public/images/kunjungan/HMPS/SITHR.png'
-import Pusat from 'public/images/kunjungan/HMPS/Pusat.png'
+import SITHR from 'public/images/kunjungan/HMPS/SITHR.png';
+import Pusat from 'public/images/kunjungan/HMPS/Pusat.png';
 
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
@@ -73,7 +73,7 @@ const KunjunganHMPSPage = () => {
             </Link>
 
             <Link
-              href={`/kunjungan/HMPS/FTI`}
+              href={`/kunjungan/HMPS-dan-Pusat/HMPS/FTI`}
               className="flex h-full w-full flex-col items-center justify-between"
             >
               <Image src={FTI} alt="FTI" height={110} />

@@ -41,10 +41,10 @@ const KunjunganPage = () => {
           <div className="flex w-full flex-col items-center gap-3">
             <Image src={HMPS} alt="hmps" width={235} />
             <h3 className="w-[90%] text-center font-heading text-h3 text-orange-500 text-shadow-orange-lg">
-              Himpunan Mahasiswa Program Studi (HMPS)
+              Himpunan Mahasiswa Program Studi (HMPS) dan Pusat
             </h3>
             <Button variant={'pink'}>
-              <Link href={'/kunjungan/HMPS'}>Explore Now!</Link>
+              <Link href={'/kunjungan/HMPS-dan-Pusat'}>Explore Now!</Link>
             </Button>
           </div>
 
@@ -58,7 +58,6 @@ const KunjunganPage = () => {
               <Link href={'/kunjungan/Eksternal'}>Explore Now!</Link>
             </Button>
           </div>
-
         </div>
       </div>
     </main>

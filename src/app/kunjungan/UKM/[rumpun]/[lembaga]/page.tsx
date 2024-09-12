@@ -21,10 +21,10 @@ import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation'
 
 const UKMLembagaDetailPage = () => {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
   const segments = pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
+  const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
   }
@@ -122,12 +122,15 @@ const UKMLembagaDetailPage = () => {
               </Button>
             </div>
             <div>
-              <Button
-                variant={'outline'}
-                className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-              >
-                Tentang Lembaga
-              </Button>
+              {data?.detailLink && (
+                <Button
+                  variant={'outline'}
+                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  // TO DO : Pasang link dri info
+                >
+                  Tentang Lembaga
+                </Button>
+              )}
             </div>
           </div>
         </div>

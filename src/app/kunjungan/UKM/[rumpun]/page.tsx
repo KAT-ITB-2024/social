@@ -17,14 +17,13 @@ import { api } from '~/trpc/react';
 const KategoriUKMPage = () => {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
-  const lastSegment = segments[segments.length - 1];
+  const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
   }
   const { data: lembagaData } = api.booth.getUkmByRumpun.useQuery({
     rumpun: lastSegment,
   });
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
