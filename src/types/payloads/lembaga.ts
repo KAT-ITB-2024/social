@@ -7,20 +7,22 @@ export const grantCoinsPayload = z.object({
 
 export const getAllVisitorsPayload = z.object({
   faculty: z
-    .enum([
-      'FITB',
-      'FMIPA',
-      'FSRD',
-      'FTMD',
-      'FTTM',
-      'FTSL',
-      'FTI',
-      'SAPPK',
-      'SBM',
-      'SF',
-      'SITH',
-      'STEI',
-    ])
+    .array(
+      z.enum([
+        'FITB',
+        'FMIPA',
+        'FSRD',
+        'FTMD',
+        'FTTM',
+        'FTSL',
+        'FTI',
+        'SAPPK',
+        'SBM',
+        'SF',
+        'SITH',
+        'STEI',
+      ]),
+    )
     .optional(),
   nameOrNim: z.string().optional(),
   limit: z.number().min(5).max(25).default(20),

@@ -8,12 +8,8 @@ import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { api } from '~/trpc/react';
+import { Lembaga } from './page';
 
-interface Lembaga {
-  name: string;
-  currentToken: string;
-  image: string | null;
-}
 const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
   const { name, currentToken, image } = lembaga;
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -28,11 +24,12 @@ const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
       toast(<ErrorToast desc="Gagal mengubah refresh token" />);
     } finally {
       router.refresh();
+      setIsRefreshing(false);
     }
   };
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center">
+    <div className="flex h-screen w-full flex-col items-center justify-center overflow-x-auto">
       {/* Background Section */}
       <div className="absolute -z-20 h-screen w-full">
         <Image
@@ -45,7 +42,7 @@ const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
       </div>
 
       {/* Main Section */}
-      <section className="flex flex-row items-center justify-center gap-10">
+      <section className="flex flex-row items-center justify-around">
         <div className="flex w-full flex-col items-center">
           <div className="relative -z-10 h-[600px] w-[600px]">
             <Image
@@ -62,7 +59,7 @@ const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
               />
             </div>
           </div>
-          <p className="font-heading text-4xl text-orange-500 drop-shadow-orange-shadow-lg">
+          <p className="-mt-20 text-center font-heading text-4xl text-orange-500 drop-shadow-orange-shadow-lg">
             {name}
           </p>
         </div>
@@ -70,7 +67,7 @@ const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
         {/* Kode Kunjungan */}
         <div className="flex w-full">
           {/* Bubble Image */}
-          <div className="relative h-[500px] w-[507px]">
+          <div className="relative h-[593px] w-[600px]">
             <Image
               src={'/images/lembaga/bubble-desktop.png'}
               alt="Foto bubble"

@@ -252,7 +252,6 @@ export const profileRouter = createTRPCRouter({
         });
       }
     }),
-
   getUserCoin: pesertaProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.user.id;
 

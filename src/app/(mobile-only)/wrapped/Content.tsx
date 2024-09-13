@@ -577,8 +577,8 @@ const WrappedStories = ({
                 />
                 {oskmWrapped.test && (
                   <p className="pb-0.5 text-center font-heading text-3xl text-blue-500">
-                    {oskmWrapped.character.charAt(0).toUpperCase() +
-                      oskmWrapped.character.slice(1)}
+                    {oskmWrapped.personality.charAt(0).toUpperCase() +
+                      oskmWrapped.personality.slice(1)}
                   </p>
                 )}
                 <div

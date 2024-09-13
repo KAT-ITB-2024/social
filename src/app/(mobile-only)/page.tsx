@@ -37,8 +37,7 @@ export default function Home() {
   ) {
     redirect('/login');
   } else if (session.user.role === 'ITB-X') {
-    // TODO : CHANGE TO DASHBOARD LEMBAGA
-    redirect('/test-cart');
+    redirect('/lembaga');
   }
 
   return (
@@ -59,7 +58,6 @@ export default function Home() {
               alt="coin"
             />
             <h5 className="ml-2 mt-1 text-blue-600">
-              {' '}
               Your coins <br />{' '}
               <p className="text-xl text-turquoise-400">{userCoin}</p>
             </h5>

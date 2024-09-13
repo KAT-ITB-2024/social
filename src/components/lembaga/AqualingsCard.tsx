@@ -1,21 +1,33 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { FC } from 'react';
 import { Button } from '../ui/button';
 
-function AqualingsCard() {
+interface AqualingsCardProps {
+  name: string;
+  nim: string;
+  isGranted: boolean;
+  profileImage: string | null;
+}
+const AqualingsCard: FC<AqualingsCardProps> = ({
+  name,
+  nim,
+  isGranted,
+  profileImage,
+}) => {
   return (
     <>
       <div className="flex h-fit w-full flex-row items-center justify-between rounded-lg border-2 border-orange-300 bg-gradient-to-r from-orange-300 from-5% to-orange-200/50 to-15% px-4 py-2 drop-shadow-orange-shadow-lg">
         <div className="flex h-full flex-row items-center gap-4">
           {/* Profile Image */}
           <div className="relative flex size-16 items-center justify-center rounded-full text-transparent">
-            <Image
-              src="/images/history/profile-default.png"
-              alt="Profile Image"
-              width={64}
-              height={64}
-              className="size-2/3 rounded-full"
-            />
+            <div className="relative h-[64px] w-[64px]">
+              <Image
+                src={profileImage ?? '/images/history/profile-default.png'}
+                alt="Profile Image"
+                fill
+                className="size-2/3 rounded-full"
+              />
+            </div>
             <Image
               src="/images/lembaga/frame.png"
               alt="Profile Image Frame"
@@ -27,15 +39,18 @@ function AqualingsCard() {
 
           {/* Name & NIM */}
           <div className="flex flex-col">
-            <p className="text-lg font-bold text-pink-400">Angie</p>
-            <p className="text-base font-medium text-pink-200">13522xxx</p>
+            <p className="text-lg font-bold text-pink-400">{name}</p>
+            <p className="text-base font-medium text-pink-200">{nim}</p>
           </div>
         </div>
 
         {/* Grant Coins Button */}
         <div>
-          <Button className="flex flex-row items-center gap-3 bg-orange-400 text-white">
-            Grant Coins
+          <Button
+            className="flex flex-row items-center gap-3 bg-orange-400 text-white"
+            disabled={isGranted}
+          >
+            {isGranted ? 'Granted' : 'Grant Coins'}
             <svg
               width="14"
               height="14"
@@ -53,6 +68,6 @@ function AqualingsCard() {
       </div>
     </>
   );
-}
+};
 
 export default AqualingsCard;

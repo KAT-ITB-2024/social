@@ -19,8 +19,8 @@ import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { toast } from 'sonner';
 import { ErrorToast } from '~/components/ui/error-toast';
-import NotFound from '~/app/not-found';
 import { getCurrentWIBTime } from '~/server/api/helpers/utils';
+import NotFound from '../../not-found';
 
 export default function ClassDetail({ params }: { params: { id: string } }) {
   const router = useRouter();

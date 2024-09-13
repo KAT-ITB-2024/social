@@ -1,6 +1,6 @@
 import { createTRPCRouter, lembagaProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { eq, and, sql, ilike, or } from 'drizzle-orm';
+import { eq, and, sql, ilike, or, inArray } from 'drizzle-orm';
 import {
   grantCoinsPayload,
   getAllVisitorsPayload,
@@ -89,7 +89,7 @@ export const lembagaRouter = createTRPCRouter({
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
       const nameOrNim = input.nameOrNim ? `%${input.nameOrNim}%` : '%';
-      const boothId = ctx.session.user.id;
+      const boothId = ctx.session.user.group;
 
       const baseQuery = ctx.db
         .select({
@@ -107,7 +107,9 @@ export const lembagaRouter = createTRPCRouter({
           and(
             eq(visitors.boothId, boothId),
             or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
-            input.faculty ? eq(profiles.faculty, input.faculty) : sql`TRUE`,
+            input.faculty && input.faculty.length > 0
+              ? inArray(profiles.faculty, input.faculty)
+              : sql`TRUE`,
           ),
         );
 
@@ -118,11 +120,27 @@ export const lembagaRouter = createTRPCRouter({
       const totalItems = paginatedData[0]?.totalCount ?? 0;
       const totalPages = Math.max(1, Math.ceil(totalItems / input.limit));
 
+      const boothData = await ctx.db
+        .select({
+          visitorCount: lembagaProfiles.visitorCount,
+          name: lembagaProfiles.name,
+        })
+        .from(lembagaProfiles)
+        .where(eq(lembagaProfiles.id, boothId))
+        .then((res) => res[0]);
+
+      if (!boothData) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Booth not found',
+        });
+      }
+
       return {
-        data: paginatedData,
-        currentPage: input.page,
-        previousPage: input.page > 1 ? input.page - 1 : undefined,
-        nextPage: input.page < totalPages ? input.page + 1 : undefined,
+        data: {
+          boothData,
+          paginatedData,
+        },
         totalItems,
         totalPages,
       };

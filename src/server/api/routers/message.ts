@@ -11,7 +11,6 @@ import {
   type ChatHeader,
   type ChatHeaderData,
 } from '~/types/enums/message';
-import ProfilePage from '~/app/profile/page';
 
 export const messageRouter = createTRPCRouter({
   /**

@@ -1,24 +1,26 @@
-import { RefreshCw } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '~/components/ui/button';
-import DesktopView from './desktop-view';
 import { api } from '~/trpc/server';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import MainContent from './main-content';
+import { getServerAuthSession } from '~/server/auth';
 
-export default async function ResetToken() {
+export interface Lembaga {
+  name: string;
+  currentToken: string | null;
+  image: string | null;
+  visitorCount: number | null;
+}
+
+export default async function LembagaPage() {
+  const session = await getServerAuthSession();
+  if (!session || session.user.role !== 'ITB-X') {
+    redirect('/login');
+  }
   const lembagaProfile = await api.lembaga.getCurrentProfile();
 
   if (!lembagaProfile) {
     return notFound();
   }
   return (
-    <DesktopView
-      lembaga={{
-        name: lembagaProfile.name,
-        currentToken: lembagaProfile.currentToken ?? '',
-        image: lembagaProfile.logo,
-      }}
-    />
+    <MainContent lembaga={{ ...lembagaProfile, image: lembagaProfile.logo }} />
   );
 }

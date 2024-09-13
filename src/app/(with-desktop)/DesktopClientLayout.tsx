@@ -57,7 +57,7 @@ export default function DesktopClientLayout({
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      {/* {shouldShowNavbar && <Navbar isDesktop />} */}
+      {shouldShowNavbar && <Navbar isDesktop />}
       <div className={`absolute top-0 mx-auto w-full flex-grow`}>
         {children}
       </div>
