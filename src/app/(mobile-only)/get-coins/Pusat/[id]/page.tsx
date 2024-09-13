@@ -19,6 +19,8 @@ import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import NotFound from '~/app/(mobile-only)/not-found';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
+import Link from 'next/link';
 
 const HimpunanDetailPage = () => {
   const pathname = usePathname();
@@ -89,6 +91,9 @@ const HimpunanDetailPage = () => {
           backgroundSize: '100% 100%',
         }}
       >
+        <div className="z-30 px-10">
+          <LembagaBackButton />
+        </div>
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
           <div className="translate-y-[-50px] space-y-2 text-center">
             <div className="relative">
@@ -105,7 +110,7 @@ const HimpunanDetailPage = () => {
                   alt="Lembaga"
                   height={175}
                   width={175}
-                  className="absolute left-[50px] top-9 -z-20 rounded-full"
+                  className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-white"
                 />
               ) : (
                 <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300" />
@@ -122,7 +127,10 @@ const HimpunanDetailPage = () => {
                 placeholder="Masukkan Kode"
                 disabled={data?.hasVisited}
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                disabled={data?.hasVisited}
+              >
                 <Image
                   src={Arrow}
                   width={24}
@@ -134,13 +142,18 @@ const HimpunanDetailPage = () => {
             </div>
             <div>
               {data?.specificLembaga?.detailLink && (
-                <Button
-                  variant={'outline'}
-                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-                  // TO DO : Pasang link dri info
+                <Link
+                  href={data.specificLembaga.detailLink ?? ''}
+                  passHref
+                  target="_blank"
                 >
-                  Tentang Lembaga
-                </Button>
+                  <Button
+                    variant={'outline'}
+                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  >
+                    Tentang Lembaga
+                  </Button>
+                </Link>
               )}
             </div>
           </div>

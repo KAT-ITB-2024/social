@@ -405,15 +405,15 @@ export async function seedVisitor(db: PostgresJsDatabase<typeof schema>) {
     .select()
     .from(schema.users)
     .where(eq(schema.users.role, 'Peserta'))
-    .limit(20);
+    .limit(100);
 
   if (!lembaga[0] || !lembaga[1]) {
     return;
   }
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 100; i++) {
     await db.insert(schema.visitors).values({
-      boothId: 'aaqa9m64ygvku8s6s5rrbdv7',
+      boothId: 'vm5g3pg71sekh3cuy756qdl7',
       userId: users[i]?.id ?? '',
       updatedAt: new Date(),
     });

@@ -1,6 +1,6 @@
 import { createTRPCRouter, lembagaProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { eq, and, sql, ilike, or, inArray } from 'drizzle-orm';
+import { eq, and, sql, ilike, or, inArray, is } from 'drizzle-orm';
 import {
   grantCoinsPayload,
   getAllVisitorsPayload,
@@ -18,7 +18,7 @@ export const lembagaRouter = createTRPCRouter({
   grantCoins: lembagaProcedure
     .input(grantCoinsPayload)
     .mutation(async ({ ctx, input }) => {
-      const boothId = ctx.session.user.id;
+      const boothId = ctx.session.user.group;
       const data = await ctx.db
         .select()
         .from(visitors)
@@ -88,8 +88,11 @@ export const lembagaRouter = createTRPCRouter({
   getAllVisitors: lembagaProcedure
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
+      console.log(input);
       const nameOrNim = input.nameOrNim ? `%${input.nameOrNim}%` : '%';
       const boothId = ctx.session.user.group;
+
+      console.log('Name', nameOrNim);
 
       const baseQuery = ctx.db
         .select({
@@ -98,6 +101,8 @@ export const lembagaRouter = createTRPCRouter({
           name: profiles.name,
           faculty: profiles.faculty,
           profileImage: profiles.profileImage,
+          isGranted: visitors.isGranted,
+
           totalCount: sql<number>`count(*) OVER ()`,
         })
         .from(visitors)
@@ -107,9 +112,7 @@ export const lembagaRouter = createTRPCRouter({
           and(
             eq(visitors.boothId, boothId),
             or(ilike(users.nim, nameOrNim), ilike(profiles.name, nameOrNim)),
-            input.faculty && input.faculty.length > 0
-              ? inArray(profiles.faculty, input.faculty)
-              : sql`TRUE`,
+            input.faculty ? eq(profiles.faculty, input.faculty) : sql`TRUE`,
           ),
         );
 

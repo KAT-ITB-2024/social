@@ -1,33 +1,47 @@
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../ui/button';
 
 interface AqualingsCardProps {
-  name: string;
   nim: string;
-  isGranted: boolean;
+  name: string;
   profileImage: string | null;
+  onClick?: () => void;
+  isGranted: boolean | null;
 }
-const AqualingsCard: FC<AqualingsCardProps> = ({
-  name,
+
+function AqualingsCard({
   nim,
-  isGranted,
+  name,
   profileImage,
-}) => {
+  onClick,
+  isGranted,
+}: AqualingsCardProps) {
+  const [loaded, setLoaded] = useState<boolean>(false);
+
   return (
     <>
       <div className="flex h-fit w-full flex-row items-center justify-between rounded-lg border-2 border-orange-300 bg-gradient-to-r from-orange-300 from-5% to-orange-200/50 to-15% px-4 py-2 drop-shadow-orange-shadow-lg">
         <div className="flex h-full flex-row items-center gap-4">
           {/* Profile Image */}
           <div className="relative flex size-16 items-center justify-center rounded-full text-transparent">
-            <div className="relative h-[64px] w-[64px]">
+            <Image
+              src={profileImage ?? '/images/history/profile-default.png'}
+              alt="Profile Image"
+              width={64}
+              height={64}
+              className="size-2/3 rounded-full"
+              onLoad={() => setLoaded(true)}
+            />
+            {!loaded && (
               <Image
-                src={profileImage ?? '/images/history/profile-default.png'}
+                src={'/images/history/profile-default.png'}
                 alt="Profile Image"
-                fill
-                className="size-2/3 rounded-full"
+                width={64}
+                height={64}
+                className="absolute size-2/3 rounded-full"
               />
-            </div>
+            )}
             <Image
               src="/images/lembaga/frame.png"
               alt="Profile Image Frame"
@@ -48,9 +62,10 @@ const AqualingsCard: FC<AqualingsCardProps> = ({
         <div>
           <Button
             className="flex flex-row items-center gap-3 bg-orange-400 text-white"
-            disabled={isGranted}
+            onClick={onClick}
+            disabled={isGranted ?? false}
           >
-            {isGranted ? 'Granted' : 'Grant Coins'}
+            {!isGranted ? 'Grant Coins' : 'Granted'}
             <svg
               width="14"
               height="14"
@@ -68,6 +83,6 @@ const AqualingsCard: FC<AqualingsCardProps> = ({
       </div>
     </>
   );
-};
+}
 
 export default AqualingsCard;

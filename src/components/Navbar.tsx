@@ -54,26 +54,33 @@ const Navbar: React.FC<NavbarProps> = ({ isDesktop = false }) => {
                   </button>
                 </>
               ) : (
-                <section className="flex flex-row gap-10">
-                  <p className="cursor-pointer rounded-lg border-2 border-blue-600 bg-turquoise-100 px-[7px] py-[10px] text-black shadow-green-sm">
-                    Dashboard
-                  </p>
-                  <p className="cursor-pointer rounded-lg border-2 border-blue-600 bg-turquoise-100 px-[7px] py-[10px] text-black shadow-green-sm">
-                    Pengunjung
-                  </p>
-                </section>
+                <button
+                  className="rounded-lg border-2 border-blue-600 bg-turquoise-100 px-[7px] py-[10px] shadow-green-sm"
+                  onClick={handleToggleSidebar}
+                >
+                  <Image
+                    src="/icons/hamburg-icon.svg"
+                    alt="Menu"
+                    width={18}
+                    height={18}
+                  />
+                </button>
               )}
             </div>
           </div>
         </div>
       )}
       {/* Black Overlay */}
-      {isSidebarOpen && !isDesktop && (
+      {isSidebarOpen && (
         <div
           className="fixed inset-0 z-[1000] h-screen w-screen bg-black bg-opacity-80"
           onClick={handleToggleSidebar}
         >
-          <Sidebar isOpen={isSidebarOpen} toggleSidebar={handleToggleSidebar} />
+          <Sidebar
+            isOpen={isSidebarOpen}
+            toggleSidebar={handleToggleSidebar}
+            isDesktop
+          />
         </div>
       )}
     </div>

@@ -6,7 +6,6 @@ import { Lembaga } from './page';
 
 const MainContent = ({ lembaga }: { lembaga: Lembaga }) => {
   const width = UseDebouncedWidth();
-  console.log(width);
 
   if (width < 500) {
     return <MobileView lembaga={lembaga} />;

@@ -2,36 +2,102 @@ import Image from 'next/image';
 import { CustomPagination } from '~/components/lembaga/Pagination';
 import AqualingsCard from '~/components/lembaga/AqualingsCard';
 import SearchBar from '~/components/lembaga/Search';
-import { FacultyEnumType } from '~/types/enums/faculty';
-import { FC } from 'react';
+import { FacultyEnum, FacultyEnumType } from '~/types/enums/faculty';
+import { FC, useState } from 'react';
+import { api } from '~/trpc/react';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
+import { useSearchParams } from 'next/navigation';
+import LembagaModal from '~/components/lembaga/LembagaModal';
 
-interface GrantDesktopViewProps {
-  paginatedData: {
-    userId: string;
-    nim: string;
-    name: string;
-    faculty: FacultyEnumType;
-    profileImage: string | null;
-    totalCount: number;
-  }[];
-  totalItems: number;
-  totalPages: number;
-  boothData: {
-    visitorCount: number | null;
-    name: string;
+// interface GrantDesktopViewProps {
+//   paginatedData: {
+//     userId: string;
+//     nim: string;
+//     name: string;
+//     faculty: FacultyEnumType;
+//     profileImage: string | null;
+//     totalCount: number;
+//   }[];
+//   totalItems: number;
+//   totalPages: number;
+//   boothData: {
+//     visitorCount: number | null;
+//     name: string;
+//   };
+//   currentPage: number;
+//   onPageChange: (page: number) => void;
+// }
+
+type fakultas =
+  | 'FITB'
+  | 'FMIPA'
+  | 'FSRD'
+  | 'FTMD'
+  | 'FTTM'
+  | 'FTSL'
+  | 'FTI'
+  | 'SAPPK'
+  | 'SBM'
+  | 'SF'
+  | 'SITH'
+  | 'STEI'
+  | undefined;
+const GrantDesktopView = () => {
+  const searchParams = useSearchParams();
+  const query = searchParams?.get('query') ?? undefined;
+  // Ensure faculty is within the Fakultas type
+  let faculty: fakultas =
+    (searchParams?.get('faculty') as fakultas) ?? undefined;
+
+  const page = searchParams?.get('page') ?? undefined;
+
+  // Validate faculty based on the enum
+  if (faculty && !Object.values(FacultyEnum).includes(faculty as FacultyEnum)) {
+    faculty = undefined;
+  }
+
+  const {
+    data: visitorData,
+    isLoading,
+    refetch,
+  } = api.lembaga.getAllVisitors.useQuery({
+    faculty,
+    nameOrNim: query,
+    limit: 10,
+    page: page ? Number(page) : 1,
+  });
+
+  const [showConfirmationModal, setShowConfirmationModal] =
+    useState<boolean>(false);
+  const [showResultModal, setShowResultModal] = useState<boolean>(false);
+  const [visitorId, setVisitorId] = useState<string>('');
+
+  const handleConfirmation = (id: string) => {
+    setShowConfirmationModal(true);
+    setVisitorId(id);
   };
-  currentPage: number;
-  onPageChange: (page: number) => void;
-}
-const GrantDesktopView: FC<GrantDesktopViewProps> = ({
-  paginatedData,
-  totalPages,
-  boothData,
-  totalItems,
-}) => {
+
+  const grantCoinsMutation = api.lembaga.grantCoins.useMutation();
+
+  const handleGrantCoins = async (id: string) => {
+    await grantCoinsMutation.mutateAsync({
+      userId: id,
+      coins: 100,
+    });
+
+    setShowConfirmationModal(false);
+    setShowResultModal(true);
+
+    await refetch();
+  };
+
+  if (isLoading) return <LoadingSpinnerCustom />;
+
+  if (visitorData?.data.paginatedData == null) return null;
   return (
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-x-auto">
       {/* Background Section */}
+
       <div className="absolute -z-20 h-screen w-full">
         <Image
           fill
@@ -51,15 +117,15 @@ const GrantDesktopView: FC<GrantDesktopViewProps> = ({
             alt="bubble"
             fill
           />
-          <div className="absolute inset-0 left-0 flex h-full w-full flex-col items-center justify-center gap-4">
+          <div className="absolute inset-0 left-5 flex h-full w-full flex-col items-center justify-center gap-4">
             <p className="font-heading text-7xl leading-[4rem] text-orange-500 drop-shadow-orange-shadow-lg">
-              {boothData.visitorCount}
+              {visitorData?.data.boothData.visitorCount ?? 0}
             </p>
             <p className="font-heading text-4xl text-orange-300 drop-shadow-orange-shadow-lg">
               Pengunjung
             </p>
             <p className="text-center font-body text-lg leading-10 text-pink-300">
-              {boothData.name}
+              {visitorData?.data.boothData.name ?? 'Unavailable'}
             </p>
           </div>
         </div>
@@ -69,21 +135,20 @@ const GrantDesktopView: FC<GrantDesktopViewProps> = ({
           <SearchBar />
 
           {/* Aqualings */}
-          <div className="no-scrollbar flex max-h-[80vh] w-full flex-col gap-2 overflow-y-scroll">
-            {paginatedData.length > 0 ? (
-              paginatedData.map((user) => {
-                return (
-                  <AqualingsCard
-                    key={user.userId}
-                    name={user.name}
-                    nim={user.nim}
-                    profileImage={user.profileImage}
-                    isGranted={false}
-                  />
-                );
-              })
+          <div className="no-scrollbar flex max-h-[85vh] w-full flex-col gap-2 overflow-y-scroll">
+            {visitorData?.data.paginatedData.length > 0 ? (
+              visitorData?.data.paginatedData.map((elmt, idx) => (
+                <AqualingsCard
+                  isGranted={elmt.isGranted}
+                  key={idx}
+                  nim={elmt.nim}
+                  name={elmt.name}
+                  profileImage={elmt.profileImage}
+                  onClick={() => handleConfirmation(String(elmt.userId))}
+                />
+              ))
             ) : (
-              <p className="text-pink-300p text-center font-body text-lg leading-10">
+              <p className="font-body text-lg leading-10 text-white">
                 Tidak ada pengunjung yang ditemukan
               </p>
             )}
@@ -92,12 +157,35 @@ const GrantDesktopView: FC<GrantDesktopViewProps> = ({
           {/* Pagination */}
           <div className="flex w-full items-center justify-between">
             <p className="pl-3 font-body text-sm font-normal text-[#FFFEFE]">
-              Total {totalItems} Items
+              Total {visitorData?.totalItems ?? 0} Items
             </p>
-            <CustomPagination totalPages={totalPages} />
+            <CustomPagination totalPages={visitorData?.totalPages ?? 1} />
           </div>
         </div>
       </section>
+      {/* Modal */}
+      {showConfirmationModal && (
+        <div className="absolute flex size-full items-center justify-center bg-black/15">
+          <LembagaModal
+            type="Confirm"
+            onClick={() => handleGrantCoins(visitorId)}
+          />
+        </div>
+      )}
+      {grantCoinsMutation.isPending && (
+        <div className="absolute flex size-full items-center justify-center bg-black/15">
+          <LoadingSpinnerCustom />
+        </div>
+      )}
+      {(grantCoinsMutation.isSuccess || grantCoinsMutation.isError) &&
+        showResultModal && (
+          <div className="absolute flex size-full items-center justify-center bg-black/15">
+            <LembagaModal
+              type={grantCoinsMutation.isSuccess ? 'Success' : 'Error'}
+              onClick={() => setShowResultModal(false)}
+            />
+          </div>
+        )}
     </div>
   );
 };

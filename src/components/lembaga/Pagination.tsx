@@ -22,17 +22,17 @@ export const CustomPagination = ({ totalPages }: CustomPaginationProps) => {
   const pages = getPaginationItems(currentPage, totalPages);
 
   const handlePageChange = (page: number) => {
-    if (page < 1) {
-      page = 1;
-    } else if (page > totalPages) {
-      page = totalPages;
-    }
-    const params = new URLSearchParams(searchParams);
+    if (page < 1 || page > totalPages) return;
 
-    params.set('page', page.toString());
+    const query = searchParams.get('query')?.toString();
+    const faculty = searchParams.get('faculty')?.toString();
 
-    router.push(`?${params.toString()}`, { scroll: false });
-    router.refresh();
+    router.push(
+      `?page=${page}` +
+        (query ? `&query=${query}` : '') +
+        (faculty ? `&faculty=${faculty}` : ''),
+      { scroll: false },
+    );
   };
 
   return (
