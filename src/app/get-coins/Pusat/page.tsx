@@ -16,6 +16,7 @@ import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import NotFound from '~/app/not-found';
 import { LembagaCard } from '~/components/kunjungan/LembagaCard';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 
 const PusatPage = () => {
   const pathname = usePathname();
@@ -59,20 +60,24 @@ const PusatPage = () => {
         }}
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <div className="space-y-2 text-center">
-            <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {lastSegment}
-            </h3>
-            {lastSegment !== 'Pusat' && (
-              <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                HMPS dan BSO HMPS
-              </p>
-            )}
+          <div className="flex w-full flex-row items-start justify-between">
+            <LembagaBackButton />
+            <div className="space-y-2 text-center">
+              <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
+                {lastSegment}
+              </h3>
+              {lastSegment !== 'Pusat' && (
+                <p className="text-2xl text-pink-300 text-shadow-orange-md">
+                  HMPS dan BSO HMPS
+                </p>
+              )}
+            </div>
+            <div className="w-[40px]" />
           </div>
           <div className="space-y-4">
             {/* Input  */}
             <Input
-              className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
+              className="h-[50px] w-full border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
               placeholder="Search..."
             />
 

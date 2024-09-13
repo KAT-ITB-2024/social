@@ -19,6 +19,7 @@ import Gurita from 'public/images/kunjungan/Gurita.png';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import NotFound from '~/app/not-found';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 
 const EksternalLembagaDetailPage = () => {
   const pathname = usePathname();
@@ -89,6 +90,9 @@ const EksternalLembagaDetailPage = () => {
           backgroundSize: '100% 100%',
         }}
       >
+        <div className="z-30 px-10">
+          <LembagaBackButton />
+        </div>
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
           <div className="translate-y-[-50px] space-y-2 text-center">
             <div className="relative flex items-center justify-center">
@@ -101,13 +105,16 @@ const EksternalLembagaDetailPage = () => {
               {/* FOTO LEMBAGA */}
               <div className="absolute inset-0 top-2 flex items-center justify-center">
                 {data?.specificLembaga?.logo ? (
-                  <Image
-                    src={data?.specificLembaga?.logo}
-                    alt="Lembaga"
-                    height={170}
-                    width={170}
-                    className="rounded-full"
-                  />
+                  <>
+                    <Image
+                      src={data?.specificLembaga?.logo}
+                      alt="Lembaga"
+                      height={170}
+                      width={170}
+                      className="h-[170px] w-[170px] rounded-full bg-white"
+                    />
+                    <div className="h-[170px] w-[170px] rounded-full bg-white" />
+                  </>
                 ) : (
                   <div className="h-[170px] w-[170px] rounded-full bg-orange-300" />
                 )}

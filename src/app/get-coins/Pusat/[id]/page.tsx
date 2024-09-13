@@ -19,6 +19,7 @@ import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import NotFound from '~/app/not-found';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 
 const HimpunanDetailPage = () => {
   const pathname = usePathname();
@@ -89,6 +90,9 @@ const HimpunanDetailPage = () => {
           backgroundSize: '100% 100%',
         }}
       >
+        <div className="z-30 px-10">
+          <LembagaBackButton />
+        </div>
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
           <div className="translate-y-[-50px] space-y-2 text-center">
             <div className="relative">
@@ -105,7 +109,7 @@ const HimpunanDetailPage = () => {
                   alt="Lembaga"
                   height={175}
                   width={175}
-                  className="absolute left-[50px] top-9 -z-20 rounded-full"
+                  className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-white"
                 />
               ) : (
                 <div className="absolute left-[50px] top-9 -z-20 h-[175px] w-[175px] rounded-full bg-orange-300" />
