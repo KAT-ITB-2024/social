@@ -177,11 +177,10 @@ export const boothRouter = createTRPCRouter({
           .from(visitors)
           .where(
             and(
-              eq(visitors.id, ctx.session.user.id),
+              eq(visitors.userId, ctx.session.user.id),
               eq(visitors.boothId, lembagaId),
             ),
           );
-
         const hasVisited = existingPresence.length > 0; // Check if any presence exists
 
         const specificLembaga = await ctx.db
@@ -272,7 +271,6 @@ export const boothRouter = createTRPCRouter({
               message: 'Token expired',
             });
           }
-
           if (lembagaToken.currentToken !== insertedToken) {
             throw new TRPCError({
               code: 'FORBIDDEN',

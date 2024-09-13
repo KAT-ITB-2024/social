@@ -84,7 +84,6 @@ export default function MerchPage() {
       const response = await checkoutCartMutation.mutateAsync(checkoutData);
 
       if (response.success) {
-        console.log('Checkout successful:', response.message);
         setIsCheckoutModalOpen(false);
         setIsSuccessModalOpen(true);
         setCartItems([]);
