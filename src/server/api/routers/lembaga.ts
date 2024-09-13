@@ -76,9 +76,6 @@ export const lembagaRouter = createTRPCRouter({
           data: updatedProfile[0],
         };
       } catch (error) {
-        if (error instanceof TRPCError) {
-          throw error;
-        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to grant coins',
@@ -89,11 +86,8 @@ export const lembagaRouter = createTRPCRouter({
   getAllVisitors: lembagaProcedure
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
-      console.log(input);
       const nameOrNim = input.nameOrNim ? `%${input.nameOrNim}%` : '%';
       const boothId = ctx.session.user.group;
-
-      console.log('Name', nameOrNim);
 
       const baseQuery = ctx.db
         .select({

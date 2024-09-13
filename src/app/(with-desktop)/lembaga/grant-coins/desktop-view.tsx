@@ -144,7 +144,7 @@ const GrantDesktopView = () => {
                   nim={elmt.nim}
                   name={elmt.name}
                   profileImage={elmt.profileImage}
-                  onClick={() => handleConfirmation(String(elmt.userId))}
+                  onClick={() => handleGrantCoins(String(elmt.userId))}
                 />
               ))
             ) : (
@@ -164,14 +164,14 @@ const GrantDesktopView = () => {
         </div>
       </section>
       {/* Modal */}
-      {showConfirmationModal && (
+      {/* {showConfirmationModal && (
         <div className="absolute flex size-full items-center justify-center bg-black/15">
           <LembagaModal
             type="Confirm"
             onClick={() => handleGrantCoins(visitorId)}
           />
         </div>
-      )}
+      )} */}
       {grantCoinsMutation.isPending && (
         <div className="absolute flex size-full items-center justify-center bg-black/15">
           <LoadingSpinnerCustom />
