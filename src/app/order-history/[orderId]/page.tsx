@@ -32,7 +32,7 @@ const OrderDetails = async ({ params }: { params: Params }) => {
     label = 'Belum Diambil';
   }
   return (
-    <div className="items-left mt-[120px] flex w-full flex-col justify-start gap-5">
+    <div className="items-left flex w-full flex-col justify-start gap-5 pb-10 pt-[120px]">
       <BackButton />
       <div>
         <h2 className="align-left text-pink-400">Order Details</h2>
@@ -41,8 +41,12 @@ const OrderDetails = async ({ params }: { params: Params }) => {
         </p>
       </div>
       <Chip label={label} variant={variant} />
-      <div className="items-left flex flex-col justify-start gap-2">
-        <div className="flex flex-row justify-start gap-7 rounded-2xl bg-blue-400 p-4 text-white">
+      <div className="items-left flex flex-col justify-start gap-2 rounded-2xl bg-blue-400 p-4 text-white">
+        <div className="items-left flex flex-col justify-center">
+          <p>ID</p>
+          <p className="font-bold text-lightYellow">{orderId}</p>
+        </div>
+        <div className="flex flex-row justify-start gap-7">
           <div className="items-left flex flex-col justify-center">
             <p>Status Order</p>
             <p className="font-bold text-lightYellow">{label}</p>
