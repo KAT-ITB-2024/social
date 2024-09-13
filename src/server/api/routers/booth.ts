@@ -5,7 +5,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 export const boothRouter = createTRPCRouter({
-  GetHMPSByFaculty: pesertaProcedure
+  getHmpsByFaculty: pesertaProcedure
     .input(
       z.object({
         lembagaName: z.string().default(''),
@@ -62,13 +62,11 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
-  GetUKMByRumpun: pesertaProcedure
+  getUkmByRumpun: pesertaProcedure
     .input(
       z.object({
         lembagaName: z.string().default(''),
         rumpun: z.string(),
-        limit: z.number().min(1).default(10),
-        page: z.number().min(1).default(1),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -80,8 +78,7 @@ export const boothRouter = createTRPCRouter({
       }
 
       try {
-        const { lembagaName, rumpun, limit, page } = input;
-        const offset = (page - 1) * limit;
+        const { lembagaName, rumpun } = input;
 
         const UKMByRumpun = await ctx.db
           .select({
@@ -96,20 +93,9 @@ export const boothRouter = createTRPCRouter({
               eq(lembagaProfiles.lembaga, 'UKM'),
               eq(lembagaProfiles.detailedCategory, rumpun),
             ),
-          )
-          .limit(limit)
-          .offset(offset);
+          );
 
-        // To calculate max page number for FE
-        const numberOfData = UKMByRumpun.length;
-        const totalPage = Math.max(1, Math.ceil(numberOfData / limit));
-
-        return {
-          data: UKMByRumpun,
-          nextPage: UKMByRumpun.length < limit ? undefined : page + 1,
-          totalPage: totalPage,
-          limit: limit,
-        };
+        return UKMByRumpun;
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -119,12 +105,25 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
+  getLembagaPusat: pesertaProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'User not logged in yet!',
+      });
+    }
+
+    const lembaga = await ctx.db
+      .select()
+      .from(lembagaProfiles)
+      .where(eq(lembagaProfiles.lembaga, 'Pusat'));
+    return lembaga;
+  }),
+
   GetOtherLembaga: pesertaProcedure
     .input(
       z.object({
         lembagaName: z.string().default(''),
-        limit: z.number().min(1).default(10),
-        page: z.number().min(1).default(1),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -136,8 +135,7 @@ export const boothRouter = createTRPCRouter({
       }
 
       try {
-        const { lembagaName, limit, page } = input;
-        const offset = (page - 1) * limit;
+        const { lembagaName } = input;
 
         const otherLembaga = await ctx.db
           .select({
@@ -151,20 +149,10 @@ export const boothRouter = createTRPCRouter({
               ilike(lembagaProfiles.name, `%${lembagaName}%`),
               inArray(lembagaProfiles.lembaga, ['BSO', 'Pusat', 'Eksternal']),
             ),
-          )
-          .limit(limit)
-          .offset(offset);
+          );
 
         // To calculate max page number for FE
-        const numberOfData = otherLembaga.length;
-        const totalPage = Math.max(1, Math.ceil(numberOfData / limit));
-
-        return {
-          data: otherLembaga,
-          nextPage: otherLembaga.length < limit ? undefined : page + 1,
-          totalPage: totalPage,
-          limit: limit,
-        };
+        return otherLembaga;
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -174,16 +162,14 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
-  GetSpecificLembaga: pesertaProcedure
-    .input(z.string())
-    .query(async ({ ctx, input: lembagaId }) => {
-      if (!ctx.session) {
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not logged in!',
-        });
-      }
-
+  getSpecificLembaga: pesertaProcedure
+    .input(
+      z.object({
+        lembagaId: z.string().default(''),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { lembagaId } = input;
       try {
         // Check if user has already registered presence for current booth
         const existingPresence = await ctx.db
@@ -196,12 +182,7 @@ export const boothRouter = createTRPCRouter({
             ),
           );
 
-        if (!existingPresence) {
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'User has not taken attendance at this booth',
-          });
-        }
+        const hasVisited = existingPresence.length > 0; // Check if any presence exists
 
         const specificLembaga = await ctx.db
           .select()
@@ -209,13 +190,10 @@ export const boothRouter = createTRPCRouter({
           .where(eq(lembagaProfiles.id, lembagaId))
           .then((result) => result[0]);
 
-        if (!specificLembaga) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'Lembaga not found!',
-          });
-        }
-        return specificLembaga;
+        return {
+          specificLembaga,
+          hasVisited,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({
@@ -225,8 +203,16 @@ export const boothRouter = createTRPCRouter({
       }
     }),
 
+  getLembagaExternal: pesertaProcedure.query(async ({ ctx }) => {
+    const lembaga = await ctx.db
+      .select()
+      .from(lembagaProfiles)
+      .where(eq(lembagaProfiles.lembaga, 'Eksternal'));
+    return lembaga;
+  }),
+
   // Presensi
-  AttendBooth: pesertaProcedure
+  attendBooth: pesertaProcedure
     .input(
       z.object({
         lembagaId: z.string(),
@@ -240,7 +226,6 @@ export const boothRouter = createTRPCRouter({
           message: 'User not logged in!',
         });
       }
-
       const { lembagaId, insertedToken } = input;
 
       // Wrap related updates and queries in a transaction
@@ -253,7 +238,7 @@ export const boothRouter = createTRPCRouter({
             .select()
             .from(visitors)
             .where(
-              and(eq(visitors.id, userId), eq(visitors.boothId, lembagaId)),
+              and(eq(visitors.userId, userId), eq(visitors.boothId, lembagaId)),
             );
 
           if (existingPresence.length > 0) {
@@ -294,8 +279,6 @@ export const boothRouter = createTRPCRouter({
               message: 'Token invalid',
             });
           }
-
-          // Register attendance in the visitors table
           await trx.insert(visitors).values({
             userId: userId,
             boothId: lembagaId,
