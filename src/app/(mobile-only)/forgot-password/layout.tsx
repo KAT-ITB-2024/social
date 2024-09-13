@@ -11,10 +11,10 @@ import Starfish from 'public/images/login/Starfish.png';
 
 const LoginLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="bg-black h-screen w-full flex items-center justify-center">
+    <div className="flex h-screen w-full items-center justify-center bg-black">
       {/* Iphone View : Ukuran Width mengikuti Figma, Ukuran Height Screen */}
-      <div className="relative h-full w-full bg-white overflow-hidden">
-        <div className="flex flex-col items-center h-full justify-start px-8 relative z-20">
+      <div className="relative h-full w-full overflow-hidden bg-white">
+        <div className="relative z-20 flex h-full flex-col items-center justify-start px-8">
           {children}
         </div>
 
@@ -22,21 +22,21 @@ const LoginLayout = ({ children }: { children: ReactNode }) => {
         <Image
           src={LoginBackground}
           alt="OSKM Login Page Background"
-          className="absolute top-0 left-0 object-cover h-full w-full z-10"
+          className="absolute left-0 top-0 z-10 h-full w-full object-cover"
         />
 
         {/* Bottom Ornament */}
         <Image
           src={Coral}
           alt="Coral"
-          className="absolute bottom-0 right-0 object-cover z-10"
+          className="absolute bottom-0 right-0 z-10 object-cover"
           width={275}
           height={275}
         />
         <Image
           src={CoralPensu}
           alt="Coral Pensu"
-          className="absolute bottom-[-70px] left-[-75px] object-cover z-10"
+          className="absolute bottom-[-70px] left-[-75px] z-10 object-cover"
           width={375}
           height={375}
         />
@@ -45,21 +45,21 @@ const LoginLayout = ({ children }: { children: ReactNode }) => {
         <Image
           src={BubbleCorner}
           alt="Bubble in the Corner"
-          className="absolute top-[-50px] right-[-10px] z-10"
+          className="absolute right-[-10px] top-[-50px] z-10"
           width={100}
           height={100}
         />
         <Image
           src={Starfish}
           alt="Starfish"
-          className="absolute top-[20px] right-[90px] z-10"
+          className="absolute right-[90px] top-[20px] z-10"
           width={80}
           height={80}
         />
         <Image
           src={SeaHorse}
           alt="Sea Horse"
-          className="absolute top-[70px] right-[50px] z-10"
+          className="absolute right-[50px] top-[70px] z-10"
           width={70}
           height={70}
         />

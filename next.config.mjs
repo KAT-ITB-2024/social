@@ -23,6 +23,12 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: 'oskm-production-bucket.sgp1.cdn.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**/*',
+      },
+      {
+        protocol: 'https',
         hostname: 'sgp1.digitaloceanspaces.com',
         port: '',
         pathname: '/**/*',

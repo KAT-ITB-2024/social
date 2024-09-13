@@ -32,7 +32,7 @@ const OrderHistoryList = () => {
     : data.exchanges;
 
   return (
-    <div className="flex h-[65vh] flex-grow flex-col gap-4">
+    <div className="flex h-full w-full flex-grow flex-col gap-4">
       {/* Dropdown menu for selecting filters */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
