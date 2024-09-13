@@ -86,6 +86,7 @@ export const lembagaRouter = createTRPCRouter({
   getAllVisitors: lembagaProcedure
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
+      console.log(input);
       const nameOrNim = input.nameOrNim ? `%${input.nameOrNim}%` : '%';
       const boothId = ctx.session.user.group;
 
