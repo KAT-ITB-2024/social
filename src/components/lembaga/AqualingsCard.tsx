@@ -1,8 +1,22 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '../ui/button';
 
-function AqualingsCard() {
+interface AqualingsCardProps {
+  nim: string;
+  name: string;
+  profileImage: string | null;
+  onClick?: () => void;
+}
+
+function AqualingsCard({
+  nim,
+  name,
+  profileImage,
+  onClick,
+}: AqualingsCardProps) {
+  const [loaded, setLoaded] = useState<boolean>(false);
+
   return (
     <>
       <div className="flex h-fit w-full flex-row items-center justify-between rounded-lg border-2 border-orange-300 bg-gradient-to-r from-orange-300 from-5% to-orange-200/50 to-15% px-4 py-2 drop-shadow-orange-shadow-lg">
@@ -10,12 +24,22 @@ function AqualingsCard() {
           {/* Profile Image */}
           <div className="relative flex size-16 items-center justify-center rounded-full text-transparent">
             <Image
-              src="/images/history/profile-default.png"
+              src={profileImage ?? '/images/history/profile-default.png'}
               alt="Profile Image"
               width={64}
               height={64}
               className="size-2/3 rounded-full"
+              onLoad={() => setLoaded(true)}
             />
+            {!loaded && (
+              <Image
+                src={'/images/history/profile-default.png'}
+                alt="Profile Image"
+                width={64}
+                height={64}
+                className="absolute size-2/3 rounded-full"
+              />
+            )}
             <Image
               src="/images/lembaga/frame.png"
               alt="Profile Image Frame"
@@ -27,14 +51,17 @@ function AqualingsCard() {
 
           {/* Name & NIM */}
           <div className="flex flex-col">
-            <p className="text-lg font-bold text-pink-400">Angie</p>
-            <p className="text-base font-medium text-pink-200">13522xxx</p>
+            <p className="text-lg font-bold text-pink-400">{name}</p>
+            <p className="text-base font-medium text-pink-200">{nim}</p>
           </div>
         </div>
 
         {/* Grant Coins Button */}
         <div>
-          <Button className="flex flex-row items-center gap-3 bg-orange-400 text-white">
+          <Button
+            className="flex flex-row items-center gap-3 bg-orange-400 text-white"
+            onClick={onClick}
+          >
             Grant Coins
             <svg
               width="14"

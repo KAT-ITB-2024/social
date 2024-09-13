@@ -14,13 +14,21 @@ export const CustomPagination = ({ totalPages }: { totalPages: number }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentPage = parseInt(searchParams.get('page') ?? '1');
-  const currentContent = searchParams.get('content') ?? 'Individu';
 
   const pages = getPaginationItems(currentPage, totalPages);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
-    router.push(`?content=${currentContent}&page=${page}`, { scroll: false });
+
+    const query = searchParams.get('query')?.toString();
+    const faculty = searchParams.get('faculty')?.toString();
+
+    router.replace(
+      `?page=${page}` +
+        (query ? `&query=${query}` : '') +
+        (faculty ? `&faculty=${faculty}` : ''),
+      { scroll: false },
+    );
   };
 
   return (
@@ -36,7 +44,7 @@ export const CustomPagination = ({ totalPages }: { totalPages: number }) => {
           <PaginationItem key={item} className="mb-[2px]">
             <PaginationLink
               onClick={() => handlePageChange(item)}
-              className={`h-6 w-6 rounded-[4px] bg-orange-400 p-[2px] ${item === currentPage ? 'border border-[#99E0FF]' : ''}`}
+              className={`h-6 w-6 rounded-[4px] bg-orange-400 p-[2px] ${item === currentPage ? 'border border-orange-200' : ''}`}
             >
               {item}
             </PaginationLink>

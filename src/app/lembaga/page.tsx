@@ -1,9 +1,21 @@
+'use client';
+
 import { RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '~/components/ui/button';
+import { api } from '~/trpc/react';
 
 export default function ResetToken() {
+  const { data: profile, refetch } = api.lembaga.getCurrentProfile.useQuery();
+
+  const tokenMutation = api.lembaga.refreshCurrentToken.useMutation();
+
+  // Belum Implement Refresh Page
+  const handleRefresh = () => {
+    tokenMutation.mutate();
+  };
+
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
       {/* Background Section */}
@@ -21,9 +33,11 @@ export default function ResetToken() {
       <section className="flex h-3/5 w-full flex-col items-center justify-between">
         <div className="flex w-full flex-col items-center">
           <p className="font-heading text-4xl text-orange-500 drop-shadow-orange-shadow-lg">
-            LEMBAGA XYZ
+            {profile?.data?.name ?? 'Unavailable'}
           </p>
-          <p className="font-body text-lg text-pink-300">999 Pengunjung</p>
+          <p className="font-body text-lg text-pink-300">
+            {profile?.data?.visitorCount ?? 0} Pengunjung
+          </p>
         </div>
         <div className="flex h-fit w-3/4 flex-col items-center gap-1">
           <Image
@@ -36,11 +50,14 @@ export default function ResetToken() {
             Kode Kunjungan
           </p>
           <p className="font-heading text-6xl text-orange-300 drop-shadow-orange-shadow-lg">
-            123456
+            {profile?.data?.currentToken ?? 'Unavailable'}
           </p>
         </div>
         <div className="flex w-2/5 flex-col gap-2 shadow-inner drop-shadow-orange-shadow-lg">
-          <Button className="w-full min-w-fit bg-orange-400 drop-shadow-orange-shadow-lg">
+          <Button
+            className="w-full min-w-fit bg-orange-400 drop-shadow-orange-shadow-lg"
+            onClick={handleRefresh}
+          >
             Reset Token
             <RefreshCw color="#FFFFFF" className="pl-2" />
           </Button>

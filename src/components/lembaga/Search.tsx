@@ -4,18 +4,22 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DropDown } from './DropDown';
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 const fakultas = [
-  'FMIPA',
   'FITB',
-  'FTTM',
-  'STEI',
-  'SITH',
+  'FMIPA',
+  'FSRD',
   'FTMD',
-  'SF',
+  'FTTM',
+  'FTSL',
+  'FTI',
   'SAPPK',
+  'SBM',
+  'SF',
+  'SITH',
+  'STEI',
 ];
 
 function SearchBar() {
@@ -23,7 +27,7 @@ function SearchBar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [filter, setFilter] = useState<string[]>([]);
+  const [filter, setFilter] = useState<string>('');
 
   const handleSearch = (term: string) => {
     const params = new URLSearchParams(searchParams);
@@ -32,8 +36,22 @@ function SearchBar() {
     } else {
       params.delete('query');
     }
+
+    if (filter !== '') {
+      params.set('faculty', filter);
+    } else {
+      params.delete('faculty');
+    }
     router.replace(`${pathname}?${params.toString()}`);
   };
+
+  useEffect(() => {
+    handleSearch(searchParams.get('query')?.toString() ?? '');
+  }, [filter]);
+
+  useEffect(() => {
+    router.replace(`${pathname}`);
+  }, []);
 
   return (
     <>
@@ -47,33 +65,27 @@ function SearchBar() {
             onChange={(e) => {
               handleSearch(e.target.value);
             }}
-            defaultValue={searchParams.get('query')?.toString()}
           />
           <DropDown items={fakultas} filter={filter} setFilter={setFilter} />
         </section>
 
         {/* Selected Filter Section */}
         <section className="flex w-full flex-row gap-2">
-          {filter.map((val, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center rounded-full border-2 border-pink-500 bg-pink-300 px-4 text-sm text-white"
-            >
-              <p>{val}</p>
+          {filter !== '' && (
+            <div className="flex items-center justify-center rounded-full border-2 border-pink-500 bg-pink-300 px-4 text-sm text-white">
+              <p>{filter}</p>
               <Button variant="link" className="pl-2 pr-0 pt-1.5">
                 <X
                   color="#ee1192"
                   size={16}
                   className="rounded-full bg-white p-0.5"
                   onClick={() => {
-                    setFilter((oldFilter) =>
-                      oldFilter.filter((value) => value !== val),
-                    );
+                    setFilter('');
                   }}
                 />
               </Button>
             </div>
-          ))}
+          )}
         </section>
       </section>
     </>
