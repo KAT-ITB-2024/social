@@ -1,16 +1,29 @@
+'use client';
 import React from 'react';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { toast } from 'sonner';
+import { LoadingSpinnerCustom } from './ui/loading-spinner';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
+  isDesktop?: boolean;
 }
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (status === 'unauthenticated') {
+    router.replace('/login');
+  }
   const sidebarItems = [
     {
       href: '/',
@@ -52,15 +65,28 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     //   src: '/icons/sidebar/get-coins.svg',
     //   text: 'Get Coins',
     // },
-    // {
-    //   href: '#',
-    //   src: '/icons/sidebar/request-merch.svg',
-    //   text: 'Request Merch',
-    // },
+    {
+      href: '/merch',
+      src: '/icons/sidebar/request-merch.svg',
+      text: 'Request Merch',
+    },
     {
       href: '/profile',
       src: '/icons/sidebar/profile.svg',
       text: 'Profile',
+    },
+  ];
+
+  const lembagaItems = [
+    {
+      href: '/lembaga',
+      src: '/icons/sidebar/profile.svg',
+      text: 'Dashboard',
+    },
+    {
+      href: '/lembaga/grant-coins',
+      src: '/icons/sidebar/request-merch.svg',
+      text: 'Pengunjung',
     },
   ];
 
@@ -78,8 +104,11 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       );
     }
   }
+
+  const itemsToMap =
+    session?.user.role === 'ITB-X' ? lembagaItems : sidebarItems;
   return (
-    <div className="fixed left-[50%] w-full translate-x-[-50%] lg:w-[450px]">
+    <div className={`fixed right-0 w-full bg-pink-200 lg:w-[450px]`}>
       <div
         className={`lg:-auto absolute right-0 top-0 z-30 h-[100vh] duration-200 ease-in-out ${isOpen ? 'w-[60%] opacity-100 lg:max-w-[270px]' : 'w-0 opacity-0'} mx-auto`}
       >
@@ -106,7 +135,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               />
               <nav className="no-scrollbar flex flex-col gap-2 overflow-y-auto">
                 {/* TODO: update page routes and auth logic */}
-                {sidebarItems.map((item, index) => (
+                {itemsToMap.map((item, index) => (
                   <a
                     key={index}
                     href={item.href}

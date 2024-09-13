@@ -2,9 +2,8 @@ import bcrypt from 'bcrypt';
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
-import { eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
-import { ClassData } from './classData';
 
 export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
   const password = await bcrypt.hash('password', 10);
@@ -255,32 +254,6 @@ export async function seedNotifications(db: PostgresJsDatabase<typeof schema>) {
     });
   }
 }
-
-export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
-  for (const classDetails of ClassData) {
-    try {
-      await db.insert(schema.classes).values({
-        title: classDetails.title,
-        topic: `${classDetails.theme}: ${classDetails.topik}`,
-        description: classDetails.desc,
-        speaker: classDetails.speaker,
-        location: classDetails.location,
-        date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
-        totalSeats: classDetails.quota,
-        reservedSeats: classDetails.reserved,
-        type: classDetails.type,
-      });
-    } catch (error) {
-      console.error(
-        `Error seeding class with title ${classDetails.title}:`,
-        error,
-      );
-      continue;
-    }
-  }
-  console.log('Done seeding classes!');
-}
-
 export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
   const user = await db
     .select({ id: schema.users.id })
@@ -289,6 +262,33 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
   if (!user[0] || !user[1]) {
     return;
   }
+  // Data dummy buat yang udah test
+  await db.insert(schema.wrappedProfiles).values({
+    userId: user[0].id,
+    name: 'User 0',
+    submittedQuest: 10,
+    totalMatch: 20,
+    character: 'Odra',
+    personality: 'IIII',
+    personalityDesc: 'Ini iiiiii',
+    favTopics: ['General', 'Game', 'Olahraga'],
+    rank: 129,
+    rankPercentage: '12',
+    updatedAt: new Date(),
+    favTopicCount: 3,
+  });
+
+  await db.insert(schema.wrappedProfiles).values({
+    userId: user[1].id,
+    name: 'User 1',
+    updatedAt: new Date(),
+    favTopics: ['General'],
+    submittedQuest: 8,
+    totalMatch: 0,
+    rank: 80,
+    rankPercentage: '90',
+    favTopicCount: 1,
+  });
 
   // await db.insert(schema.wrappedProfiles).values({
   //   userId: user[1].id,
@@ -300,6 +300,195 @@ export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
   //   rank: 80,
   //   rankPercentage: 90,
   // });
+}
+
+export async function seedLembaga(db: PostgresJsDatabase<typeof schema>) {
+  const password = await bcrypt.hash('password', 10);
+
+  const ukmUser = await db
+    .insert(schema.users)
+    .values({
+      nim: '12345678',
+      role: 'ITB-X',
+      password,
+      activityPoints: 0,
+      updatedAt: new Date(),
+    })
+    .returning();
+  if (!ukmUser[0]) {
+    return;
+  }
+  await db.insert(schema.lembagaProfiles).values({
+    lembaga: 'UKM',
+    detailedCategory: 'Agama',
+    name: 'PMK',
+    logo: '',
+    description: 'Contoh UKM Agama',
+    instagram: '',
+    visitorCount: 5,
+    userId: ukmUser[0].id,
+    currentToken: '123456',
+    currentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari dari sekarang,
+    updatedAt: new Date(),
+  });
+
+  const hmpsUser = await db
+    .insert(schema.users)
+    .values({
+      nim: 'HMIF',
+      role: 'ITB-X',
+      password,
+      updatedAt: new Date(),
+    })
+    .returning();
+
+  if (!hmpsUser[0]) {
+    return;
+  }
+
+  await db.insert(schema.lembagaProfiles).values({
+    lembaga: 'HMPS',
+    detailedCategory: 'STEI-K',
+    name: 'HMIF',
+    logo: '',
+    description: 'Himpunan Mahasiswa Informatika',
+    instagram: '',
+    userId: hmpsUser[0].id,
+    currentToken: '123456',
+    currentExpiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 hari dari sekarang,
+    updatedAt: new Date(),
+    visitorCount: 5,
+  });
+}
+export async function seedMerchandise(db: PostgresJsDatabase<typeof schema>) {
+  for (let i = 0; i < 10; i++) {
+    await db.insert(schema.merchandises).values({
+      name: `Merchandise-${i}`,
+      price: 400 + i * 100,
+      stock: 10,
+      image: '',
+      updatedAt: new Date(),
+    });
+  }
+}
+
+export async function seedVisitor(db: PostgresJsDatabase<typeof schema>) {
+  const lembaga = await db.select().from(schema.lembagaProfiles).limit(2);
+  const users = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.role, 'Peserta'))
+    .limit(100);
+
+  if (!lembaga[0] || !lembaga[1]) {
+    return;
+  }
+
+  for (let i = 0; i < 100; i++) {
+    await db.insert(schema.visitors).values({
+      boothId: 'vm5g3pg71sekh3cuy756qdl7',
+      userId: users[i]?.id ?? '',
+      updatedAt: new Date(),
+    });
+  }
+
+  // @eslint-disable-next-line
+}
+
+const coins = [800, 1200, 1500];
+
+export async function seedHistoryTransaction(
+  db: PostgresJsDatabase<typeof schema>,
+) {
+  const users = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.role, 'Peserta'))
+    .orderBy(desc(schema.users.nim))
+    .limit(3);
+
+  for (let i = 0; i < 3; i++) {
+    const currCoin = coins[i];
+
+    let quantity;
+    switch (currCoin) {
+      case 800:
+        quantity = 2;
+        break;
+      case 1200:
+        quantity = 1;
+        break;
+      case 1500:
+        quantity = 3;
+        break;
+      default:
+        quantity = 0;
+    }
+
+    await db.insert(schema.merchandiseExchanges).values({
+      status: 'Taken',
+      userId: users[i]?.id ?? '',
+      totalCoins: currCoin,
+      totalItem: quantity,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    });
+    await db.insert(schema.merchandiseExchanges).values({
+      status: 'Not Taken',
+      userId: users[i]?.id ?? '',
+      totalCoins: currCoin,
+      totalItem: quantity,
+      updatedAt: new Date(),
+      createdAt: new Date(),
+    });
+  }
+}
+
+export async function seedHistoryDetail(db: PostgresJsDatabase<typeof schema>) {
+  const exchanges = await db.query.merchandiseExchanges.findMany();
+  const merchandise = await db
+    .select()
+    .from(schema.merchandises)
+    .orderBy(asc(schema.merchandises.price))
+    .limit(3);
+
+  for (const exchange of exchanges) {
+    switch (exchange.totalCoins) {
+      case 800:
+        await db.insert(schema.merchandiseExchangeDetails).values({
+          merchandiseId: merchandise[0]?.id ?? '',
+          quantity: 2,
+          merchandiseExchangeId: exchange.id,
+        });
+        break;
+      case 1200:
+        await db.insert(schema.merchandiseExchangeDetails).values({
+          merchandiseExchangeId: exchange.id,
+          merchandiseId: merchandise[2]?.id ?? '',
+          quantity: 2,
+        });
+        break;
+      case 1500:
+        await db.insert(schema.merchandiseExchangeDetails).values([
+          {
+            merchandiseExchangeId: exchange.id,
+            merchandiseId: merchandise[0]?.id ?? '',
+            quantity: 1,
+          },
+          {
+            merchandiseExchangeId: exchange.id,
+            merchandiseId: merchandise[1]?.id ?? '',
+            quantity: 1,
+          },
+          {
+            merchandiseExchangeId: exchange.id,
+            merchandiseId: merchandise[2]?.id ?? '',
+            quantity: 1,
+          },
+        ]);
+        break;
+    }
+  }
 }
 
 export async function seed(dbUrl: string) {
@@ -324,10 +513,18 @@ export async function seed(dbUrl: string) {
   console.log('Done seeding post test');
   await seedNotifications(db);
   console.log('Done seeding notifications!');
-  await seedClasses(db);
-  console.log('Done seeding classes!');
   await seedOskmWrapped(db);
   console.log('Done seeding oskm wrapped!');
+  await seedMerchandise(db);
+  console.log('Done seeding merchandise!');
+  await seedLembaga(db);
+  console.log('Done seeding lembaga!');
+  await seedHistoryTransaction(db);
+  console.log('Done seeding history transaction!');
+  await seedHistoryDetail(db);
+  console.log('Done seeding history detail!');
+  await seedVisitor(db);
+  console.log('Done seeding visitor!');
   await migrationClient.end();
 }
 
