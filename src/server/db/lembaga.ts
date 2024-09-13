@@ -8,7 +8,7 @@ import csv from 'csv-parser';
 import path from 'path';
 
 // Tentukan path file csv
-const csvFilePath = path.resolve(__dirname, './list.csv');
+const csvFilePath = path.resolve(__dirname, './lembaga.csv');
 type UserCSV = {
   x: string;
   name: string;
