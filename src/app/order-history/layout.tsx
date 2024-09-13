@@ -10,7 +10,7 @@ const OrderHistoryLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex h-screen w-full items-center justify-center bg-black">
       <div className="relative h-full w-full overflow-hidden bg-white">
-        <div className="relative z-20 flex h-full flex-col items-center justify-start px-8">
+        <div className="relative z-20 flex h-full flex-col items-center justify-start overflow-y-auto px-8">
           {children}
         </div>
         {/* Background */}

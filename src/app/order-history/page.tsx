@@ -3,7 +3,7 @@ import BackButton from '~/components/order-history/BackButton';
 
 const OrderHistory = () => {
   return (
-    <div className="items-left mb-20 mt-[120px] flex w-full flex-col justify-start gap-5">
+    <div className="items-left flex h-full w-full flex-col justify-start gap-5 pb-10 pt-[120px]">
       <BackButton />
       <div>
         <h2 className="align-left text-pink-400">Order History</h2>
@@ -11,8 +11,9 @@ const OrderHistory = () => {
           Silahkan ambil pesananmu di booth merchandise!
         </p>
       </div>
-
-      <OrderHistoryList />
+      <div className="w-full flex-1 overflow-hidden">
+        <OrderHistoryList />
+      </div>
     </div>
   );
 };
