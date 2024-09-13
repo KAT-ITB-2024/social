@@ -8,9 +8,14 @@ import { toast } from 'sonner';
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
+  isDesktop?: boolean;
 }
 
-const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
+const Sidebar = ({
+  isOpen,
+  toggleSidebar,
+  isDesktop = false,
+}: SidebarProps) => {
   const sidebarItems = [
     {
       href: '/',
@@ -64,6 +69,19 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     },
   ];
 
+  const lembagaItems = [
+    {
+      href: '/lembaga',
+      src: '/icons/sidebar/profile.svg',
+      text: 'Dashboard',
+    },
+    {
+      href: '/lembaga/grant-coins',
+      src: '/icons/sidebar/request-merch.svg',
+      text: 'Pengunjung',
+    },
+  ];
+
   async function onLogout() {
     try {
       await signOut({
@@ -78,8 +96,12 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       );
     }
   }
+
+  const itemsToMap = isDesktop ? lembagaItems : sidebarItems;
   return (
-    <div className="fixed left-[50%] w-full translate-x-[-50%] lg:w-[450px]">
+    <div
+      className={`${isDesktop ? 'left-[87%]' : 'left-[50%]'} fixed w-full translate-x-[-50%] lg:w-[450px]`}
+    >
       <div
         className={`lg:-auto absolute right-0 top-0 z-30 h-[100vh] duration-200 ease-in-out ${isOpen ? 'w-[60%] opacity-100 lg:max-w-[270px]' : 'w-0 opacity-0'} mx-auto`}
       >
@@ -106,7 +128,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
               />
               <nav className="no-scrollbar flex flex-col gap-2 overflow-y-auto">
                 {/* TODO: update page routes and auth logic */}
-                {sidebarItems.map((item, index) => (
+                {itemsToMap.map((item, index) => (
                   <a
                     key={index}
                     href={item.href}
