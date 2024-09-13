@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import IkanHijau from 'public/images/kunjungan/IkanHijau.png';
@@ -25,25 +25,26 @@ const EksternalLembagaDetailPage = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isFalseOpen, setIsFalseOpen] = useState(false);
+  const [hasVisited, setHasVisited] = useState(false);
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   const [inputPin, setInputPin] = useState('');
   const { mutate: attendBooth } = api.booth.attendBooth.useMutation({
     onSuccess() {
       setIsOpen(true);
+      setHasVisited(true);
     },
     onError() {
       setIsFalseOpen(true);
     },
   });
+  const { data, isLoading, refetch } = api.booth.getSpecificLembaga.useQuery({
+    lembagaId: lastSegment,
+  });
 
   if (!lastSegment) {
     return;
   }
-
-  const { data, isLoading } = api.booth.getSpecificLembaga.useQuery({
-    lembagaId: lastSegment,
-  });
 
   if (isLoading) {
     return <LoadingSpinnerCustom />;
@@ -56,6 +57,7 @@ const EksternalLembagaDetailPage = () => {
   const handleSubmit = async () => {
     if (inputPin) {
       attendBooth({ lembagaId: lastSegment, insertedToken: inputPin });
+      void refetch();
     }
   };
 
@@ -146,28 +148,30 @@ const EksternalLembagaDetailPage = () => {
             )}
           </div>
           <div className="translate-y-[-35px] space-y-2">
-            <div className="flex w-full items-center gap-x-4">
-              <Input
-                className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
-                placeholder="Masukkan Kode"
-                value={inputPin}
-                onChange={(e) => setInputPin(e.target.value)}
-                disabled={data?.hasVisited}
-              />
-              <Button
-                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
-                onClick={handleSubmit}
-                disabled={data?.hasVisited}
-              >
-                <Image
-                  src={Arrow}
-                  width={24}
-                  height={24}
-                  className="text-white"
-                  alt="Arrow"
+            {!hasVisited && (
+              <div className="flex w-full items-center gap-x-4">
+                <Input
+                  className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
+                  placeholder="Masukkan Kode"
+                  value={inputPin}
+                  onChange={(e) => setInputPin(e.target.value)}
+                  disabled={data?.hasVisited}
                 />
-              </Button>
-            </div>
+                <Button
+                  className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                  onClick={handleSubmit}
+                  disabled={data?.hasVisited}
+                >
+                  <Image
+                    src={Arrow}
+                    width={24}
+                    height={24}
+                    className="text-white"
+                    alt="Arrow"
+                  />
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
