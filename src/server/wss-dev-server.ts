@@ -1,12 +1,14 @@
 import { getAdapter, initializeSocket, type SocketServer } from './socket';
 import { Server } from 'socket.io';
 import parser from 'socket.io-msgpack-parser';
+import { updatePinSchedule } from './cron-job/update-pin';
 // import { loadEnvFile } from 'process';
 
 // loadEnvFile('.env');
 // dotenv.config();
 const startServer = () => {
   console.log('start server');
+  updatePinSchedule.start();
   const port = process.env.WS_PORT ?? '3009';
   const io: SocketServer = new Server(parseInt(port, 10), {
     cors: {
@@ -34,6 +36,7 @@ const startServer = () => {
     // Stop Schedule if Exist
 
     // Close WebSocket Server
+    updatePinSchedule.stop();
     io.close();
   });
 };

@@ -4,7 +4,6 @@ import postgres from 'postgres';
 import * as schema from '@katitb2024/database';
 import { asc, desc, eq } from 'drizzle-orm';
 import dotenv from 'dotenv';
-import { ClassData } from './classData';
 
 export async function seedUser(db: PostgresJsDatabase<typeof schema>) {
   const password = await bcrypt.hash('password', 10);
@@ -255,32 +254,6 @@ export async function seedNotifications(db: PostgresJsDatabase<typeof schema>) {
     });
   }
 }
-
-export async function seedClasses(db: PostgresJsDatabase<typeof schema>) {
-  for (const classDetails of ClassData) {
-    try {
-      await db.insert(schema.classes).values({
-        title: classDetails.title,
-        topic: `${classDetails.theme}: ${classDetails.topik}`,
-        description: classDetails.desc,
-        speaker: classDetails.speaker,
-        location: classDetails.location,
-        date: new Date(`${classDetails.date}T${classDetails.time}+07:00`),
-        totalSeats: classDetails.quota,
-        reservedSeats: classDetails.reserved,
-        type: classDetails.type,
-      });
-    } catch (error) {
-      console.error(
-        `Error seeding class with title ${classDetails.title}:`,
-        error,
-      );
-      continue;
-    }
-  }
-  console.log('Done seeding classes!');
-}
-
 export async function seedOskmWrapped(db: PostgresJsDatabase<typeof schema>) {
   const user = await db
     .select({ id: schema.users.id })
@@ -522,36 +495,34 @@ export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
   const db = drizzle(migrationClient, { schema });
-  // await seedUser(db);
-  // console.log('Done seeding user');
-  // await seedGroup(db);
-  // console.log('Done seeding group!');
-  // await seedProfile(db);
-  // console.log('Done seeding profile');
-  // await seedCharacter(db);
-  // console.log('Done seeding character');
-  // await seedEvent(db);
-  // console.log('Done seeding event');
-  // await seedAssignment(db);
-  // console.log('Done seeding assignment');
-  // await seedAssignmentSubmission(db);
-  // console.log('Done seeding assignment submission');
-  // await seedPostTest(db);
-  // console.log('Done seeding post test');
-  // await seedNotifications(db);
-  // console.log('Done seeding notifications!');
-  // await seedClasses(db);
-  // console.log('Done seeding classes!');
-  // await seedOskmWrapped(db);
-  // console.log('Done seeding oskm wrapped!');
-  // await seedMerchandise(db);
-  // console.log('Done seeding merchandise!');
-  // await seedLembaga(db);
-  // console.log('Done seeding lembaga!');
-  // await seedHistoryTransaction(db);
-  // console.log('Done seeding history transaction!');
-  // await seedHistoryDetail(db);
-  // console.log('Done seeding history detail!');
+  await seedUser(db);
+  console.log('Done seeding user');
+  await seedGroup(db);
+  console.log('Done seeding group!');
+  await seedProfile(db);
+  console.log('Done seeding profile');
+  await seedCharacter(db);
+  console.log('Done seeding character');
+  await seedEvent(db);
+  console.log('Done seeding event');
+  await seedAssignment(db);
+  console.log('Done seeding assignment');
+  await seedAssignmentSubmission(db);
+  console.log('Done seeding assignment submission');
+  await seedPostTest(db);
+  console.log('Done seeding post test');
+  await seedNotifications(db);
+  console.log('Done seeding notifications!');
+  await seedOskmWrapped(db);
+  console.log('Done seeding oskm wrapped!');
+  await seedMerchandise(db);
+  console.log('Done seeding merchandise!');
+  await seedLembaga(db);
+  console.log('Done seeding lembaga!');
+  await seedHistoryTransaction(db);
+  console.log('Done seeding history transaction!');
+  await seedHistoryDetail(db);
+  console.log('Done seeding history detail!');
   await seedVisitor(db);
   console.log('Done seeding visitor!');
   await migrationClient.end();
