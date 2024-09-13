@@ -14,6 +14,7 @@ const UseDebouncedWidth = () => {
 
       setWidth(window.innerWidth);
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       window.addEventListener('resize', handleResize);
 
       return () => {

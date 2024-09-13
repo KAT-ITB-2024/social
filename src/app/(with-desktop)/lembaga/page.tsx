@@ -4,6 +4,7 @@ import MainContent from './main-content';
 import { getServerAuthSession } from '~/server/auth';
 
 export interface Lembaga {
+  id: string;
   name: string;
   currentToken: string | null;
   image: string | null;

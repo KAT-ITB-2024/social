@@ -13,6 +13,7 @@ import {
   visitors,
 } from '@katitb2024/database';
 import { createToken } from '../helpers/utils';
+import { z } from 'zod';
 
 export const lembagaRouter = createTRPCRouter({
   grantCoins: lembagaProcedure
@@ -199,6 +200,27 @@ export const lembagaRouter = createTRPCRouter({
     return data[0];
   }),
 
+  getCurrentToken: lembagaProcedure
+    .input(
+      z.object({
+        lembagaId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { lembagaId } = input;
+      try {
+        const currentToken = await ctx.db
+          .select({ currentToken: lembagaProfiles.currentToken })
+          .from(lembagaProfiles)
+          .where(eq(lembagaProfiles.id, lembagaId));
+        return currentToken[0];
+      } catch (error) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong!',
+        });
+      }
+    }),
   refreshCurrentToken: lembagaProcedure.mutation(async ({ ctx }) => {
     const lembagaId = ctx.session.user.id;
     const newToken = createToken();

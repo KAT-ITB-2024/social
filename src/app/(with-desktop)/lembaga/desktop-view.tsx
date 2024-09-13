@@ -8,18 +8,21 @@ import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { api } from '~/trpc/react';
-import { Lembaga } from './page';
+import { type Lembaga } from './page';
 
 const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
-  const { name, currentToken, image } = lembaga;
+  const { name, image } = lembaga;
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const refreshMutation = api.lembaga.refreshCurrentToken.useMutation();
+
   const router = useRouter();
+  const { data: currentToken, refetch } = api.lembaga.getCurrentToken.useQuery({
+    lembagaId: lembaga.id,
+  });
 
   const handleRefreshToken = async () => {
     setIsRefreshing(true);
     try {
-      await refreshMutation.mutateAsync();
+      void refetch();
     } catch {
       toast(<ErrorToast desc="Gagal mengubah refresh token" />);
     } finally {
@@ -80,7 +83,7 @@ const DesktopView = ({ lembaga }: { lembaga: Lembaga }) => {
                 Kode Kunjungan
               </p>
               <p className="font-heading text-6xl text-turquoise-500 text-shadow-orange-xl">
-                {currentToken}
+                {currentToken?.currentToken ?? ''}
               </p>
               <div className="flex flex-row gap-4">
                 <Button
