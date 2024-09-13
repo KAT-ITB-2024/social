@@ -405,16 +405,16 @@ export async function seedVisitor(db: PostgresJsDatabase<typeof schema>) {
     .select()
     .from(schema.users)
     .where(eq(schema.users.role, 'Peserta'))
-    .limit(10);
+    .limit(100);
 
   if (!lembaga[0] || !lembaga[1]) {
     return;
   }
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     await db.insert(schema.visitors).values({
-      boothId: lembaga[i % 2]?.userId ?? '',
-      userId: users[i % 7]?.id ?? '',
+      boothId: 'vm5g3pg71sekh3cuy756qdl7',
+      userId: users[i]?.id ?? '',
       updatedAt: new Date(),
     });
   }
@@ -522,36 +522,36 @@ export async function seed(dbUrl: string) {
   const migrationClient = postgres(dbUrl, { max: 1 });
 
   const db = drizzle(migrationClient, { schema });
-  await seedUser(db);
-  console.log('Done seeding user');
-  await seedGroup(db);
-  console.log('Done seeding group!');
-  await seedProfile(db);
-  console.log('Done seeding profile');
-  await seedCharacter(db);
-  console.log('Done seeding character');
-  await seedEvent(db);
-  console.log('Done seeding event');
-  await seedAssignment(db);
-  console.log('Done seeding assignment');
-  await seedAssignmentSubmission(db);
-  console.log('Done seeding assignment submission');
-  await seedPostTest(db);
-  console.log('Done seeding post test');
-  await seedNotifications(db);
-  console.log('Done seeding notifications!');
-  await seedClasses(db);
-  console.log('Done seeding classes!');
-  await seedOskmWrapped(db);
-  console.log('Done seeding oskm wrapped!');
-  await seedMerchandise(db);
-  console.log('Done seeding merchandise!');
-  await seedLembaga(db);
-  console.log('Done seeding lembaga!');
-  await seedHistoryTransaction(db);
-  console.log('Done seeding history transaction!');
-  await seedHistoryDetail(db);
-  console.log('Done seeding history detail!');
+  // await seedUser(db);
+  // console.log('Done seeding user');
+  // await seedGroup(db);
+  // console.log('Done seeding group!');
+  // await seedProfile(db);
+  // console.log('Done seeding profile');
+  // await seedCharacter(db);
+  // console.log('Done seeding character');
+  // await seedEvent(db);
+  // console.log('Done seeding event');
+  // await seedAssignment(db);
+  // console.log('Done seeding assignment');
+  // await seedAssignmentSubmission(db);
+  // console.log('Done seeding assignment submission');
+  // await seedPostTest(db);
+  // console.log('Done seeding post test');
+  // await seedNotifications(db);
+  // console.log('Done seeding notifications!');
+  // await seedClasses(db);
+  // console.log('Done seeding classes!');
+  // await seedOskmWrapped(db);
+  // console.log('Done seeding oskm wrapped!');
+  // await seedMerchandise(db);
+  // console.log('Done seeding merchandise!');
+  // await seedLembaga(db);
+  // console.log('Done seeding lembaga!');
+  // await seedHistoryTransaction(db);
+  // console.log('Done seeding history transaction!');
+  // await seedHistoryDetail(db);
+  // console.log('Done seeding history detail!');
   await seedVisitor(db);
   console.log('Done seeding visitor!');
   await migrationClient.end();

@@ -9,7 +9,12 @@ import { type Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { env } from '~/env.cjs';
 import { db } from '~/server/db';
-import { users, type UserRole, profiles } from '@katitb2024/database';
+import {
+  users,
+  type UserRole,
+  profiles,
+  lembagaProfiles,
+} from '@katitb2024/database';
 import { type DefaultJWT } from 'next-auth/jwt';
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
@@ -164,6 +169,23 @@ export const authOptions: NextAuthOptions = {
               },
               where: eq(profiles.userId, user.id),
             });
+            if (!profile) {
+              throw new TRPCError({
+                code: 'NOT_FOUND',
+                message: 'Profile not found!',
+              });
+            }
+          } else if (user.role == 'ITB-X') {
+            profile = await db
+              .select({
+                group: lembagaProfiles.id,
+              })
+              .from(lembagaProfiles)
+              .where(eq(lembagaProfiles.userId, user.id))
+              .then((result) => {
+                return result[0];
+              });
+
             if (!profile) {
               throw new TRPCError({
                 code: 'NOT_FOUND',

@@ -1,6 +1,6 @@
 import { createTRPCRouter, lembagaProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { eq, and, sql, ilike, or } from 'drizzle-orm';
+import { eq, and, sql, ilike, or, inArray, is } from 'drizzle-orm';
 import {
   grantCoinsPayload,
   getAllVisitorsPayload,
@@ -18,7 +18,7 @@ export const lembagaRouter = createTRPCRouter({
   grantCoins: lembagaProcedure
     .input(grantCoinsPayload)
     .mutation(async ({ ctx, input }) => {
-      const boothId = ctx.session.user.id;
+      const boothId = ctx.session.user.group;
       const data = await ctx.db
         .select()
         .from(visitors)
@@ -88,8 +88,11 @@ export const lembagaRouter = createTRPCRouter({
   getAllVisitors: lembagaProcedure
     .input(getAllVisitorsPayload)
     .query(async ({ ctx, input }) => {
+      console.log(input);
       const nameOrNim = input.nameOrNim ? `%${input.nameOrNim}%` : '%';
-      const boothId = ctx.session.user.id;
+      const boothId = ctx.session.user.group;
+
+      console.log('Name', nameOrNim);
 
       const baseQuery = ctx.db
         .select({
@@ -98,6 +101,8 @@ export const lembagaRouter = createTRPCRouter({
           name: profiles.name,
           faculty: profiles.faculty,
           profileImage: profiles.profileImage,
+          isGranted: visitors.isGranted,
+
           totalCount: sql<number>`count(*) OVER ()`,
         })
         .from(visitors)
@@ -118,11 +123,27 @@ export const lembagaRouter = createTRPCRouter({
       const totalItems = paginatedData[0]?.totalCount ?? 0;
       const totalPages = Math.max(1, Math.ceil(totalItems / input.limit));
 
+      const boothData = await ctx.db
+        .select({
+          visitorCount: lembagaProfiles.visitorCount,
+          name: lembagaProfiles.name,
+        })
+        .from(lembagaProfiles)
+        .where(eq(lembagaProfiles.id, boothId))
+        .then((res) => res[0]);
+
+      if (!boothData) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Booth not found',
+        });
+      }
+
       return {
-        data: paginatedData,
-        currentPage: input.page,
-        previousPage: input.page > 1 ? input.page - 1 : undefined,
-        nextPage: input.page < totalPages ? input.page + 1 : undefined,
+        data: {
+          boothData,
+          paginatedData,
+        },
         totalItems,
         totalPages,
       };
@@ -175,9 +196,7 @@ export const lembagaRouter = createTRPCRouter({
         message: 'Lembaga not found',
       });
     }
-    return {
-      data: data[0],
-    };
+    return data[0];
   }),
 
   refreshCurrentToken: lembagaProcedure.mutation(async ({ ctx }) => {
