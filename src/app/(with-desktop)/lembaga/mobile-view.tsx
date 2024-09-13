@@ -9,25 +9,30 @@ import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { api } from '~/trpc/react';
-import { Lembaga } from './page';
+import { type Lembaga } from './page';
 
 export default function MobileView({ lembaga }: { lembaga: Lembaga }) {
-  const { name, currentToken, visitorCount, image } = lembaga;
+  const { name, visitorCount, image } = lembaga;
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const refreshMutation = api.lembaga.refreshCurrentToken.useMutation();
   const router = useRouter();
+  const { data: currentToken, refetch } = api.lembaga.getCurrentToken.useQuery({
+    lembagaId: lembaga.id,
+  });
 
   const handleRefreshToken = async () => {
     setIsRefreshing(true);
     try {
-      await refreshMutation.mutateAsync();
+      void refetch();
     } catch {
       toast(<ErrorToast desc="Gagal mengubah refresh token" />);
     } finally {
       router.refresh();
       setIsRefreshing(false);
     }
+    router.refresh();
+    setIsRefreshing(false);
   };
+
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
       {/* Background Section */}
@@ -62,7 +67,7 @@ export default function MobileView({ lembaga }: { lembaga: Lembaga }) {
             Kode Kunjungan
           </p>
           <p className="font-heading text-6xl text-orange-300 drop-shadow-orange-shadow-lg">
-            {currentToken}
+            {currentToken?.currentToken ?? ''}
           </p>
         </div>
         <div className="flex w-2/5 flex-col gap-2 shadow-inner drop-shadow-orange-shadow-lg">

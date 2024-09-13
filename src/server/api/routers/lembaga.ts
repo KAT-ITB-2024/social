@@ -215,39 +215,4 @@ export const lembagaRouter = createTRPCRouter({
         });
       }
     }),
-  refreshCurrentToken: lembagaProcedure.mutation(async ({ ctx }) => {
-    const lembagaId = ctx.session.user.id;
-    const newToken = createToken();
-    const newExpiry = new Date(Date.now() + 5 * 60 * 1000);
-
-    try {
-      const updatedProfile = await ctx.db
-        .update(lembagaProfiles)
-        .set({ currentToken: newToken, currentExpiry: newExpiry })
-        .where(eq(lembagaProfiles.userId, lembagaId))
-        .returning();
-
-      if (updatedProfile.length === 0) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Lembaga not found',
-        });
-      }
-      return {
-        status: 200,
-        data: {
-          token: newToken,
-          expiryDate: newExpiry,
-        },
-      };
-    } catch (error) {
-      if (error instanceof TRPCError) {
-        throw error;
-      }
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to refresh token',
-      });
-    }
-  }),
 });
