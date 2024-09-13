@@ -9,6 +9,7 @@ import { Input } from '~/components/ui/input';
 import { usePathname } from 'next/navigation';
 import { api } from '~/trpc/react';
 import { LembagaCard } from '~/components/kunjungan/LembagaCard';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const KategoriUKMPage = () => {
@@ -57,19 +58,23 @@ const KategoriUKMPage = () => {
           backgroundSize: '100% 100%',
         }}
       >
-        <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <div className="space-y-2 text-center">
-            <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-              {lastSegment}
-            </h3>
-            <p className="text-2xl text-pink-300 text-shadow-orange-md">
-              Unit Kegiatan Mahasiswa
-            </p>
+        <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10 pt-2">
+          <div className="flex w-full flex-row items-start justify-between">
+            <LembagaBackButton />
+            <div className="flex flex-col space-y-2 text-center">
+              <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
+                {lastSegment}
+              </h3>
+              <p className="break-words text-2xl text-pink-300 text-shadow-orange-md">
+                Unit Kegiatan Mahasiswa
+              </p>
+            </div>
+            <div className="w-[40px]" />
           </div>
           <div className="space-y-4">
             {/* Input  */}
             <Input
-              className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
+              className="h-[50px] w-full border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

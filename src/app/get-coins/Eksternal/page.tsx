@@ -9,6 +9,7 @@ import { Input } from '~/components/ui/input';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { LembagaCard } from '~/components/kunjungan/LembagaCard';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 
 const EksternalPage = () => {
   const { data: lembagaData, isLoading } =
@@ -51,13 +52,17 @@ const EksternalPage = () => {
         }}
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-            Eksternal
-          </h3>
+          <div className="flex w-full flex-row items-start justify-between">
+            <LembagaBackButton />
+            <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
+              Eksternal
+            </h3>
+            <div className="w-[40px]" />
+          </div>
           <div className="space-y-4">
             {/* Input untuk search */}
             <Input
-              className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
+              className="h-[50px] w-full border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
