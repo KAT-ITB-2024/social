@@ -2,8 +2,8 @@ import Image from 'next/image';
 import { CustomPagination } from '~/components/lembaga/Pagination';
 import AqualingsCard from '~/components/lembaga/AqualingsCard';
 import SearchBar from '~/components/lembaga/Search';
-import { FacultyEnum, FacultyEnumType } from '~/types/enums/faculty';
-import { FC, useState } from 'react';
+import { FacultyEnum } from '~/types/enums/faculty';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from '~/trpc/react';
 import LembagaModal from '~/components/lembaga/LembagaModal';
@@ -77,7 +77,7 @@ const GrantMobileView = () => {
 
   if (visitorData?.data.paginatedData == null) return null;
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center">
+    <div className="relative flex h-screen w-full flex-col items-center justify-center">
       {/* Background Section */}
       <div className="absolute -z-20 h-screen w-full">
         <Image
@@ -108,7 +108,7 @@ const GrantMobileView = () => {
             <p className="font-heading text-4xl text-orange-300 drop-shadow-orange-shadow-lg">
               Pengunjung
             </p>
-            <p className="text-center font-body text-lg leading-10 text-pink-300">
+            <p className="max-w-[300px] break-words text-center font-body text-lg leading-10 text-pink-300">
               {visitorData?.data.boothData.name ?? 'Unavailable'}
             </p>
           </div>
