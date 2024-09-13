@@ -1,9 +1,12 @@
+'use client';
 import React from 'react';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { toast } from 'sonner';
+import { LoadingSpinnerCustom } from './ui/loading-spinner';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -16,6 +19,15 @@ const Sidebar = ({
   toggleSidebar,
   isDesktop = false,
 }: SidebarProps) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (status === 'unauthenticated') {
+    router.replace('/login');
+  }
   const sidebarItems = [
     {
       href: '/',
@@ -97,7 +109,8 @@ const Sidebar = ({
     }
   }
 
-  const itemsToMap = isDesktop ? lembagaItems : sidebarItems;
+  const itemsToMap =
+    session?.user.role === 'ITB-X' ? lembagaItems : sidebarItems;
   return (
     <div
       className={`${isDesktop ? 'left-[87%]' : 'left-[50%]'} fixed w-full translate-x-[-50%] lg:w-[450px]`}

@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import parser from 'socket.io-msgpack-parser';
 import { getAdapter, initializeSocket, type SocketServer } from './socket';
 import { env } from '~/env.cjs';
+import { updatePinSchedule } from './cron-job/update-pin';
 
 // Load environment variables from .env before doing anything else
 loadEnvConfig(process.cwd());
@@ -49,7 +50,7 @@ void app.prepare().then(() => {
   io.listen(env.WS_PORT);
 
   // Start Schedule if Exist
-
+  updatePinSchedule.start();
   console.log(
     `Server listening at http://localhost:${port} as ${
       dev ? 'development' : env.NODE_ENV
@@ -58,7 +59,7 @@ void app.prepare().then(() => {
 
   process.on('SIGTERM', () => {
     console.log('SIGTERM');
-
+    updatePinSchedule.stop();
     // Stop Schedule if Exist
   });
 
