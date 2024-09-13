@@ -24,7 +24,7 @@ const Coins = () => {
   return (
     <div className="mx-6 mb-2 flex items-center justify-center rounded-xl border-2 border-solid border-turquoise-100 bg-turquoise-100 p-1 shadow-[4px_4px_6px_rgba(255,105,180,0.75)] shadow-turquoise-200/50">
       <div className="flex w-full flex-row justify-between">
-        <div className="flex w-full flex-row">
+        <div className="flex w-full flex-row items-center">
           <Image
             src="/images/home/coin.png"
             width={62}
