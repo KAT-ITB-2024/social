@@ -149,7 +149,7 @@ const HimpunanDetailPage = () => {
                 >
                   <Button
                     variant={'outline'}
-                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent font-semibold text-orange-400 backdrop-blur-xl hover:bg-orange-100/25 hover:text-orange-500"
                   >
                     Tentang Lembaga
                   </Button>

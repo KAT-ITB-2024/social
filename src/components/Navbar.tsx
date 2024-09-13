@@ -79,7 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDesktop = false }) => {
           <Sidebar
             isOpen={isSidebarOpen}
             toggleSidebar={handleToggleSidebar}
-            isDesktop
+            isDesktop={isDesktop}
           />
         </div>
       )}
