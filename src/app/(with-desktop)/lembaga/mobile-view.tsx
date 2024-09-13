@@ -9,25 +9,30 @@ import { toast } from 'sonner';
 import { Button } from '~/components/ui/button';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { api } from '~/trpc/react';
-import { Lembaga } from './page';
+import { type Lembaga } from './page';
 
 export default function MobileView({ lembaga }: { lembaga: Lembaga }) {
-  const { name, currentToken, visitorCount, image } = lembaga;
+  const { name, visitorCount, image } = lembaga;
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const refreshMutation = api.lembaga.refreshCurrentToken.useMutation();
   const router = useRouter();
+  const { data: currentToken, refetch } = api.lembaga.getCurrentToken.useQuery({
+    lembagaId: lembaga.id,
+  });
 
   const handleRefreshToken = async () => {
     setIsRefreshing(true);
     try {
-      await refreshMutation.mutateAsync();
+      void refetch();
     } catch {
       toast(<ErrorToast desc="Gagal mengubah refresh token" />);
     } finally {
       router.refresh();
       setIsRefreshing(false);
     }
+    router.refresh();
+    setIsRefreshing(false);
   };
+
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
       {/* Background Section */}
@@ -44,25 +49,25 @@ export default function MobileView({ lembaga }: { lembaga: Lembaga }) {
       {/* Main Section */}
       <section className="flex h-[65vh] w-full flex-col items-center justify-between">
         <div className="flex w-full flex-col items-center">
-          <p className="text-center font-heading text-4xl text-orange-500 drop-shadow-orange-shadow-lg">
+          <p className="line-clamp-2 text-center font-heading text-4xl text-orange-500 drop-shadow-orange-shadow-lg">
             {name}
           </p>
           <p className="font-body text-lg text-pink-300">
             {visitorCount} Pengunjung
           </p>
         </div>
-        <div className="flex h-fit w-3/4 flex-col items-center gap-1">
+        <div className="relative flex aspect-square w-3/4 flex-col items-center justify-center gap-1 pb-8">
           <Image
             fill
             src="/images/lembaga/bubble.png"
             alt="bubble"
-            className="-z-10 object-contain p-10"
+            className="h-full w-full object-contain"
           />
           <p className="font-subheading text-lg font-bold text-orange-500">
             Kode Kunjungan
           </p>
           <p className="font-heading text-6xl text-orange-300 drop-shadow-orange-shadow-lg">
-            {currentToken}
+            {currentToken?.currentToken ?? ''}
           </p>
         </div>
         <div className="flex w-2/5 flex-col gap-2 shadow-inner drop-shadow-orange-shadow-lg">
@@ -77,7 +82,7 @@ export default function MobileView({ lembaga }: { lembaga: Lembaga }) {
           <Button
             asChild
             variant="outline"
-            className="w-full min-w-fit border-2 border-orange-400 bg-transparent text-orange-400 drop-shadow-orange-shadow-lg hover:bg-white hover:text-orange-400"
+            className="w-full min-w-fit border-2 border-orange-400 bg-transparent font-semibold text-orange-400 drop-shadow-orange-shadow-lg hover:bg-white hover:text-orange-400"
             disabled={isRefreshing}
           >
             <Link href="/lembaga/grant-coins">Lihat Pengunjung</Link>

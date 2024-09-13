@@ -14,11 +14,7 @@ interface SidebarProps {
   isDesktop?: boolean;
 }
 
-const Sidebar = ({
-  isOpen,
-  toggleSidebar,
-  isDesktop = false,
-}: SidebarProps) => {
+const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   if (status === 'loading') {
@@ -112,9 +108,7 @@ const Sidebar = ({
   const itemsToMap =
     session?.user.role === 'ITB-X' ? lembagaItems : sidebarItems;
   return (
-    <div
-      className={`${isDesktop ? 'left-[87%]' : 'left-[50%]'} fixed w-full translate-x-[-50%] lg:w-[450px]`}
-    >
+    <div className={`fixed right-0 w-full bg-pink-200 lg:w-[450px]`}>
       <div
         className={`lg:-auto absolute right-0 top-0 z-30 h-[100vh] duration-200 ease-in-out ${isOpen ? 'w-[60%] opacity-100 lg:max-w-[270px]' : 'w-0 opacity-0'} mx-auto`}
       >

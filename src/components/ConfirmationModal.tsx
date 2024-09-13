@@ -26,6 +26,10 @@ interface ConfirmationModalProps {
   actionColor?: string;
   action: () => void;
   cancelColor?: string;
+  actionTextColor?: string;
+  titleColor?: string;
+  descriptionColor?: string;
+  customBackgroundColor?: string;
 }
 
 export function ConfirmationModal({
@@ -39,6 +43,10 @@ export function ConfirmationModal({
   actionColor,
   action,
   cancelColor,
+  actionTextColor,
+  titleColor,
+  descriptionColor,
+  customBackgroundColor,
 }: ConfirmationModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -60,22 +68,26 @@ export function ConfirmationModal({
           </button>
         )}
       </AlertDialogTrigger>
-      <AlertDialogContent className="border-none bg-blue-500 text-yellow flex flex-col items-center p-6 rounded-[12px] w-80">
+      <AlertDialogContent
+        className={`flex w-80 flex-col items-center rounded-[12px] border-none ${customBackgroundColor ?? 'bg-blue-500'} p-6 ${titleColor ?? 'text-yellow'}`}
+      >
         <AlertDialogHeader className="flex flex-col items-center">
           <AlertDialogTitle className="flex flex-col items-center gap-y-4">
             <Image src={image} alt="Star" height={150} width={150} />
             <p className="text-center text-h3 font-normal">{title}</p>
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-center text-b5 text-yellow">
+          <AlertDialogDescription
+            className={`text-center text-b5 ${descriptionColor ?? 'text-yellow'}`}
+          >
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         {actionText && (
-          <AlertDialogFooter className="flex flex-col w-full mt-6">
+          <AlertDialogFooter className="mt-6 flex w-full flex-col">
             <AlertDialogAction
               onClick={action}
-              className={`${actionColor ?? 'bg-yellow'} w-full text-blue-500 hover:bg-shade-200`}
+              className={`${actionColor ?? 'bg-yellow'} w-full ${actionTextColor ?? 'text-blue-500'} hover:bg-shade-200`}
             >
               {actionText}
             </AlertDialogAction>
