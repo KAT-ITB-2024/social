@@ -1,17 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
-import bgbr from 'public/images/kunjungan/UKM/bg-br.png';
-import Link from 'next/link';
-import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
 import { Input } from '~/components/ui/input';
 import { usePathname } from 'next/navigation';
-import { Button } from '~/components/ui/button';
-import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import NotFound from '~/app/not-found';
@@ -21,6 +16,7 @@ import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 const KategoriUKMPage = () => {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
+  const [searchQuery, setSearchQuery] = useState('');
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
@@ -28,6 +24,10 @@ const KategoriUKMPage = () => {
   const { data: lembagaData, isLoading } = api.booth.getHmpsByFaculty.useQuery({
     faculty: lastSegment,
   });
+
+  const filteredLembagaData = lembagaData?.data.filter((lembaga) =>
+    lembaga.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   if (isLoading) {
     return <LoadingSpinnerCustom />;
@@ -81,12 +81,14 @@ const KategoriUKMPage = () => {
             <Input
               className="h-[50px] w-full border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
 
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {lembagaData?.data.map((item) => {
+              {filteredLembagaData?.map((item) => {
                 return (
                   <LembagaCard
                     key={item.id}

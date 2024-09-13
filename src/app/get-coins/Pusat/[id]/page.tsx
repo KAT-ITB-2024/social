@@ -20,6 +20,7 @@ import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import NotFound from '~/app/not-found';
 import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
+import Link from 'next/link';
 
 const HimpunanDetailPage = () => {
   const pathname = usePathname();
@@ -126,7 +127,10 @@ const HimpunanDetailPage = () => {
                 placeholder="Masukkan Kode"
                 disabled={data?.hasVisited}
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                disabled={data?.hasVisited}
+              >
                 <Image
                   src={Arrow}
                   width={24}
@@ -138,13 +142,18 @@ const HimpunanDetailPage = () => {
             </div>
             <div>
               {data?.specificLembaga?.detailLink && (
-                <Button
-                  variant={'outline'}
-                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-                  // TO DO : Pasang link dri info
+                <Link
+                  href={data.specificLembaga.detailLink ?? ''}
+                  passHref
+                  target="_blank"
                 >
-                  Tentang Lembaga
-                </Button>
+                  <Button
+                    variant={'outline'}
+                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  >
+                    Tentang Lembaga
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
