@@ -19,6 +19,7 @@ import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
 import Link from 'next/link';
+import LembagaBackButton from '~/components/kunjungan/LembagaBackButton';
 
 const KunjunganHMPSPage = () => {
   return (
@@ -48,9 +49,13 @@ const KunjunganHMPSPage = () => {
         }}
       >
         <div className="relative z-30 flex w-full flex-col items-center gap-6 p-10">
-          <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
-            Rumpun HMPS
-          </h3>
+          <div className="flex w-full flex-row items-start justify-between">
+            <LembagaBackButton />
+            <h3 className="text-center font-heading text-h3 text-orange-500 text-shadow-orange-xl">
+              Rumpun HMPS
+            </h3>
+            <div className="w-[40px]" />
+          </div>
           <div className="grid grid-cols-3 place-items-start">
             <Link
               href={`/get-coins/HMPS/FITB`}
