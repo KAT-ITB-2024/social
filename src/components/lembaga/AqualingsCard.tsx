@@ -1,12 +1,14 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
+import { ConfirmationModal } from '../ConfirmationModal';
+import Penyu from 'public/images/kunjungan/Penyu.png';
 
 interface AqualingsCardProps {
   nim: string;
   name: string;
   profileImage: string | null;
-  onClick?: () => void;
+  onClick: () => void;
   isGranted: boolean | null;
 }
 
@@ -20,49 +22,43 @@ function AqualingsCard({
   const [loaded, setLoaded] = useState<boolean>(false);
 
   return (
-    <>
-      <div className="flex h-fit w-full flex-row items-center justify-between rounded-lg border-2 border-orange-300 bg-gradient-to-r from-orange-300 from-5% to-orange-200/50 to-15% px-4 py-2 drop-shadow-orange-shadow-lg">
-        <div className="flex h-full flex-row items-center gap-4">
-          {/* Profile Image */}
-          <div className="relative flex size-16 items-center justify-center rounded-full text-transparent">
+    <div className="flex h-fit w-full items-center justify-between rounded-lg border-2 border-orange-300 bg-gradient-to-r from-orange-300 from-5% to-orange-200/50 to-15% px-4 py-3 shadow-lg">
+      <div className="flex items-center gap-3">
+        {/* Profile Image */}
+        <div className="relative h-16 w-16 flex-shrink-0">
+          <Image
+            src={profileImage ?? '/images/history/profile-default.png'}
+            alt="Profile Image"
+            width={56}
+            height={56}
+            className="rounded-full object-cover"
+            onLoad={() => setLoaded(true)}
+          />
+          {!loaded && (
             <Image
-              src={profileImage ?? '/images/history/profile-default.png'}
-              alt="Profile Image"
-              width={64}
-              height={64}
-              className="size-2/3 rounded-full"
-              onLoad={() => setLoaded(true)}
+              src="/images/history/profile-default.png"
+              alt="Profile Placeholder"
+              width={56}
+              height={56}
+              className="absolute inset-0 rounded-full object-cover"
             />
-            {!loaded && (
-              <Image
-                src={'/images/history/profile-default.png'}
-                alt="Profile Image"
-                width={64}
-                height={64}
-                className="absolute size-2/3 rounded-full"
-              />
-            )}
-            <Image
-              src="/images/lembaga/frame.png"
-              alt="Profile Image Frame"
-              width={96}
-              height={96}
-              className="absolute -left-0.5 -top-0.5 size-full"
-            />
-          </div>
-
-          {/* Name & NIM */}
-          <div className="flex flex-col">
-            <p className="text-lg font-bold text-pink-400">{name}</p>
-            <p className="text-base font-medium text-pink-200">{nim}</p>
-          </div>
+          )}
         </div>
 
-        {/* Grant Coins Button */}
-        <div>
+        {/* Name & NIM */}
+        <div className="flex flex-col">
+          <p className="text-lg font-bold text-pink-400">{name}</p>
+          <p className="text-base font-medium text-pink-200">{nim}</p>
+        </div>
+      </div>
+
+      {/* Grant Coins Button */}
+      {/* Grant Coins Button */}
+      <ConfirmationModal
+        triggerText=""
+        customTriggerButton={
           <Button
             className="flex flex-row items-center gap-3 bg-orange-400 text-white"
-            onClick={onClick}
             disabled={isGranted ?? false}
           >
             {!isGranted ? 'Grant Coins' : 'Granted'}
@@ -79,9 +75,21 @@ function AqualingsCard({
               />
             </svg>
           </Button>
-        </div>
-      </div>
-    </>
+        }
+        image={Penyu}
+        title="Grant Coins"
+        description="Siap kasih 100 coins untuk Aqualings sekarang?"
+        actionText="Kasih Sekarang"
+        cancelText="Batal Kasih"
+        cancelColor="white"
+        actionColor="bg-orange-400"
+        actionTextColor="white"
+        titleColor="text-orange-500"
+        descriptionColor="text-orange-500"
+        customBackgroundColor="white"
+        action={onClick}
+      />
+    </div>
   );
 }
 

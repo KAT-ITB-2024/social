@@ -28,6 +28,15 @@ const UKMLembagaDetailPage = () => {
   const [inputPin, setInputPin] = useState('');
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
+  const { mutate: attendBooth } = api.booth.attendBooth.useMutation({
+    onSuccess() {
+      setIsOpen(true);
+    },
+    onError() {
+      setIsFalseOpen(true);
+    },
+  });
+
   if (!lastSegment) {
     return;
   }
@@ -39,6 +48,12 @@ const UKMLembagaDetailPage = () => {
   if (isLoading) {
     return <LoadingSpinnerCustom />;
   }
+
+  const handleSubmit = async () => {
+    if (inputPin) {
+      attendBooth({ lembagaId: lastSegment, insertedToken: inputPin });
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -134,6 +149,7 @@ const UKMLembagaDetailPage = () => {
               />
               <Button
                 className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                onClick={handleSubmit}
                 disabled={data?.hasVisited}
               >
                 <Image
@@ -154,7 +170,7 @@ const UKMLembagaDetailPage = () => {
                 >
                   <Button
                     variant={'outline'}
-                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent font-semibold text-orange-400 backdrop-blur-xl hover:bg-orange-100/25 hover:text-orange-500"
                   >
                     Tentang Lembaga
                   </Button>

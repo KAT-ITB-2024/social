@@ -1,9 +1,12 @@
+'use client';
 import React from 'react';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { SuccessToast } from '~/components/ui/success-toast';
 import { ErrorToast } from '~/components/ui/error-toast';
 import { toast } from 'sonner';
+import { LoadingSpinnerCustom } from './ui/loading-spinner';
+import { useRouter } from 'next/navigation';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,11 +14,16 @@ interface SidebarProps {
   isDesktop?: boolean;
 }
 
-const Sidebar = ({
-  isOpen,
-  toggleSidebar,
-  isDesktop = false,
-}: SidebarProps) => {
+const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  if (status === 'loading') {
+    return <LoadingSpinnerCustom />;
+  }
+
+  if (status === 'unauthenticated') {
+    router.replace('/login');
+  }
   const sidebarItems = [
     {
       href: '/',
@@ -97,11 +105,10 @@ const Sidebar = ({
     }
   }
 
-  const itemsToMap = isDesktop ? lembagaItems : sidebarItems;
+  const itemsToMap =
+    session?.user.role === 'ITB-X' ? lembagaItems : sidebarItems;
   return (
-    <div
-      className={`${isDesktop ? 'left-[87%]' : 'left-[50%]'} fixed w-full translate-x-[-50%] lg:w-[450px]`}
-    >
+    <div className={`fixed right-0 w-full bg-pink-200 lg:w-[450px]`}>
       <div
         className={`lg:-auto absolute right-0 top-0 z-30 h-[100vh] duration-200 ease-in-out ${isOpen ? 'w-[60%] opacity-100 lg:max-w-[270px]' : 'w-0 opacity-0'} mx-auto`}
       >
