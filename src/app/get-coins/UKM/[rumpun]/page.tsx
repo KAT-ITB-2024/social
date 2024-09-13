@@ -1,26 +1,36 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
-import bgbr from 'public/images/kunjungan/UKM/bg-br.png';
 import { Input } from '~/components/ui/input';
 import { usePathname } from 'next/navigation';
 import { api } from '~/trpc/react';
 import { LembagaCard } from '~/components/kunjungan/LembagaCard';
+import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 
 const KategoriUKMPage = () => {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
+  const [searchQuery, setSearchQuery] = useState('');
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
   if (!lastSegment) {
     return;
   }
-  const { data: lembagaData } = api.booth.getUkmByRumpun.useQuery({
+  const { data: lembagaData, isLoading } = api.booth.getUkmByRumpun.useQuery({
     rumpun: lastSegment,
   });
+
+  if (isLoading) {
+    return <LoadingSpinnerCustom />;
+  }
+
+  const filteredLembagaData = lembagaData?.filter((lembaga) =>
+    lembaga.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -61,12 +71,14 @@ const KategoriUKMPage = () => {
             <Input
               className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
 
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {lembagaData?.map((item) => {
+              {filteredLembagaData?.map((item) => {
                 return (
                   <LembagaCard
                     key={item.id}

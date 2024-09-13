@@ -132,6 +132,7 @@ const EksternalLembagaDetailPage = () => {
               <Button
                 className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
                 onClick={() => setIsOpen(true)}
+                disabled={data?.hasVisited}
               >
                 <Image
                   src={Arrow}

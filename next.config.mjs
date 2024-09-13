@@ -21,6 +21,12 @@ const config = {
         port: '',
         pathname: '/**/*',
       },
+      {
+        protocol: 'https',
+        hostname: 'sgp1.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**/*',
+      },
     ],
   },
 };

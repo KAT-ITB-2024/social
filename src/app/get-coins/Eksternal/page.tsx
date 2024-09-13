@@ -1,15 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';
 import bgbl from 'public/images/kunjungan/UKM/bg-bl.png';
-import LembagaDummy from 'public/images/kunjungan/LemagaDummy.png';
-import Link from 'next/link';
 import { Input } from '~/components/ui/input';
-import { Button } from '~/components/ui/button';
-import { MoveRight } from 'lucide-react';
 import { api } from '~/trpc/react';
 import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import { LembagaCard } from '~/components/kunjungan/LembagaCard';
@@ -17,9 +13,17 @@ import { LembagaCard } from '~/components/kunjungan/LembagaCard';
 const EksternalPage = () => {
   const { data: lembagaData, isLoading } =
     api.booth.getLembagaExternal.useQuery();
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredLembagaData = lembagaData?.filter((lembaga) =>
+    lembaga.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   if (isLoading) {
     return <LoadingSpinnerCustom />;
   }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <Image
@@ -51,16 +55,18 @@ const EksternalPage = () => {
             Eksternal
           </h3>
           <div className="space-y-4">
-            {/* Input  */}
+            {/* Input untuk search */}
             <Input
               className="h-[50px] w-[400px] border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"
               placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
 
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {lembagaData?.map((lembaga) => {
+              {filteredLembagaData?.map((lembaga) => {
                 return (
                   <LembagaCard
                     key={lembaga.id}

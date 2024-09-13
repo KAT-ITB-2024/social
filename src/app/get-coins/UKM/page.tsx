@@ -6,7 +6,6 @@ import orkes from 'public/images/kunjungan/UKM/orkes.png';
 import kajian from 'public/images/kunjungan/UKM/kajian.png';
 import agama from 'public/images/kunjungan/UKM/agama.png';
 import media2 from 'public/images/kunjungan/UKM/media2.png';
-import pusat from 'public/images/kunjungan/UKM/pusat.png';
 
 import bgtl from 'public/images/kunjungan/UKM/bg-tl.png';
 import bgtr from 'public/images/kunjungan/UKM/bg-tr.png';

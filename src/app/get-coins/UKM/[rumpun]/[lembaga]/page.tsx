@@ -18,6 +18,7 @@ import { LoadingSpinnerCustom } from '~/components/ui/loading-spinner';
 import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
+import Link from 'next/link';
 
 const UKMLembagaDetailPage = () => {
   const pathname = usePathname();
@@ -127,7 +128,10 @@ const UKMLembagaDetailPage = () => {
                 value={inputPin}
                 onChange={(e) => setInputPin(e.target.value)}
               />
-              <Button className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300">
+              <Button
+                className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
+                disabled={data?.hasVisited}
+              >
                 <Image
                   src={Arrow}
                   width={24}
@@ -139,13 +143,18 @@ const UKMLembagaDetailPage = () => {
             </div>
             <div>
               {data?.specificLembaga?.detailLink && (
-                <Button
-                  variant={'outline'}
-                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-                  // TO DO : Pasang link dri info
+                <Link
+                  href={data.specificLembaga.detailLink ?? ''}
+                  passHref
+                  target="_blank"
                 >
-                  Tentang Lembaga
-                </Button>
+                  <Button
+                    variant={'outline'}
+                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  >
+                    Tentang Lembaga
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
