@@ -78,7 +78,7 @@ const KategoriUKMPage = () => {
             {/* Lembaga */}
             <div className="space-y-2">
               {/* Lembaga Item */}
-              {lembagaData?.map((item) => {
+              {filteredLembagaData?.map((item) => {
                 return (
                   <LembagaCard
                     key={item.id}

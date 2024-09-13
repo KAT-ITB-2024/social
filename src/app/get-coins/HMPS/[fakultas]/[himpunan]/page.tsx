@@ -19,6 +19,7 @@ import Penyu from 'public/images/kunjungan/Penyu.png';
 import Gurita from 'public/images/kunjungan/Gurita.png';
 import KunjunganConfirmation from '~/components/kunjungan/KunjunganConfirmation';
 import NotFound from '~/app/not-found';
+import Link from 'next/link';
 
 const HimpunanDetailPage = () => {
   const pathname = usePathname();
@@ -130,7 +131,7 @@ const HimpunanDetailPage = () => {
             </h3>
             {lastSegment !== 'Pusat' && (
               <p className="text-2xl text-pink-300 text-shadow-orange-md">
-                Unit Kegiatan Mahasiswa
+                HMPS
               </p>
             )}
           </div>
@@ -141,10 +142,12 @@ const HimpunanDetailPage = () => {
                 placeholder="Masukkan Kode"
                 value={inputPin}
                 onChange={(e) => setInputPin(e.target.value)}
+                disabled={data?.hasVisited}
               />
               <Button
                 className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
                 onClick={handleSubmit}
+                disabled={data?.hasVisited}
               >
                 <Image
                   src={Arrow}
@@ -157,13 +160,18 @@ const HimpunanDetailPage = () => {
             </div>
             <div>
               {data?.specificLembaga?.detailLink && (
-                <Button
-                  variant={'outline'}
-                  className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
-                  // TO DO : Pasang link dri info
+                <Link
+                  href={data.specificLembaga.detailLink ?? ''}
+                  passHref
+                  target="_blank"
                 >
-                  Tentang Lembaga
-                </Button>
+                  <Button
+                    variant={'outline'}
+                    className="h-[50px] w-full border-2 border-orange-400 bg-transparent text-orange-400 hover:bg-orange-100/25 hover:text-orange-500"
+                  >
+                    Tentang Lembaga
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
