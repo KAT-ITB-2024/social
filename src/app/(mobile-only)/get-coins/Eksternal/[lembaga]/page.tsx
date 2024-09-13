@@ -27,6 +27,16 @@ const EksternalLembagaDetailPage = () => {
   const [isFalseOpen, setIsFalseOpen] = useState(false);
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1]?.replace(/%20/g, ' ');
+  const [inputPin, setInputPin] = useState('');
+  const { mutate: attendBooth } = api.booth.attendBooth.useMutation({
+    onSuccess() {
+      setIsOpen(true);
+    },
+    onError() {
+      setIsFalseOpen(true);
+    },
+  });
+
   if (!lastSegment) {
     return;
   }
@@ -42,6 +52,12 @@ const EksternalLembagaDetailPage = () => {
   if (!data && !isLoading) {
     return <NotFound />;
   }
+
+  const handleSubmit = async () => {
+    if (inputPin) {
+      attendBooth({ lembagaId: lastSegment, insertedToken: inputPin });
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
@@ -134,11 +150,13 @@ const EksternalLembagaDetailPage = () => {
               <Input
                 className="h-[50px] w-[300px] border-2 border-orange-400 shadow-orange-md placeholder:text-orange-300"
                 placeholder="Masukkan Kode"
+                value={inputPin}
+                onChange={(e) => setInputPin(e.target.value)}
                 disabled={data?.hasVisited}
               />
               <Button
                 className="h-[50px] bg-orange-400 shadow-orange-md hover:bg-orange-300"
-                onClick={() => setIsOpen(true)}
+                onClick={handleSubmit}
                 disabled={data?.hasVisited}
               >
                 <Image

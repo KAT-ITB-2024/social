@@ -76,7 +76,7 @@ const KategoriUKMPage = () => {
             </div>
             <div className="w-[40px]" />
           </div>
-          <div className="space-y-4">
+          <div className="w-full space-y-4">
             {/* Input  */}
             <Input
               className="h-[50px] w-full border-2 border-orange-400 placeholder:text-orange-300 focus-visible:ring-transparent"

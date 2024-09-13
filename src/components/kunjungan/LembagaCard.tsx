@@ -17,7 +17,7 @@ export const LembagaCard = ({ item, link }: LembagaCardProps) => {
   return (
     <div
       key={item.id}
-      className="flex h-auto w-full items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 px-4 shadow-orange-sm"
+      className="flex h-auto w-full items-center justify-between rounded-xl border-2 border-orange-500 bg-gradient-to-r from-transparent to-orange-200/75 pl-1 pr-2 shadow-orange-sm"
     >
       <div className="flex items-center gap-x-2">
         <div className="relative">
@@ -36,7 +36,7 @@ export const LembagaCard = ({ item, link }: LembagaCardProps) => {
                 alt="Lembaga"
                 height={45}
                 width={45}
-                className="absolute left-4 top-[12px] -z-10 h-[45px] w-[45px] rounded-full"
+                className="absolute left-4 top-[12px] -z-10 h-[45px] w-[45px] rounded-full object-cover"
               />
               <div className="absolute left-4 top-3 -z-20 h-[45px] w-[45px] rounded-full bg-white" />
             </>
