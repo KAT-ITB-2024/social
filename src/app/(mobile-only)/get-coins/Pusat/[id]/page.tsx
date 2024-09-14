@@ -187,9 +187,9 @@ const HimpunanDetailPage = () => {
 
       {/* IF SUCCESS */}
       <KunjunganConfirmation
-        title="100 Coins"
+        title="5 Coins"
         image={Penyu}
-        description="Yeay! Kamu mendapatkan 100 coins sebagai hadiah atas kunjunganmu!"
+        description="Yeay! Kamu mendapatkan 5 coins sebagai hadiah atas kunjunganmu!"
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />

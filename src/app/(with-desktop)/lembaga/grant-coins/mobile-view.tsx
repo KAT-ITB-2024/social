@@ -65,7 +65,7 @@ const GrantMobileView = () => {
   const handleGrantCoins = async (id: string) => {
     await grantCoinsMutation.mutateAsync({
       userId: id,
-      coins: 100,
+      coins: 10,
     });
 
     setShowConfirmationModal(false);

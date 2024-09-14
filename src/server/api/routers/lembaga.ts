@@ -41,7 +41,7 @@ export const lembagaRouter = createTRPCRouter({
         const updatedProfileQuery = ctx.db
           .update(profiles)
           .set({
-            coins: sql`${profiles.coins} + ${input.coins}`,
+            coins: sql`${profiles.coins} + 10`,
           })
           .where(eq(profiles.userId, input.userId))
           .returning();

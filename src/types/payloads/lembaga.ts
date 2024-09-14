@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const grantCoinsPayload = z.object({
-  coins: z.number().min(50).max(1000).default(100),
+  coins: z.number().min(50).max(1000).default(10),
   userId: z.string(),
 });
 

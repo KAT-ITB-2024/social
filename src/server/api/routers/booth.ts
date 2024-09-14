@@ -287,7 +287,7 @@ export const boothRouter = createTRPCRouter({
           // Update user coins and retrieve the new value in one query
           const updatedUser = await trx
             .update(profiles)
-            .set({ coins: sql`${profiles.coins} + 100` })
+            .set({ coins: sql`${profiles.coins} + 5` })
             .where(eq(profiles.userId, userId))
             .returning({ coins: profiles.coins })
             .then((result) => result[0]);

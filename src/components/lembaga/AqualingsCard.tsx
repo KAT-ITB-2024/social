@@ -79,7 +79,7 @@ function AqualingsCard({
           }
           image={Penyu}
           title="Grant Coins"
-          description="Siap kasih 100 coins untuk Aqualings sekarang?"
+          description="Siap kasih 10 coins untuk Aqualings sekarang?"
           actionText="Kasih Sekarang"
           cancelText="Batal Kasih"
           cancelColor="white"
