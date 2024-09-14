@@ -52,7 +52,7 @@ export const RequestDrawer: React.FC<RequestDrawerProps> = ({
   }
 
   return (
-    <Drawer modal={false} handleOnly={true} open={isOpen}>
+    <Drawer modal={false} open={isOpen}>
       <DrawerContent
         className={`flex p-6 shadow-blue-lg ${backgroundColor} max-w-md gap-2 border-blue-500 bg-blue-500`}
       >
