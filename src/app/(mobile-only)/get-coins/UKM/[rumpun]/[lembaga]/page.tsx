@@ -170,7 +170,7 @@ const UKMLembagaDetailPage = () => {
             <div>
               {data?.specificLembaga?.detailLink && (
                 <Link
-                  href={`https://oskmitb.com/itb-x/detail/${data.specificLembaga.detailLink}` ?? ''}
+                  href={`https://oskmitb.com/itb-x/detail/${data.specificLembaga.detailLink}`}
                   passHref
                   target="_blank"
                 >
