@@ -168,7 +168,7 @@ const HimpunanDetailPage = () => {
             <div>
               {data?.specificLembaga?.detailLink && (
                 <Link
-                  href={data.specificLembaga.detailLink ?? ''}
+                  href={`https://oskmitb.com/itb-x/detail/${data.specificLembaga.detailLink}` ?? ''}
                   passHref
                   target="_blank"
                 >
