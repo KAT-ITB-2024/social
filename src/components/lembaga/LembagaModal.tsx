@@ -18,9 +18,9 @@ export default function LembagaModal({
       : 'Tutup';
 
   const message = isConfirm
-    ? 'Siap kasih 100 koin untuk Aqualings sekarang?'
+    ? 'Siap kasih 10 koin untuk Aqualings sekarang?'
     : isSuccess
-      ? 'Yeay! 100 koin berhasil diberikan kepada Aqualings!'
+      ? 'Yeay! 10 koin berhasil diberikan kepada Aqualings!'
       : 'Oops! Terjadi kesalahan saat memberikan koin.';
 
   const imageSrc = isConfirm
